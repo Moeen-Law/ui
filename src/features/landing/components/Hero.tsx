@@ -142,12 +142,26 @@ export function Hero() {
                                 className={`absolute bg-[#1f1f1f] border border-[#2a2a2a] rounded-[14px] p-5 flex flex-row-reverse items-center gap-4 shadow-2xl w-fit ${card.position}`}
                                 animate={{
                                     y: [0, -20, 0],
+                                    z: 0
+                                }}
+                                whileHover={{
+                                    scale: 1.05,
+                                    translateY: -10,
+                                    zIndex: 50
                                 }}
                                 transition={{
-                                    duration: 6,
-                                    repeat: Infinity,
-                                    ease: "easeInOut",
-                                    delay: card.delay,
+                                    y: {
+                                        duration: 6,
+                                        repeat: Infinity,
+                                        ease: "easeInOut",
+                                        delay: card.delay,
+                                    },
+                                    scale: { duration: 0.3 },
+                                    translateY: { duration: 0.3 }
+                                }}
+                                style={{
+                                    willChange: "transform",
+                                    backfaceVisibility: "hidden"
                                 }}
                             >
                                 <div className="w-8 h-8 text-blue-500 shrink-0">
