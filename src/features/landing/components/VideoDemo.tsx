@@ -1,0 +1,85 @@
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+
+export function VideoDemo() {
+    const sectionRef = useRef<HTMLElement>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [isPlaying, setIsPlaying] = useState(true); // Autoplay is on
+
+    const { scrollYProgress } = useScroll({
+        target: sectionRef,
+        offset: ["start start", "end end"],
+    });
+
+    // Transition max-width from 95% to 65% based on scroll
+    const maxWidth = useTransform(scrollYProgress, [0, 0.8], ["95%", "65%"]);
+
+    // Fade in post-video content
+    const contentOpacity = useTransform(scrollYProgress, [0.7, 0.9], [0, 1]);
+    const contentY = useTransform(scrollYProgress, [0.7, 0.9], [30, 0]);
+
+    const togglePlay = () => {
+        if (videoRef.current) {
+            if (videoRef.current.paused) {
+                videoRef.current.play();
+                setIsPlaying(true);
+            } else {
+                videoRef.current.pause();
+                setIsPlaying(false);
+            }
+        }
+    };
+
+    return (
+        <section ref={sectionRef} className="relative min-h-[200vh] bg-[#0a0a0a]">
+            <div className="sticky top-20 h-[calc(100vh-80px)] flex flex-col items-center justify-center px-8 overflow-hidden">
+                <motion.div
+                    style={{ maxWidth }}
+                    className="relative w-full aspect-video transition-all duration-300"
+                >
+                    <div className="relative w-full h-full bg-linear-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#2a2a2a]">
+                        <video
+                            ref={videoRef}
+                            className="absolute inset-0 w-full h-full object-cover bg-neutral-900"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            poster="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=675&fit=crop"
+                            onPlay={() => setIsPlaying(true)}
+                            onPause={() => setIsPlaying(false)}
+                        >
+                            <source src="/Law firm Promo.mp4" type="video/mp4" />
+                            Your browser does not support the video tag.
+                        </video>
+
+                        {/* Play/Pause Overlay */}
+                        <button
+                            onClick={togglePlay}
+                            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/95 text-black rounded-full px-8 py-5 flex items-center gap-3 font-['Cairo'] text-[1.1rem] font-bold cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 ${isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
+                                }`}
+                        >
+                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            <span>شاهد الفيديو</span>
+                        </button>
+                    </div>
+                </motion.div>
+
+                {/* Content that appears after video transitions */}
+                <motion.div
+                    style={{ opacity: contentOpacity, y: contentY }}
+                    className="absolute bottom-[10%] left-0 right-0 text-center px-8 pointer-events-none"
+                >
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-white">
+                        مصمم للمحترفين
+                    </h2>
+                    <p className="text-[#a0a0a0] text-lg md:text-xl font-['Cairo']">
+                        مساعد قانوني ذكي مدعوم بالذكاء الاصطناعي للمحامين والشركات
+                    </p>
+                </motion.div>
+            </div>
+        </section>
+    );
+}

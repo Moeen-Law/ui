@@ -100,7 +100,7 @@ export function Hero() {
                     <div className="max-w-[600px] mt-10 lg:mt-0 text-center lg:text-right flex flex-col items-center lg:items-start">
                         <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-white">
                             المساعد القانوني الذكي
-                            <span className="block bg-gradient-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-2 pt-1">
+                            <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-2 pt-1">
                                 المدعوم بالذكاء الاصطناعي
                             </span>
                         </h1>
