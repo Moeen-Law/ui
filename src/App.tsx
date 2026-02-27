@@ -1,9 +1,13 @@
+import Test from './test/Test';
+
 export function App() {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="font-medium">Hello World</div>
-    </div>
-  )
+return (
+    <>
+        <main className=" w-full h-[1000px] flex items-center bg-amber-200 justify-center">
+            <Test/>
+        </main>
+    </>
+);
 }
 
-export default App
+export default App;
