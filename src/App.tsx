@@ -1,13 +1,12 @@
-import Test from './test/Test';
+import Landing from './features/landing/pages/Landing';
 
 export function App() {
-return (
-    <>
-        <main className=" w-full h-[1000px] flex items-center bg-amber-200 justify-center">
-            <Test/>
-        </main>
-    </>
-);
+    return (
+        <>
+            <Landing />
+            
+        </>
+    );
 }
 
 export default App;
