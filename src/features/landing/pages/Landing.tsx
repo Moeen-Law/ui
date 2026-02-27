@@ -4,6 +4,8 @@ import { VideoDemo } from "../components/VideoDemo";
 import { InteractiveDemo } from "../components/InteractiveDemo";
 import { Features } from "../components/Features";
 import { Pricing } from "../components/Pricing";
+import { About } from "../components/About";
+import { Footer } from "../components/Footer";
 
 function Landing() {
   return (
@@ -14,6 +16,8 @@ function Landing() {
       <InteractiveDemo />
       <Features />
       <Pricing />
+      <About />
+      <Footer />
     </div>
   )
 }
