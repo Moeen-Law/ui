@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, ChevronLeft, Plus, X , History } from "lucide-react";
+import { ChevronLeft, Plus, X, History } from "lucide-react";
 
 export default function HistoryDrawer() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  
+
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
     const handleResize = (e: MediaQueryListEvent) => {
@@ -48,7 +48,7 @@ export default function HistoryDrawer() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 z-[100] backdrop-blur-sm md:hidden"
+              className="fixed inset-0 bg-black/60 z-100 backdrop-blur-sm md:hidden"
             />
 
             {/* Drawer Content */}
@@ -57,7 +57,7 @@ export default function HistoryDrawer() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed top-0 bottom-0 right-0 w-[300px] bg-[#111111] border-l border-[#2a2a2a] z-[101] flex flex-col p-5 text-white md:hidden font-['Cairo']"
+              className="fixed top-0 bottom-0 right-0 w-[300px] bg-[#111111] border-l border-[#2a2a2a] z-101 flex flex-col p-5 text-white md:hidden font-['Cairo']"
             >
               <div className="flex items-center justify-between mb-8">
                 <button
