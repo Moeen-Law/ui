@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export function Navbar() {
+    const navigate = useNavigate();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -60,7 +62,10 @@ export function Navbar() {
                             من نحن
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
-                        <button className="relative overflow-hidden bg-[#0a0a0a] text-white border border-[#3a3a3a] px-7 py-3 rounded-md font-bold text-[0.95rem] font-['Cairo'] tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(255,255,255,0.3),0_0_60px_rgba(59,130,246,0.2)] hover:border-white">
+                        <button
+                            onClick={() => navigate("/chat")}
+                            className="relative overflow-hidden bg-[#0a0a0a] text-white border border-[#3a3a3a] px-7 py-3 rounded-md font-bold text-[0.95rem] font-['Cairo'] tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(255,255,255,0.3),0_0_60px_rgba(59,130,246,0.2)] hover:border-white"
+                        >
                             <span className="relative z-10 group-hover:text-[#0a0a0a] transition-colors duration-250">
                                 ابدأ الآن
                             </span>
@@ -125,7 +130,10 @@ export function Navbar() {
                                 من نحن
                             </button>
                             <button
-                                onClick={() => setIsMobileMenuOpen(false)}
+                                onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    navigate("/chat");
+                                }}
                                 className="mt-4 w-full cursor-pointer bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-lg font-bold text-xl font-['Cairo'] transition-colors"
                             >
                                 ابدأ الآن

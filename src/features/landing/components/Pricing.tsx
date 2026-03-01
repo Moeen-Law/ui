@@ -1,6 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { pricingPlans } from "../data";
 
 export function Pricing() {
+    const navigate = useNavigate();
     return (
         <section id="pricing" className="py-24 bg-[#111111]">
             <div className="max-w-[1280px] mx-auto px-8">
@@ -18,8 +20,8 @@ export function Pricing() {
                         <div
                             key={plan.name}
                             className={`relative bg-[#0a0a0a] border border-[#2a2a2a] rounded-3xl p-10 transition-all duration-300 hover:border-blue-500 hover:-translate-y-2 hover:shadow-2xl ${plan.featured
-                                    ? "border-blue-500 bg-linear-to-br from-blue-500/5 to-amber-400/5"
-                                    : ""
+                                ? "border-blue-500 bg-linear-to-br from-blue-500/5 to-amber-400/5"
+                                : ""
                                 }`}
                         >
                             {plan.featured && (
@@ -63,9 +65,10 @@ export function Pricing() {
                             </ul>
 
                             <button
+                                onClick={() => navigate("/chat")}
                                 className={`w-full py-4 rounded-xl font-bold text-lg font-['Cairo'] transition-all cursor-pointer ${plan.featured
-                                        ? "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
-                                        : "bg-transparent text-white border-2 border-[#3a3a3a] hover:border-blue-500 hover:bg-blue-500/10"
+                                    ? "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
+                                    : "bg-transparent text-white border-2 border-[#3a3a3a] hover:border-blue-500 hover:bg-blue-500/10"
                                     }`}
                             >
                                 {plan.buttonText}

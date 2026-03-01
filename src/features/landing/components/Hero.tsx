@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export function Hero() {
+    const navigate = useNavigate();
     const cards = [
         {
             id: 1,
@@ -111,7 +113,10 @@ export function Hero() {
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                            <button className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]">
+                            <button
+                                onClick={() => navigate("/chat")}
+                                className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
+                            >
                                 ابدأ مجاناً
                                 <svg
                                     viewBox="0 0 24 24"
