@@ -40,4 +40,9 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget -qO /dev/null http://localhost:8080/ || exit 1
 
+LABEL maintainer="Mohamed Medhat" \
+    org.opencontainers.image.authors="Mohamed Medhat (mohamedmertens@gmail.com)" \
+    org.opencontainers.image.source="https://github.com/moeen-law/ui" \
+    org.opencontainers.image.description="UI for the Moeen law platform"
+
 CMD ["nginx", "-g", "daemon off;"]
