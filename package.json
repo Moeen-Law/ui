@@ -1,5 +1,22 @@
 {
   "name": "moeen-ui",
+  "description": "UI for the Moeen law platform",
+  "author": "Mohamed Medhat <mohamedmertens@gmail.com>",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/moeen-law/ui"
+  },
+  "homepage": "https://moeenlaw.com",
+  "keywords": [
+    "moeen-law",
+    "ui",
+    "frontend",
+    "react",
+    "tailwind",
+    "shadcn"
+  ],
+  "main": "src/main.tsx",
   "private": true,
   "version": "0.0.0",
   "type": "module",
