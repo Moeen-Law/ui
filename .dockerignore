@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+*.md
+Dockerfile
+.dockerignore
+.vscode
+.idea
+.env*
+.eslintrc*
+.prettierrc*

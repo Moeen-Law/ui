@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:build": "docker  build -t registry.moeenlaw.com/ui:latest .",
+    "docker:push": "docker push registry.moeenlaw.com/ui:latest"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
