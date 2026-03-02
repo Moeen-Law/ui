@@ -38,7 +38,7 @@ USER moeen
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget -qO /dev/null http://localhost:8080/ || exit 1
+    CMD nginx -t 2>/dev/null || exit 1
 
 LABEL maintainer="Mohamed Medhat" \
     org.opencontainers.image.authors="Mohamed Medhat (mohamedmertens@gmail.com)" \
