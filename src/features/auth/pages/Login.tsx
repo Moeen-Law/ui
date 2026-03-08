@@ -1,26 +1,25 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { Apple, Facebook } from "lucide-react";
 import { loginSchema } from "../schema";
 import type { LoginValues } from "../types";
+import { useLogin } from "../hooks/useLogin";
 
 
 
 
 export default function Login() {
 
-    const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
     });
 
+    const { handleLogin } = useLogin();
+
     const onSubmit = async (data: LoginValues) => {
-        console.log("Login data:", data);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        navigate("/chat");
+        await handleLogin(data);
     };
 
     return (
