@@ -13,3 +13,10 @@ export interface AuthStore {
     setAccessToken: (newToken: string) => void,
     removeAccessToken: () => void
 }
+
+
+
+export interface SignUpResponse {
+    message: string;
+    email:   string;
+}
