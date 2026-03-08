@@ -1,18 +1,16 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { Apple, Facebook } from "lucide-react";
+import { loginSchema } from "../schema";
+import type { LoginValues } from "../types";
 
-const loginSchema = z.object({
-    email: z.string().email("البريد الإلكتروني غير صالح"),
-    password: z.string().min(1, "كلمة المرور مطلوبة"),
-});
 
-type LoginValues = z.infer<typeof loginSchema>;
+
 
 export default function Login() {
+
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),

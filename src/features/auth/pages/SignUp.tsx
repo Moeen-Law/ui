@@ -1,27 +1,21 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import { Apple, Facebook } from "lucide-react";
+import { signUpSchema } from "../schema";
+import type { SignUpValues } from "../types";
 
-const signUpSchema = z.object({
-    name: z.string().min(2, "يجب أن يكون الاسم حرفين على الأقل"),
-    email: z.string().email("البريد الإلكتروني غير صالح"),
-    password: z.string().min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل"),
-    confirmPassword: z.string().min(8, "يجب تأكيد كلمة المرور"),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: "كلمات المرور غير متطابقة",
-    path: ["confirmPassword"],
-});
 
-type SignUpValues = z.infer<typeof signUpSchema>;
+
+
 
 export default function SignUp() {
+    
     const navigate = useNavigate();
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpValues>({
         resolver: zodResolver(signUpSchema),
-    });
+    }); 
 
     const onSubmit = async (data: SignUpValues) => {
         console.log("Sign up data:", data);
