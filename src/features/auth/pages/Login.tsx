@@ -2,15 +2,19 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
-import { Apple, Facebook } from "lucide-react";
+import {  Facebook } from "lucide-react";
 import { loginSchema } from "../schema";
 import type { LoginValues } from "../types";
 import { useLogin } from "../hooks/useLogin";
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
 
 
 
 
 export default function Login() {
+
+       const { handleGoogleAuth , loading } = useGoogleAuth();
+    
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
@@ -68,11 +72,9 @@ export default function Login() {
                     </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    <button type="button" className="flex items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-white hover:border-white transition-all group cursor-pointer">
-                        <Apple className="w-5 h-5 group-hover:text-black" />
-                    </button>
-                    <button type="button" className="flex items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#4285F4]/10 hover:border-[#4285F4] transition-all group cursor-pointer">
+                <div className="grid grid-cols-2 gap-4">
+                    
+                    <button type="button" disabled={loading} onClick={handleGoogleAuth} className="flex disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#4285F4]/10 hover:border-[#4285F4] transition-all group cursor-pointer">
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
                                 fill="#4285F4"

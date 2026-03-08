@@ -28,3 +28,8 @@ export interface LoginResponse {
     expiresIn:    number;
     tokenType:    string;
 }
+
+
+export interface GoogleResponse {
+    url: string;
+}

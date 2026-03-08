@@ -2,10 +2,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
-import { Apple, Facebook } from "lucide-react";
+import { Facebook } from "lucide-react";
 import { signUpSchema } from "../schema";
 import type { SignUpValues } from "../types";
 import { useSignUp } from "../hooks/useSignUp";
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
 
 
 
@@ -13,6 +14,7 @@ import { useSignUp } from "../hooks/useSignUp";
 
 export default function SignUp() {
 
+   const { handleGoogleAuth , loading } = useGoogleAuth();
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpValues>({
         resolver: zodResolver(signUpSchema),
@@ -91,11 +93,9 @@ export default function SignUp() {
                     </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    <button type="button" className="flex items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-white hover:border-white transition-all group cursor-pointer">
-                        <Apple className="w-5 h-5 group-hover:text-black" />
-                    </button>
-                    <button type="button" className="flex items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#4285F4]/10 hover:border-[#4285F4] transition-all group cursor-pointer">
+                <div className="grid grid-cols-2 gap-4">
+                    
+                    <button type="button" disabled={loading} onClick={handleGoogleAuth} className="flex disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#4285F4]/10 hover:border-[#4285F4] transition-all group cursor-pointer">
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
                                 fill="#4285F4"
