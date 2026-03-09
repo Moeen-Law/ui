@@ -5,6 +5,7 @@ import SignUp from './features/auth/pages/SignUp';
 import Login from './features/auth/pages/Login';
 import ForgotPassword from './features/auth/pages/ForgotPassword';
 import ResetPassword from './features/auth/pages/ResetPassword';
+import OAuthAuthorize from './features/auth/pages/OAuthAuthorize';
 import NotFound from './shared/pages/NotFound';
 import { Toaster } from "@/components/ui/sonner"
 import useAuthStore from "./features/auth/store/auth";
@@ -21,9 +22,10 @@ export function App() {
                 <Route path="/login" element={accessToken ? <Navigate to="/" /> : <Login />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/login/oauth/authorize" element={<OAuthAuthorize />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
-        </BrowserRouter> 
+        </BrowserRouter>
     );
 }
 
