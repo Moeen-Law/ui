@@ -1,4 +1,3 @@
-import AuthLayout from './AuthLayout';
 import { motion } from 'framer-motion';
 
 function ResetPasswordVerifying() {

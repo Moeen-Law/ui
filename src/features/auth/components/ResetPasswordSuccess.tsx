@@ -1,4 +1,3 @@
-import AuthLayout from './AuthLayout';
 import { CheckCircle2 } from 'lucide-react';
 
 function ResetPasswordSuccess() {

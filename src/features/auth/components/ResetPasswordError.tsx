@@ -1,4 +1,3 @@
-import AuthLayout from './AuthLayout';
 import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 
