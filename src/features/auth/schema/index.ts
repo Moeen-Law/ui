@@ -16,4 +16,16 @@ export const signUpSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword, {
     message: "كلمات المرور غير متطابقة",
     path: ["confirmPassword"],
-});  
+});
+
+export const forgotPasswordSchema = z.object({
+    email: z.string().email("البريد الإلكتروني غير صالح"),
+});
+
+export const resetPasswordSchema = z.object({
+    password: z.string().min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل"),
+    confirmPassword: z.string().min(8, "يجب تأكيد كلمة المرور"),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: "كلمات المرور غير متطابقة",
+    path: ["confirmPassword"],
+});

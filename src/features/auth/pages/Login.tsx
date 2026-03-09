@@ -43,7 +43,7 @@ export default function Login() {
                 <div>
                     <div className="flex justify-between mb-2">
                         <label className="block text-sm font-bold text-[#a0a0a0] mr-1">كلمة المرور</label>
-                        <Link to="#" className="text-xs text-[#707070] hover:text-white transition-colors">نسيت كلمة المرور؟</Link>
+                        <Link to="/forgot-password" title="نسيت كلمة المرور" className="text-xs text-[#707070] hover:text-white transition-colors">نسيت كلمة المرور؟</Link>
                     </div>
                     <input
                         {...register("password")}

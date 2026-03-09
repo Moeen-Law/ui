@@ -1,11 +1,15 @@
 import type z from "zod";
-import type { loginSchema, signUpSchema } from "../schema";
+import type { loginSchema, signUpSchema, forgotPasswordSchema, resetPasswordSchema } from "../schema";
 
 
 
 export type LoginValues = z.infer<typeof loginSchema>;
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
+
+export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
+
+export type ResetPasswordValues = z.infer<typeof resetPasswordSchema>;
 
 
 export interface AuthStore {
@@ -18,13 +22,13 @@ export interface AuthStore {
 
 export interface SignUpResponse {
     message: string;
-    email:   string;
+    email: string;
 }
 
 
 export interface LoginResponse {
-    accessToken:  string;
-    expiresIn:    number;
+    accessToken: string;
+    expiresIn: number;
 }
 
 
