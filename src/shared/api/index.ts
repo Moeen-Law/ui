@@ -6,6 +6,7 @@ const base = import.meta.env.VITE_BASE_URL;
 
 const api: AxiosInstance = axios.create({
     baseURL: base,
+    withCredentials: true,
 });
 
 
