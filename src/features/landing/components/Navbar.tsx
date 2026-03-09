@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
 import { LogOut } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
+import { useHandleStart } from "@/shared/hooks/useHandleStart";
 
 export function Navbar() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { accessToken } = useAuthStore();
     const { handleLogout: handleLogoutHook , loading } = useLogout();
+    const { handleStart } = useHandleStart();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -24,14 +26,6 @@ export function Navbar() {
     const handleLogout = async () => {
         await handleLogoutHook();
         setIsMobileMenuOpen(false);
-    };
-
-    const handleStart = () => {
-        if (accessToken) {
-            navigate("/chat");
-        } else {
-            navigate("/login");
-        }
     };
 
     return (

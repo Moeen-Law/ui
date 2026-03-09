@@ -1,9 +1,8 @@
+import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 
-export function Hero() {
-    const navigate = useNavigate();
-    const cards = [
+
+const cards = [
         {
             id: 1,
             title: "تحليل المستندات",
@@ -91,6 +90,10 @@ export function Hero() {
         },
     ];
 
+export function Hero() {
+
+    const { handleStart } = useHandleStart();
+
     return (
         <section className="min-h-screen flex items-center pt-20 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.1),transparent_50%)]">
             {/* Background patterns */}
@@ -114,7 +117,7 @@ export function Hero() {
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                             <button
-                                onClick={() => navigate("/chat")}
+                                onClick={handleStart}
                                 className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
                             >
                                 ابدأ مجاناً
