@@ -10,6 +10,14 @@ steps:
         VERSION=$(node -p "require('./package.json').version")
         printf "%s\nlatest\n" "$VERSION" > .tags
 
+  create-env:
+    image: alpine
+    environment:
+      DOTENV_FILE:
+        from_secret: DOTENV_FILE
+    commands:
+      - printf "%s\n" "$DOTENV_FILE" > .env
+
   build-and-push:
     image: woodpeckerci/plugin-docker-buildx
     settings:
