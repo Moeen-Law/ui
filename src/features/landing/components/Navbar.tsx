@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
 import { LogOut } from "lucide-react";
+import { useLogout } from "@/features/auth/hooks/useLogout";
 
 export function Navbar() {
     const navigate = useNavigate();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const { accessToken, removeAccessToken } = useAuthStore();
+    const { accessToken } = useAuthStore();
+    const { handleLogout: handleLogoutHook , loading } = useLogout();
 
     useEffect(() => {
         const handleScroll = () => {
@@ -19,9 +21,8 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const handleLogout = () => {
-        removeAccessToken();
-        navigate("/");
+    const handleLogout = async () => {
+        await handleLogoutHook();
         setIsMobileMenuOpen(false);
     };
 
@@ -97,7 +98,8 @@ export function Navbar() {
                             {accessToken && (
                                 <button
                                     onClick={handleLogout}
-                                    className="group flex items-center gap-2 px-4 py-2.5 rounded-lg border border-red-500/20 bg-red-500/5 text-red-500 font-['Cairo'] font-bold text-[0.9rem] transition-all duration-300 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] active:scale-95"
+                                    disabled={loading}
+                                    className="group flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed gap-2 px-4 py-2.5 rounded-lg border border-red-500/20 bg-red-500/5 text-red-500 font-['Cairo'] font-bold text-[0.9rem] transition-all duration-300 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] active:scale-95"
                                     title="تسجيل الخروج"
                                 >
                                     <LogOut className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -166,10 +168,7 @@ export function Navbar() {
 
                             <div className="flex flex-col w-full gap-4 mt-8">
                                 <button
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        navigate("/chat");
-                                    }}
+                                    onClick={handleStart}
                                     className="w-full cursor-pointer bg-blue-600 hover:bg-blue-500 text-white py-4 rounded-xl font-bold text-xl font-['Cairo'] transition-all shadow-[0_0_20px_rgba(37,99,235,0.3)] active:scale-[0.98]"
                                 >
                                     ابدأ الآن
@@ -178,7 +177,8 @@ export function Navbar() {
                                 {accessToken && (
                                     <button
                                         onClick={handleLogout}
-                                        className="w-full flex items-center justify-center gap-3 border border-red-500/30 bg-red-500/5 text-red-500 py-4 rounded-xl font-bold text-xl font-['Cairo'] transition-all hover:bg-red-500 hover:text-white active:scale-[0.98]"
+                                        disabled={loading}
+                                        className="w-full flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed justify-center gap-3 border border-red-500/30 bg-red-500/5 text-red-500 py-4 rounded-xl font-bold text-xl font-['Cairo'] transition-all hover:bg-red-500 hover:text-white active:scale-[0.98]"
                                     >
                                         <LogOut className="w-6 h-6" />
                                         <span>تسجيل الخروج</span>

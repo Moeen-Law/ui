@@ -15,8 +15,6 @@ export const useSignUp = () => {
             setLoading(true);
             const response = await api.post<SignUpResponse>("/auth/register", {
                 name: data.name,
-                firstName: "moeen",
-                lastName: "moeen",
                 email: data.email,
                 password: data.password, 
             });
