@@ -7,6 +7,8 @@ Dockerfile
 .dockerignore
 .vscode
 .idea
-.env*
+.env.local
+.env.development
+.env.*.local
 .eslintrc*
 .prettierrc*
