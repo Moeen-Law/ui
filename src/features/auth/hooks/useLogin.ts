@@ -17,16 +17,16 @@ export const useLogin = () => {
         setLoading(true);
         try {
             const response = await api.post<LoginResponse>("/auth/login", data);
-            toast.success("Login successful!", { style: successToastStyle });
+            toast.success("تم تسجيل الدخول بنجاح", { style: successToastStyle });
             setAccessToken(response.data.accessToken);
             navigate("/");
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message, { style: errorToastStyle });
+                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
                 return
             }
-            toast.error("Something went wrong", { style: errorToastStyle });
+            toast.error("حدث خطأ", { style: errorToastStyle });
 
         }
         finally {

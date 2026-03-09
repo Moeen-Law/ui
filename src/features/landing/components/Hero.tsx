@@ -120,7 +120,7 @@ export function Hero() {
                                 onClick={handleStart}
                                 className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
                             >
-                                ابدأ مجاناً
+                                ابدأ الآن
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"

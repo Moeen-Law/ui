@@ -3,6 +3,7 @@ import Landing from './features/landing/pages/Landing';
 import Chat from './features/chat/pages/Chat';
 import SignUp from './features/auth/pages/SignUp';
 import Login from './features/auth/pages/Login';
+import NotFound from './shared/pages/NotFound';
 import { Toaster } from "@/components/ui/sonner"
 import useAuthStore from "./features/auth/store/auth";
 
@@ -16,6 +17,7 @@ export function App() {
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/signup" element={accessToken ? <Navigate to="/" /> : <SignUp />} />
                 <Route path="/login" element={accessToken ? <Navigate to="/" /> : <Login />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     );
