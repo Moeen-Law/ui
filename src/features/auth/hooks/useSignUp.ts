@@ -13,7 +13,7 @@ export const useSignUp = () => {
     const handleSignUp = async (data: SignUpValues) => {
         try {
             setLoading(true);
-            const response = await api.post<SignUpResponse>("/auth/register", {
+            await api.post<SignUpResponse>("/auth/register", {
                 name: data.name,
                 email: data.email,
                 password: data.password,
