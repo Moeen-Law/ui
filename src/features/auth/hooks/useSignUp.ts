@@ -4,7 +4,7 @@ import api from "@/shared/api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
-import { errorToastStyle , successToastStyle } from "@/shared/constants";
+import { errorToastStyle, successToastStyle } from "@/shared/constants";
 
 export const useSignUp = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -16,17 +16,17 @@ export const useSignUp = () => {
             const response = await api.post<SignUpResponse>("/auth/register", {
                 name: data.name,
                 email: data.email,
-                password: data.password, 
+                password: data.password,
             });
-            toast.success(response?.data?.message || "Registration successful!" , {style: successToastStyle});
+            toast.success("تم التسجيل بنجاح برجاء انتظار التحقق من البريد الالكتروني", { style: successToastStyle });
             navigate("/");
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message , {style: errorToastStyle});
+                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
                 return
             }
-            toast.error("Something went wrong" , {style: errorToastStyle});
+            toast.error("حدث خطأ", { style: errorToastStyle });
 
         }
         finally {
@@ -34,5 +34,5 @@ export const useSignUp = () => {
         }
     }
 
-    return { loading , handleSignUp }
+    return { loading, handleSignUp }
 }

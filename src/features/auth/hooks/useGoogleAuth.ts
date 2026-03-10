@@ -18,10 +18,10 @@ export const useGoogleAuth = () => {
             window.location.href = url;
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message || "something went wrong!", { style: errorToastStyle });
+                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
                 return;
             }
-            toast.error("something went wrong!", { style: errorToastStyle });
+            toast.error("حدث خطأ", { style: errorToastStyle });
         } finally {
             setLoading(false);
         }
