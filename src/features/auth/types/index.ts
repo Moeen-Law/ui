@@ -35,3 +35,8 @@ export interface LoginResponse {
 export interface GoogleResponse {
     url: string;
 }
+
+
+export interface VerifyEmailResponse {
+    message: string;
+}
