@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import api from "@/shared/api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
-import { errorToastStyle } from "@/shared/constants";
+import { errorToastStyle, successToastStyle } from "@/shared/constants";
 
 
 
@@ -26,10 +26,11 @@ export const useResetPassword = () => {
                 confirmPassword: data.confirmPassword,
                 password: data.password,
             });
+            toast.success("تم تغيير كلمة المرور بنجاح", { style: successToastStyle });
             navigate("/login");
-        } catch (error: unknown) {
+        } catch (error: unknown) { 
             if (error instanceof AxiosError) {
-                toast.error(`خطأ اثناء ارسال رابط تغيير كلمة المرور (${error.response?.status})`, { style: errorToastStyle });
+                toast.error(`خطأ اثناء تغيير كلمة المرور (${error.response?.status})`, { style: errorToastStyle });
             } else {
                 toast.error("حدث خطأ أثناء تغيير كلمة المرور", { style: errorToastStyle });
             }
