@@ -20,10 +20,12 @@ export const useVerifyEmail = () => {
         try {
             setLoading(true);
             setError(null);
+
             await api.post<VerifyEmailResponse>(`/auth/verify-email?token=${token}`);
             setSuccess(true);
         } catch (err: unknown) {
             setSuccess(false);
+
             if (err instanceof AxiosError) {
                 const message = err.response?.data.message || "حدث خطأ أثناء التحقق من البريد الإلكتروني";
                 setError(message);

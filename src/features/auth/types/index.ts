@@ -40,3 +40,8 @@ export interface GoogleResponse {
 export interface VerifyEmailResponse {
     message: string;
 }
+
+
+export interface ForgotPasswordResponse {
+    message: string;
+}
