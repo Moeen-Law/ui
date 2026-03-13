@@ -22,6 +22,7 @@ export default function ResetPassword() {
     const [isError, setIsError] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     
+    
     const title = isVerifying ? "جاري التحقق من الرابط..." : isError ? "الرابط غير صالح" : isSuccess ? "تم بنجاح" : "تعيين كلمة مرور جديدة";
     const subtitle = isVerifying ? "يرجى الانتظار" : isError ? "يرجى التحقق من الرابط" : isSuccess ? "تم تغيير كلمة المرور بنجاح" : "يرجى إدخال كلمة المرور الجديدة وتأكيدها";
 

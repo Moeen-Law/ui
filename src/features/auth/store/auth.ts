@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { AuthStore } from '../types'; 
+import type { AuthStore } from '../types';
 
 
 
