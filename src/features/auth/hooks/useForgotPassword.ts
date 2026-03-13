@@ -48,7 +48,7 @@ export const useForgotPassword = () => {
 
         try {
             setLoading(true);
-            await api.post<ForgotPasswordResponse>(`/auth/forgot-password`, { email });
+            await api.post<ForgotPasswordResponse>(`/auth/password/forgot`, { email });
 
             toast.success("تم ارسال رابط تغيير كلمة المرور", { style: successToastStyle });
 
@@ -61,6 +61,7 @@ export const useForgotPassword = () => {
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
                 toast.error(`خطأ اثناء ارسال رابط تغيير كلمة المرور (${err.response?.status})`, { style: errorToastStyle });
+                console.log(err.response?.data);
             } else {
                 toast.error("حدث خطأ أثناء تغيير كلمة المرور", { style: errorToastStyle });
             }
