@@ -32,7 +32,7 @@ export default function Chat() {
         }, 1000);
     };
 
-    const { chats , isPending , isError , refetch } = useChats();
+    const { chats } = useChats();
     console.log(chats);
    
 

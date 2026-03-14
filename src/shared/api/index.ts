@@ -32,13 +32,13 @@ api.interceptors.response.use(
             try {
                 console.log('Access token expired, attempting to refresh...');
 
-                const res = await axios.post<{ token: string }>(
+                const res = await axios.post<{ accessToken: string }>(
                     `${base}/auth/api/v1/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );
 
-                const newToken: string = res.data.token;
+                const newToken: string = res.data.accessToken;
 
                 console.log('Token refreshed successfully');
 
