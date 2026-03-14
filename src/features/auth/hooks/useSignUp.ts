@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useNavigate } from "react-router-dom";
 import { errorToastStyle, successToastStyle } from "@/shared/constants";
+import { authService } from "../helpers";
 
 export const useSignUp = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -13,7 +14,7 @@ export const useSignUp = () => {
     const handleSignUp = async (data: SignUpValues) => {
         try {
             setLoading(true);
-            await api.post<SignUpResponse>("/auth/register", {
+            await api.post<SignUpResponse>(`${authService}/auth/register`, {
                 name: data.name,
                 email: data.email,
                 password: data.password,

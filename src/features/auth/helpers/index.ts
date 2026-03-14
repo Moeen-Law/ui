@@ -5,3 +5,6 @@ export const formatTime = (seconds: number) => {
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, "0")}`;
 };
+
+
+export const authService = '/auth/api/v1';

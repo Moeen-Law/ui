@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { errorToastStyle, successToastStyle } from "@/shared/constants";
 import { AxiosError } from "axios";
 import useAuthStore from "../store/auth";
+import { authService } from "../helpers";
 
 
 export const useLogin = () => {
@@ -16,7 +17,7 @@ export const useLogin = () => {
     const handleLogin = async (data: LoginValues) => {
         setLoading(true);
         try {
-            const response = await api.post<LoginResponse>("/auth/login", data);
+            const response = await api.post<LoginResponse>(`${authService}/auth/login`, data);
             toast.success("تم تسجيل الدخول بنجاح", { style: successToastStyle });
             setAccessToken(response.data.accessToken);
             navigate("/");

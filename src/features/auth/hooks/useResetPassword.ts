@@ -5,6 +5,7 @@ import api from "@/shared/api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { errorToastStyle } from "@/shared/constants";
+import { authService } from "../helpers";
 
 
 
@@ -24,7 +25,7 @@ export const useResetPassword = () => {
             setIsError(false);
             setIsSuccess(false);
 
-            await api.patch("/auth/password/reset", {
+            await api.patch(`${authService}/auth/password/reset`, {
                 token,
                 newPassword: data.password,
             });

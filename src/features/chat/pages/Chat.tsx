@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import ChatHeader from "../components/ChatHeader";
 import ChatMessages, { type Message } from "../components/ChatMessages";
 import ChatInput from "../components/ChatInput";
+import { useChats } from "../hooks/useChats";
 
 export default function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
@@ -31,11 +32,13 @@ export default function Chat() {
         }, 1000);
     };
 
+    const { chats, isPending, isError, refetch } = useChats();
+    console.log(chats)
+
     return (
         <div className="flex h-screen bg-[#0a0a0a] text-white font-['Cairo'] overflow-hidden">
             <Sidebar />
 
-            {/* Main Chat Area */}
             <main className="flex-1 flex flex-col relative w-full">
                 <ChatHeader />
                 <ChatMessages messages={messages} />

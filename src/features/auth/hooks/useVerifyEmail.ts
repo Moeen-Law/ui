@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { VerifyEmailResponse } from "../types";
+import { authService } from "../helpers";
 
 export const useVerifyEmail = () => {
     const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export const useVerifyEmail = () => {
             setLoading(true);
             setError(null);
 
-            await api.post<VerifyEmailResponse>(`/auth/verify-email?token=${token}`);
+            await api.post<VerifyEmailResponse>(`${authService}/auth/verify-email?token=${token}`);
             setSuccess(true);
         } catch (err: unknown) {
             setSuccess(false);

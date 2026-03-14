@@ -4,6 +4,7 @@ import { AxiosError } from "axios";
 import { useState } from "react";
 import { toast } from "sonner";
 import type { GoogleResponse } from "../types";
+import { authService } from "../helpers";
 
 
 
@@ -11,9 +12,9 @@ export const useGoogleAuth = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     const handleGoogleAuth = async () => {
-        try {
+        try { 
             setLoading(true);
-            const response = await api.get<GoogleResponse>("/auth/google");
+            const response = await api.get<GoogleResponse>(`${authService}/auth/google`);
             const { url } = response.data;
             window.location.href = url;
         } catch (error: unknown) {

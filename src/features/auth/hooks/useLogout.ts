@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useAuthStore from "../store/auth";
+import { authService } from "../helpers";
 
 
 export const useLogout = () => {
@@ -15,7 +16,7 @@ export const useLogout = () => {
     const handleLogout = async () => {
         try {
             setLoading(true);
-            await api.post("/auth/logout");
+            await api.post(`${authService}/auth/logout`);
             toast.success("تم تسجيل الخروج بنجاح", { style: successToastStyle });
             removeAccessToken();
             useAuthStore.persist.clearStorage();

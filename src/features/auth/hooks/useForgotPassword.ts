@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import type { ForgotPasswordResponse } from "../types";
 import { toast } from "sonner";
 import { successToastStyle, errorToastStyle } from "@/shared/constants";
+import { authService } from "../helpers";
 
 const COOLDOWN_KEY = "forgot-password-cooldown";
 const COOLDOWN_SECONDS = 90;
@@ -42,13 +43,13 @@ export const useForgotPassword = () => {
 
         return () => clearInterval(interval);
     }, [cooldown]);
-
+ 
     const forgotPassword = async (email: string) => {
         if (cooldown > 0) return;
 
         try {
             setLoading(true);
-            await api.post<ForgotPasswordResponse>(`/auth/password/forgot`, { email });
+            await api.post<ForgotPasswordResponse>(`${authService}/auth/password/forgot`, { email });
 
             toast.success("تم ارسال رابط تغيير كلمة المرور", { style: successToastStyle });
 
