@@ -32,8 +32,9 @@ export default function Chat() {
         }, 1000);
     };
 
-    const { chats } = useChats();
+    const { chats , isPending , isError , refetch } = useChats();
     console.log(chats);
+   
 
     return (
         <div className="flex h-screen bg-[#0a0a0a] text-white font-['Cairo'] overflow-hidden">

@@ -33,7 +33,7 @@ api.interceptors.response.use(
                 console.log('Access token expired, attempting to refresh...');
 
                 const res = await axios.post<{ token: string }>(
-                    `${base}/auth/refresh`,
+                    `${base}/auth/api/v1/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );
@@ -53,7 +53,7 @@ api.interceptors.response.use(
 
                 useAuthStore.getState().removeAccessToken();
                 useAuthStore.persist.clearStorage();
-                window.location.href = '/login';
+                //window.location.href = '/login';
 
                 return Promise.reject(err);
             }
