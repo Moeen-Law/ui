@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
@@ -6,12 +7,13 @@ import { loginSchema } from "../schema";
 import type { LoginValues } from "../types";
 import { useLogin } from "../hooks/useLogin";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { Lock, Eye, EyeOff } from "lucide-react";
 
 
 
 
 export default function Login() {
-
+    const [showPassword, setShowPassword] = useState(false);
     const { handleGoogleAuth, loading } = useGoogleAuth();
 
 
@@ -44,13 +46,24 @@ export default function Login() {
                         <label className="block text-sm font-bold text-[#a0a0a0] mr-1">كلمة المرور</label>
                         <Link to="/forgot-password" title="نسيت كلمة المرور" className="text-xs text-[#707070] hover:text-white transition-colors">نسيت كلمة المرور؟</Link>
                     </div>
-                    <input
-                        {...register("password")}
-                        type="password"
-                        className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="••••••••"
-                        dir="ltr"
-                    />
+                    <div className="relative group">
+                        <input
+                            {...register("password")}
+                            type={showPassword ? "text" : "password"}
+                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                            placeholder="••••••••"
+                            dir="ltr"
+                        />
+                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                            title={showPassword ? "إخفاء" : "إظهار"}
+                        >
+                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                        </button>
+                    </div>
                     {errors.password && <p className="text-red-500 text-xs mt-1 mr-1">{errors.password.message}</p>}
                 </div>
 

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
@@ -6,14 +7,16 @@ import { signUpSchema } from "../schema";
 import type { SignUpValues } from "../types";
 import { useSignUp } from "../hooks/useSignUp";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
+import { Lock, Eye, EyeOff } from "lucide-react";
 
 
 
 
 
 export default function SignUp() {
-
-   const { handleGoogleAuth , loading } = useGoogleAuth();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const { handleGoogleAuth, loading } = useGoogleAuth();
 
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpValues>({
         resolver: zodResolver(signUpSchema),
@@ -53,24 +56,46 @@ export default function SignUp() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">كلمة المرور</label>
-                        <input
-                            {...register("password")}
-                            type="password"
-                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                            placeholder="••••••••"
-                            dir="ltr"
-                        />
+                        <div className="relative group">
+                            <input
+                                {...register("password")}
+                                type={showPassword ? "text" : "password"}
+                                className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                                placeholder="••••••••"
+                                dir="ltr"
+                            />
+                            <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                                title={showPassword ? "إخفاء" : "إظهار"}
+                            >
+                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
+                        </div>
                         {errors.password && <p className="text-red-500 text-xs mt-1 mr-1">{errors.password.message}</p>}
                     </div>
                     <div>
                         <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">تأكيد كلمة المرور</label>
-                        <input
-                            {...register("confirmPassword")}
-                            type="password"
-                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
-                            placeholder="••••••••"
-                            dir="ltr"
-                        />
+                        <div className="relative group">
+                            <input
+                                {...register("confirmPassword")}
+                                type={showConfirmPassword ? "text" : "password"}
+                                className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                                placeholder="••••••••"
+                                dir="ltr"
+                            />
+                            <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                            <button
+                                type="button"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                                title={showConfirmPassword ? "إخفاء" : "إظهار"}
+                            >
+                                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
+                        </div>
                         {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 mr-1">{errors.confirmPassword.message}</p>}
                     </div>
                 </div>
