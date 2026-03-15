@@ -32,6 +32,9 @@ export default function ChatInput({ inputValue, setInputValue, handleSendMessage
                                 }
                             }}
                             placeholder="اكتب سؤالك القانوني هنا..."
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
                             className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[0.95rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar"
                             rows={1}
                         />

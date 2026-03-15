@@ -48,12 +48,8 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
                                 key={msg.id}
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className={`flex items-start gap-4 ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
+                                className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
                             >
-                                <div className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-bold text-xs md:text-sm shrink-0 shadow-lg ${msg.sender === "user" ? "bg-amber-400 text-[#0a0a0a]" : "bg-blue-600 text-white"
-                                    }`}>
-                                    {msg.sender === "user" ? "م" : "AI"}
-                                </div>
                                 <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[0.95rem] shadow-sm ${msg.sender === "user"
                                     ? "bg-[#252525] text-white border border-[#333333]"
                                     : "bg-transparent text-white"
