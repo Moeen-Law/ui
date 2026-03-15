@@ -3,7 +3,7 @@ import { fetchChats } from "../services";
 import type { ChatResponse } from "../types";
 
 
-// i wanna fetch the chats every 1 minute
+
 
 export const useChats = () => {
 
@@ -14,5 +14,4 @@ export const useChats = () => {
     });
 
     return { chats, isPending, isError, refetch };
-
 }
