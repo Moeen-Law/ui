@@ -41,7 +41,10 @@ export default function ChatCard({
                 </p>
             </div>
 
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className={cn(
+                "transition-opacity",
+                isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 max-lg:opacity-100"
+            )}>
                <ChatMenu chatId={chat.id} />
             </div>
         </div>
