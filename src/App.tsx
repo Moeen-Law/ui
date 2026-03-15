@@ -14,10 +14,12 @@ const Chat = lazy(() => import('./features/chat/pages/Chat'));
 import { Toaster } from "@/components/ui/sonner"
 import useAuthStore from "./features/auth/store/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import ErrorBoundary from "./shared/components/ErrorBoundary";
 
 
 const queryClient = new QueryClient();
 
+// adding the error boundary for the chat with custom error message
 export function App() {
     const { accessToken } = useAuthStore();
     return (
@@ -38,7 +40,9 @@ export function App() {
                         path="/chat" 
                         element={
                             <Suspense fallback={<ChatSkeleton />}>
-                                <Chat />
+                                <ErrorBoundary message="حدث خطأ ما أثناء تحميل المحادثات. يرجى المحاولة مرة أخرى.">
+                                    <Chat />
+                                </ErrorBoundary>
                             </Suspense>
                         } 
                     />
