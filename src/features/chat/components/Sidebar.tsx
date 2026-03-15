@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus } from "lucide-react";
 import { useChats } from "../hooks/useChats";
-import ChatCard from "./ChatCard";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import NotFoundChats from "./NotFoundChats";
+import ChatsList from "./ChatsList";
+import UserCard from "./UserCard";
 
 export default function Sidebar() {
     const navigate = useNavigate();
     const { chats } = useChats();
-
     const hasChats = chats?.data && chats.data.length > 0;
 
     return (
@@ -41,54 +42,15 @@ export default function Sidebar() {
                 <div className="space-y-1.5 focus:outline-none">
                     <AnimatePresence mode="popLayout">
                         {!hasChats ? (
-                            <motion.div 
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="flex flex-col items-center justify-center py-10 text-center px-4"
-                            >
-                                <div className="w-12 h-12 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-center mb-4 text-[#333]">
-                                    <Plus className="w-6 h-6 opacity-20" />
-                                </div>
-                                <p className="text-[#444] text-xs font-['Cairo'] leading-relaxed">
-                                    ابدأ محادثة جديدة الآن<br />
-                                    وسوف تظهر هنا
-                                </p>
-                            </motion.div>
+                            <NotFoundChats />
                         ) : (
-                            chats.data.map((chat, index) => (
-                                <motion.div
-                                    key={chat.id}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                >
-                                    <ChatCard 
-                                        chat={chat} 
-                                        onClick={() => {}} // Handle navigation
-                                        onDelete={(id) => console.log('Delete', id)}
-                                        onRename={(id) => console.log('Rename', id)}
-                                    />
-                                </motion.div>
-                            ))
+                           <ChatsList chats={chats.data} />
                         )}
                     </AnimatePresence>
                 </div>
             </div>
 
-            <div className="mt-auto pt-6 border-t border-white/5">
-                <div className="flex items-center gap-4 p-2 rounded-2xl hover:bg-white/2 transition-colors cursor-pointer group">
-                    <div className="relative">
-                        <div className="w-10 h-10 rounded-xl bg-linear-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center text-white font-black text-sm shadow-inner">
-                            م
-                        </div>
-                        <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-[#0a0a0a]" />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-black text-sm text-white font-['Cairo'] group-hover:translate-x-1 transition-transform">مستخدم</span>
-                        <span className="text-[10px] text-[#555] font-medium tracking-tight uppercase">Premium Account</span>
-                    </div>
-                </div>
-            </div>
+            <UserCard />
         </aside>
     );
 }
