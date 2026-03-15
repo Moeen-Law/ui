@@ -37,17 +37,19 @@ export default function Chat() {
    
 
     return (
-        <div className="flex h-screen bg-[#0a0a0a] text-white font-['Cairo'] overflow-hidden">
+        <div className="flex h-dvh bg-[#0a0a0a] text-white font-['Cairo'] overflow-hidden">
             <Sidebar />
 
-            <main className="flex-1 flex flex-col relative w-full">
+            <main className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
                 <ChatHeader />
-                <ChatMessages messages={messages} />
-                <ChatInput
-                    inputValue={inputValue}
-                    setInputValue={setInputValue}
-                    handleSendMessage={handleSendMessage}
-                />
+                <div className="flex-1 relative overflow-hidden flex flex-col">
+                    <ChatMessages messages={messages} />
+                    <ChatInput
+                        inputValue={inputValue}
+                        setInputValue={setInputValue}
+                        handleSendMessage={handleSendMessage}
+                    />
+                </div>
             </main>
         </div>
     );
