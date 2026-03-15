@@ -18,13 +18,13 @@ export default function Sidebar() {
             
             <button
                 onClick={() => navigate("/")}
-                className="flex items-center gap-2 cursor-pointer text-[#666] hover:text-white transition-all mb-8 group self-start"
+                className="flex items-center gap-2  cursor-pointer text-[#666] hover:text-white transition-all mb-8 group self-start"
             >
                 <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 <span className="font-bold text-xs font-['Cairo'] uppercase tracking-wider">العودة للرئيسية</span>
             </button>
 
-            <button className="flex items-center cursor-pointer justify-center gap-3 w-full bg-white text-black rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-[#f0f0f0] active:scale-[0.98] mb-10 shadow-xl shadow-white/5 border border-transparent">
+            <button  className="flex items-center cursor-pointer justify-center gap-3 w-full bg-white text-black rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-[#f0f0f0] active:scale-[0.98] mb-10 shadow-xl shadow-white/5 border border-transparent">
                 <Plus className="w-4 h-4" />
                 <span className="font-['Cairo']">محادثة جديدة</span>
             </button>

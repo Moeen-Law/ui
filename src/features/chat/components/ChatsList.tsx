@@ -21,8 +21,6 @@ function ChatsList({chats}: ChatsListProps) {
                       <ChatCard
                           chat={chat}
                           onClick={() => { }} // Handle navigation
-                          onDelete={(id) => console.log('Delete', id)}
-                          onRename={(id) => console.log('Rename', id)}
                       />
                   </motion.div>
               ))

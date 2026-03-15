@@ -1,31 +1,23 @@
-import { MoreHorizontal, Trash2, Edit3, MessageSquare } from "lucide-react";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { MessageSquare } from "lucide-react";
 import type { ChatResponseDatum } from "../types";
 import { cn } from "@/lib/utils";
+import ChatMenu from "./ChatMenu";
 
 interface ChatCardProps {
     chat: ChatResponseDatum;
     isActive?: boolean;
     onClick?: () => void;
-    onDelete?: (id: string) => void;
-    onRename?: (id: string) => void;
 }
 
 export default function ChatCard({ 
     chat, 
     isActive, 
     onClick, 
-    onDelete, 
-    onRename 
 }: ChatCardProps) {
     return (
         <div 
             onClick={onClick}
+            title={chat.title}
             className={cn(
                 "group relative flex items-center gap-3 w-full p-3 rounded-xl transition-all cursor-pointer border border-transparent",
                 isActive 
@@ -50,35 +42,7 @@ export default function ChatCard({
             </div>
 
             <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                        <button className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-white/10 text-[#a0a0a0] hover:text-white transition-colors cursor-pointer">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="bg-[#111] border-white/10 text-white min-w-[160px] p-1.5 rounded-xl shadow-2xl">
-                        <DropdownMenuItem 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onRename?.(chat.id);
-                            }}
-                            className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-white/5"
-                        >
-                            <Edit3 className="w-3.5 h-3.5" />
-                            <span>تعديل العنوان</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem 
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDelete?.(chat.id);
-                            }}
-                            className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
-                        >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>حذف المحادثة</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+               <ChatMenu chatId={chat.id} />
             </div>
         </div>
     );
