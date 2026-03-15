@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { fetchChats } from "../services";
 import type { ChatResponse } from "../types";
 
@@ -7,7 +7,7 @@ import type { ChatResponse } from "../types";
 
 export const useChats = () => {
 
-    const { data: chats, isPending, isError, refetch } = useQuery<ChatResponse>({
+    const { data: chats, isPending, isError, refetch } = useSuspenseQuery<ChatResponse>({
         queryKey: ["chats"],
         queryFn: fetchChats,
         refetchInterval: 60000

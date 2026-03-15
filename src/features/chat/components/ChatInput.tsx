@@ -26,7 +26,7 @@ export default function ChatInput({ inputValue, setInputValue, handleSendMessage
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
                                     handleSendMessage();
-                                    // Reset height after sending
+                                    
                                     const target = e.target as HTMLTextAreaElement;
                                     target.style.height = 'auto';
                                 }
