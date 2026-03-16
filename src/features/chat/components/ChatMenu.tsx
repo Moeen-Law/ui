@@ -2,6 +2,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Edit3, MoreHorizontal, Trash2 } from 'lucide-react';
 
 
+
 function ChatMenu({ chatId }: { chatId: string }) {
     return (
         <DropdownMenu>
@@ -26,6 +27,7 @@ function ChatMenu({ chatId }: { chatId: string }) {
                         e.stopPropagation();
                         console.log("delete", chatId);
                     }}
+                    variant="destructive"
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
                 >
                     <Trash2 className="w-3.5 h-3.5" />

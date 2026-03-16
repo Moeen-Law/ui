@@ -9,19 +9,19 @@ interface ChatCardProps {
     onClick?: () => void;
 }
 
-export default function ChatCard({ 
-    chat, 
-    isActive, 
-    onClick, 
+export default function ChatCard({
+    chat,
+    isActive,
+    onClick,
 }: ChatCardProps) {
     return (
-        <div 
+        <div
             onClick={onClick}
             title={chat.title}
             className={cn(
                 "group relative flex items-center gap-3 w-full p-3 rounded-xl transition-all cursor-pointer border border-transparent",
-                isActive 
-                    ? "bg-[#1a1a1a] border-white/5 shadow-lg" 
+                isActive
+                    ? "bg-[#1a1a1a] border-white/5 shadow-lg"
                     : "hover:bg-[#151515] text-[#a0a0a0] hover:text-white"
             )}
         >
@@ -45,7 +45,7 @@ export default function ChatCard({
                 "transition-opacity",
                 isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100 lg:opacity-0 lg:group-hover:opacity-100 max-lg:opacity-100"
             )}>
-               <ChatMenu chatId={chat.id} />
+                <ChatMenu chatId={chat.id} />
             </div>
         </div>
     );
