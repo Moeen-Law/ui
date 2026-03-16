@@ -15,6 +15,7 @@ import { Toaster } from "@/components/ui/sonner"
 import useAuthStore from "./features/auth/store/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 
 const queryClient = new QueryClient();
@@ -41,7 +42,9 @@ export function App() {
                         element={
                             <Suspense fallback={<ChatSkeleton />}>
                                 <ErrorBoundary message="حدث خطأ ما أثناء تحميل المحادثات. يرجى المحاولة مرة أخرى.">
-                                    <Chat />
+                                    <ProtectedRoute>
+                                        <Chat /> 
+                                    </ProtectedRoute>
                                 </ErrorBoundary>
                             </Suspense>
                         } 
