@@ -45,3 +45,13 @@ export interface VerifyEmailResponse {
 export interface ForgotPasswordResponse {
     message: string;
 }
+
+
+export interface ProfileResponse {
+    createdAt: Date;
+    email: string;
+    id: string;
+    name: string;
+    role: string;
+    updatedAt: Date;
+}

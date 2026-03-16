@@ -5,6 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
 import ChatsList from "./ChatsList";
 import UserCard from "./UserCard";
+import { useMe } from "@/features/auth/hooks/useMe";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -14,6 +15,8 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
     const navigate = useNavigate();
     const { chats } = useChats();
     const hasChats = chats?.data && chats.data.length > 0;
+    const { profile } = useMe();
+    
 
     return (
         <div className="flex flex-col h-full relative">
@@ -72,7 +75,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
             </div>
 
             <div className="relative z-10 mt-auto">
-                <UserCard />
+                <UserCard name={profile?.name} />
             </div>
         </div>
     );
