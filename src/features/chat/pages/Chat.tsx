@@ -4,10 +4,12 @@ import ChatHeader from "../components/ChatHeader";
 import ChatMessages, { type Message } from "../components/ChatMessages";
 import ChatInput from "../components/ChatInput";
 import { useChats } from "../hooks/useChats";
+import ChatDesktopHeader from "../components/ChatDesktopHeader";
 
 export default function Chat() {
     const [messages, setMessages] = useState<Message[]>([]);
     const [inputValue, setInputValue] = useState("");
+    
 
     const handleSendMessage = () => {
         if (!inputValue.trim()) return;
@@ -41,6 +43,10 @@ export default function Chat() {
             <Sidebar />
 
             <main className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
+                {/* Desktop Header */}
+                <ChatDesktopHeader />
+
+                {/* Mobile Header */}
                 <ChatHeader />
                 <div className="flex-1 relative overflow-hidden flex flex-col">
                     <ChatMessages messages={messages} />

@@ -34,3 +34,10 @@ export interface Meta {
     hasNextPage: boolean;
     hasPrevPage: boolean;
 }
+
+
+export interface ChatUIState {
+    isSidebarOpen: boolean;
+    toggleSidebar: () => void;
+    setSidebarOpen: (isOpen: boolean) => void;
+}

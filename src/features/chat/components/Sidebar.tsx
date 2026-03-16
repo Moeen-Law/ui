@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft, Plus } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
+import { useChatUIStore } from "../store/ui";
+import { cn } from "@/lib/utils";
 import NotFoundChats from "./NotFoundChats";
 import ChatsList from "./ChatsList";
 import UserCard from "./UserCard";
@@ -9,10 +11,18 @@ import UserCard from "./UserCard";
 export default function Sidebar() {
     const navigate = useNavigate();
     const { chats } = useChats();
+    const { isSidebarOpen } = useChatUIStore();
     const hasChats = chats?.data && chats.data.length > 0;
 
     return (
-        <aside className="hidden md:flex flex-col w-[300px] bg-[#0a0a0a] border-l border-white/5 p-5 relative overflow-hidden">
+        <aside className={cn(
+            "hidden md:flex flex-col w-[300px] bg-[#0a0a0a] border-l border-white/5 relative overflow-hidden transition-all duration-300 ease-in-out",
+            !isSidebarOpen && "md:w-0 md:border-none"
+        )}>
+            <div className={cn(
+                "flex flex-col h-full w-[300px] p-5 transition-all duration-300 ease-in-out",
+                !isSidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+            )}>
             {/* Ambient Background Glow */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/2 blur-3xl rounded-full" />
             
@@ -51,6 +61,7 @@ export default function Sidebar() {
             </div>
 
             <UserCard />
+            </div>
         </aside>
     );
 }

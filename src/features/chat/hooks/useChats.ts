@@ -10,7 +10,7 @@ export const useChats = () => {
     const { data: chats, isPending, isError, refetch } = useSuspenseQuery<ChatResponse>({
         queryKey: ["chats"],
         queryFn: fetchChats,
-        refetchInterval: 60000
+        staleTime: 60000
     });
 
     return { chats, isPending, isError, refetch };
