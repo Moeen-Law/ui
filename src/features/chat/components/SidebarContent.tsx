@@ -46,7 +46,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
             </div>
 
             <button 
-                onClick={() => onClose?.()}
+                onClick={() => navigate("/chat")}
                 className="flex items-center cursor-pointer justify-center gap-3 w-full bg-white text-black rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-[#f0f0f0] active:scale-[0.98] mb-10 shadow-xl shadow-white/5 border border-transparent relative z-10"
             >
                 <Plus className="w-4 h-4" />

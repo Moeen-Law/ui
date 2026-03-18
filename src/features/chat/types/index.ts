@@ -57,8 +57,35 @@ export interface fetchAndUpdateTitleChatResponse {
     title: string;
     createdAt: Date;
     updatedAt: Date;
-    messages: any[];
+    messages: unknown[];
 }
 
 
+// ─── Streaming Types ────────────────────────────────────────
+
+export type StreamStatus = "idle" | "creating" | "streaming" | "error" | "done";
+
+export interface StreamMessage {
+    id: string;
+    content: string;
+    sender: Sender;
+    isStreaming?: boolean;
+}
+
+export interface SourceMetadata {
+    law_name: string;
+    article_number: string;
+    article_text: string;
+    kitab: string | null;
+    bab: string | null;
+    fasl: string | null;
+    law_number: string;
+    law_year: string;
+    law_type: string;
+    domain: string;
+}
+
+export interface LawSource {
+    metadata: SourceMetadata;
+}
 

@@ -5,6 +5,8 @@
 @import "@fontsource-variable/noto-sans-arabic";
 @import "@fontsource-variable/cairo";
 
+@plugin "@tailwindcss/typography";
+
 @theme {
   --animate-float: float 6s ease-in-out infinite;
 

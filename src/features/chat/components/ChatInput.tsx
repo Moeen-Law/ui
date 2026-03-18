@@ -1,12 +1,24 @@
-import { Paperclip, Send, ShieldCheck } from "lucide-react";
+import { Paperclip, Send, ShieldCheck, Square } from "lucide-react";
+import type { StreamStatus } from "../types";
 
 interface ChatInputProps {
     inputValue: string;
     setInputValue: (value: string) => void;
     handleSendMessage: () => void;
+    streamStatus: StreamStatus;
+    onStopStreaming: () => void;
 }
 
-export default function ChatInput({ inputValue, setInputValue, handleSendMessage }: ChatInputProps) {
+export default function ChatInput({
+    inputValue,
+    setInputValue,
+    handleSendMessage,
+    streamStatus,
+    onStopStreaming,
+}: ChatInputProps) {
+    const isProcessing = streamStatus === "streaming" || streamStatus === "creating";
+    const canSend = inputValue.trim().length > 0 && !isProcessing;
+
     return (
         <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto relative">
@@ -25,26 +37,38 @@ export default function ChatInput({ inputValue, setInputValue, handleSendMessage
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
-                                    handleSendMessage();
-                                    
-                                    const target = e.target as HTMLTextAreaElement;
-                                    target.style.height = 'auto';
+                                    if (canSend) {
+                                        handleSendMessage();
+                                        const target = e.target as HTMLTextAreaElement;
+                                        target.style.height = 'auto';
+                                    }
                                 }
                             }}
                             placeholder="اكتب سؤالك القانوني هنا..."
                             autoComplete="off"
                             autoCorrect="off"
                             spellCheck={false}
-                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[0.95rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar"
+                            disabled={isProcessing}
+                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[0.95rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
                             rows={1}
                         />
-                        <button
-                            onClick={handleSendMessage}
-                            disabled={!inputValue.trim()}
-                            className="p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-400 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-lg shadow-blue-500/20"
-                        >
-                            <Send className="w-5 h-5" />
-                        </button>
+                        {isProcessing ? (
+                            <button
+                                onClick={onStopStreaming}
+                                className="p-3 bg-red-500/80 text-white rounded-xl hover:bg-red-500 transition-all shrink-0 cursor-pointer shadow-lg shadow-red-500/20"
+                                title="إيقاف التوليد"
+                            >
+                                <Square className="w-5 h-5 fill-current" />
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleSendMessage}
+                                disabled={!canSend}
+                                className="p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-400 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-lg shadow-blue-500/20"
+                            >
+                                <Send className="w-5 h-5" />
+                            </button>
+                        )}
                     </div>
                 </div>
                 <p className="text-center text-[#505050] text-[10px] md:text-xs mt-3 flex items-center justify-center gap-2">

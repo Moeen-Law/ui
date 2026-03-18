@@ -1,20 +1,21 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare } from "lucide-react";
-
-export interface Message {
-    id: number;
-    text: string;
-    sender: "user" | "ai";
-}
+import type { StreamMessage } from "../types";
+import MarkdownRenderer from "./MarkdownRenderer";
+import TypingIndicator from "./TypingIndicator";
 
 interface ChatMessagesProps {
-    messages: Message[];
+    messages: StreamMessage[];
+    isStreaming?: boolean;
 }
 
-export default function ChatMessages({ messages }: ChatMessagesProps) {
+
+
+export default function ChatMessages({ messages, isStreaming }: ChatMessagesProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    // Auto-scroll to the bottom when messages change (including chunk updates)
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -28,7 +29,7 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
         >
             <div className="max-w-4xl mx-auto px-4 md:px-8">
                 <AnimatePresence mode="popLayout">
-                    {messages.length === 0 ? (
+                    {messages.length === 0 && !isStreaming ? (
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -51,10 +52,27 @@ export default function ChatMessages({ messages }: ChatMessagesProps) {
                                 className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
                             >
                                 <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[0.95rem] shadow-sm ${msg.sender === "user"
-                                    ? "bg-[#252525] text-white border border-[#333333]"
+                                    ? "bg-[#252525] text-white border mb-2 border-[#333333]"
                                     : "bg-transparent text-white"
                                     }`}>
-                                    {msg.text}
+                                    {msg.sender === "ai" ? (
+                                        <>
+                                            {msg.content ? (
+                                                <MarkdownRenderer content={msg.content} />
+                                            ) : msg.isStreaming ? (
+                                                <TypingIndicator />
+                                            ) : null}
+                                            {msg.content && msg.isStreaming && (
+                                                <motion.span
+                                                    className="inline-block w-0.5 h-4 bg-blue-400 ml-0.5 align-middle"
+                                                    animate={{ opacity: [1, 0] }}
+                                                    transition={{ duration: 0.7, repeat: Infinity }}
+                                                />
+                                            )}
+                                        </>
+                                    ) : (
+                                        msg.content
+                                    )}
                                 </div>
                             </motion.div>
                         ))

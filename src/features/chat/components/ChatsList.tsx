@@ -1,13 +1,17 @@
 import type { ChatResponseDatum } from "../types";
 import { motion } from "framer-motion";
 import ChatCard from "./ChatCard";
+import { useParams } from "react-router-dom";
 
 
 interface ChatsListProps {
     chats: ChatResponseDatum[];
 }
 
+
 function ChatsList({chats}: ChatsListProps) {
+  const { chatId } = useParams();
+  
   return (
     <>
        {
@@ -20,7 +24,7 @@ function ChatsList({chats}: ChatsListProps) {
                   >
                       <ChatCard
                           chat={chat}
-                          onClick={() => { }} // Handle navigation
+                          isActive={chat.id === chatId}
                       />
                   </motion.div>
               ))

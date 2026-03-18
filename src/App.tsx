@@ -48,6 +48,19 @@ export function App() {
                             </Suspense>
                         } 
                     />
+                    <Route 
+                        path="/chat/:chatId" 
+                        element={
+                            <Suspense fallback={<ChatSkeleton />}>
+                                <ErrorBoundary message="حدث خطأ ما أثناء تحميل المحادثات. يرجى المحاولة مرة أخرى.">
+                                    <ProtectedRoute>
+                                        <Chat /> 
+                                    </ProtectedRoute>
+                                </ErrorBoundary>
+                            </Suspense>
+                        } 
+                    />
+
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
