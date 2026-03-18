@@ -53,7 +53,7 @@ api.interceptors.response.use(
 
                 useAuthStore.getState().removeAccessToken();
                 useAuthStore.persist.clearStorage();
-                //window.location.href = '/login';
+                window.location.href = '/';
 
                 return Promise.reject(err);
             }

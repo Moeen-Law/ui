@@ -20,7 +20,6 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
-// adding the error boundary for the chat with custom error message
 export function App() {
     const { accessToken } = useAuthStore();
     return (
@@ -31,10 +30,10 @@ export function App() {
                     <Route path="/" element={<Landing />} />
                     <Route path="/signup" element={accessToken ? <Navigate to="/" /> : <SignUp />} />
                     <Route path="/login" element={accessToken ? <Navigate to="/" /> : <Login />} />
-                    <Route path="/forgot-password" element={<ForgotPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/verify-email" element={<VerifyEmail />} />
-                    <Route path="/login/oauth/authorize" element={<OAuthAuthorize />} />
+                    <Route path="/forgot-password" element={accessToken ? <Navigate to="/" /> : <ForgotPassword />} />
+                    <Route path="/reset-password" element={accessToken ? <Navigate to="/" /> : <ResetPassword />} />
+                    <Route path="/verify-email" element={accessToken ? <Navigate to="/" /> : <VerifyEmail />} />
+                    <Route path="/login/oauth/authorize" element={accessToken ? <Navigate to="/" /> : <OAuthAuthorize />} />
 
 
                     <Route 

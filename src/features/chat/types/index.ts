@@ -41,3 +41,24 @@ export interface ChatUIState {
     toggleSidebar: () => void;
     setSidebarOpen: (isOpen: boolean) => void;
 }
+
+export interface CreateChatResponse {
+    id: string;
+    userId: string;
+    title: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+
+export interface fetchAndUpdateTitleChatResponse {
+    id: string;
+    userId: string;
+    title: string;
+    createdAt: Date;
+    updatedAt: Date;
+    messages: any[];
+}
+
+
+
