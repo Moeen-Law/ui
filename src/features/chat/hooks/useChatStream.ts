@@ -116,6 +116,15 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
     // Auto-load history when chatId changes
     useEffect(() => {
+        // If we switch chats while streaming, stop the current stream
+        if (chatId !== fetchedChatIdRef.current) {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+                abortControllerRef.current = null;
+            }
+            setStatus("idle");
+        }
+
         if (chatId && chatId !== fetchedChatIdRef.current) {
             loadHistory(chatId);
         } else if (!chatId) {
