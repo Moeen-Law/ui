@@ -9,6 +9,8 @@ interface ChatCardProps {
     isActive?: boolean;
     setOpenAlertModal: (open: boolean) => void;
     setSelectedId: (chatId: string) => void;
+    setOpenUpdateChatTitleModal: (open: boolean) => void;
+    setSelectedChat: (chat: ChatResponseDatum) => void;
 }
 
 export default function ChatCard({
@@ -16,6 +18,8 @@ export default function ChatCard({
     isActive,
     setOpenAlertModal,
     setSelectedId,
+    setOpenUpdateChatTitleModal,
+    setSelectedChat,
 }: ChatCardProps) {
     const navigate = useNavigate();
     
@@ -65,7 +69,7 @@ export default function ChatCard({
                 "transition-all duration-300",
                 isActive ? "opacity-100 scale-100" : "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
             )}>
-                <ChatMenu setSelectedId={setSelectedId} setOpenAlertModal={setOpenAlertModal} chatId={chat.id} />
+                <ChatMenu chat={chat} setOpenUpdateChatTitleModal={setOpenUpdateChatTitleModal} setSelectedChat={setSelectedChat} setSelectedId={setSelectedId} setOpenAlertModal={setOpenAlertModal} />
             </div>
         </div>
     );

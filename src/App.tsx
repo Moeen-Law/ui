@@ -36,36 +36,36 @@ export function App() {
                     <Route path="/login/oauth/authorize" element={accessToken ? <Navigate to="/" /> : <OAuthAuthorize />} />
 
 
-                    <Route 
-                        path="/chat" 
+                    <Route
+                        path="/chat"
                         element={
                             <Suspense fallback={<ChatSkeleton />}>
                                 <ErrorBoundary message="حدث خطأ ما أثناء تحميل المحادثات. يرجى المحاولة مرة أخرى.">
                                     <ProtectedRoute>
-                                        <Chat /> 
+                                        <Chat />
                                     </ProtectedRoute>
                                 </ErrorBoundary>
                             </Suspense>
-                        } 
+                        }
                     />
-                    <Route 
-                        path="/chat/:chatId" 
+                    <Route
+                        path="/chat/:chatId"
                         element={
                             <Suspense fallback={<ChatSkeleton />}>
                                 <ErrorBoundary message="حدث خطأ ما أثناء تحميل المحادثات. يرجى المحاولة مرة أخرى.">
                                     <ProtectedRoute>
-                                        <Chat /> 
+                                        <Chat />
                                     </ProtectedRoute>
                                 </ErrorBoundary>
                             </Suspense>
-                        } 
+                        }
                     />
 
                     <Route path="*" element={<NotFound />} />
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>
-    ); 
+    );
 }
 
 export default App;

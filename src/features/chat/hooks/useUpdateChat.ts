@@ -13,6 +13,7 @@ export const useUpdateChat = () => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
         onError: (error) => {
+            console.log(error);
             toast.error(error?.message || "فشل في تحديث المحادثة");
         } 
     }); 

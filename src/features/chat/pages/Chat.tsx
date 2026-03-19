@@ -63,7 +63,7 @@ export default function Chat() {
                 // which will handle its own optimistic message management.
                 setIsCreatingChat(false);
                 setPendingUserMessage(null);
-                
+
                 await sendMessage(trimmedInput, newChat.id);
 
                 // Navigate to the new chat URL

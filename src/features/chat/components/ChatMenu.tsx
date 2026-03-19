@@ -1,13 +1,16 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Edit3, MoreHorizontal, Trash2 } from 'lucide-react';
+import type { ChatResponseDatum } from '../types';
 
 interface ChatMenuProps {
-    chatId: string;
     setOpenAlertModal: (open: boolean) => void;
     setSelectedId: (chatId: string) => void;
+    setOpenUpdateChatTitleModal: (open: boolean) => void;
+    setSelectedChat: (chat: ChatResponseDatum) => void;
+    chat: ChatResponseDatum;
 }
 
-function ChatMenu({ chatId, setOpenAlertModal, setSelectedId }: ChatMenuProps) {
+function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModal, setSelectedChat, chat }: ChatMenuProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -19,7 +22,8 @@ function ChatMenu({ chatId, setOpenAlertModal, setSelectedId }: ChatMenuProps) {
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
-                        console.log("edit", chatId);
+                        setOpenUpdateChatTitleModal(true);
+                        setSelectedChat(chat);
                     }}
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-white/5"
                 >
@@ -30,7 +34,7 @@ function ChatMenu({ chatId, setOpenAlertModal, setSelectedId }: ChatMenuProps) {
                     onClick={(e) => {
                         e.stopPropagation();
                         setOpenAlertModal(true);
-                        setSelectedId(chatId); 
+                        setSelectedId(chat.id); 
                     }}
                     variant="destructive"
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
