@@ -7,12 +7,15 @@ import { useNavigate } from "react-router-dom";
 interface ChatCardProps {
     chat: ChatResponseDatum;
     isActive?: boolean;
-    onClick?: () => void;
+    setOpenAlertModal: (open: boolean) => void;
+    setSelectedId: (chatId: string) => void;
 }
 
 export default function ChatCard({
     chat,
     isActive,
+    setOpenAlertModal,
+    setSelectedId,
 }: ChatCardProps) {
     const navigate = useNavigate();
     
@@ -62,7 +65,7 @@ export default function ChatCard({
                 "transition-all duration-300",
                 isActive ? "opacity-100 scale-100" : "opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100"
             )}>
-                <ChatMenu chatId={chat.id} />
+                <ChatMenu setSelectedId={setSelectedId} setOpenAlertModal={setOpenAlertModal} chatId={chat.id} />
             </div>
         </div>
     );

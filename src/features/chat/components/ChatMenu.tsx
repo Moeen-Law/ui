@@ -1,9 +1,13 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Edit3, MoreHorizontal, Trash2 } from 'lucide-react';
 
+interface ChatMenuProps {
+    chatId: string;
+    setOpenAlertModal: (open: boolean) => void;
+    setSelectedId: (chatId: string) => void;
+}
 
-
-function ChatMenu({ chatId }: { chatId: string }) {
+function ChatMenu({ chatId, setOpenAlertModal, setSelectedId }: ChatMenuProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -25,7 +29,8 @@ function ChatMenu({ chatId }: { chatId: string }) {
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
-                        console.log("delete", chatId);
+                        setOpenAlertModal(true);
+                        setSelectedId(chatId); 
                     }}
                     variant="destructive"
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
