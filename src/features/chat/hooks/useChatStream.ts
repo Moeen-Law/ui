@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import useAuthStore from "@/features/auth/store/auth";
 import type { LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
+import { fetchChat } from "../services";
 import { toast } from "sonner";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -17,7 +18,7 @@ interface UseChatStreamReturn {
     sources: LawSource[];
     status: StreamStatus;
     error: string | null;
-    sendMessage: (content: string, fileIds?: string[]) => Promise<void>;
+    sendMessage: (content: string, overrideChatId?: string, fileIds?: string[]) => Promise<void>;
     stopStreaming: () => void;
 }
 
@@ -51,9 +52,65 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         );
     }, []);
 
+    // ─── History Fetching Logic ─────────────────────────────────────────
+    const fetchedChatIdRef = useRef<string | null>(null);
+    const isFetchingRef = useRef(false);
+
+    const loadHistory = useCallback(async (id: string) => {
+        if (isFetchingRef.current || !id) return;
+        
+        isFetchingRef.current = true;
+        setMessages([]); // Clear while loading or set to loading state
+        
+        try {
+            const chatData = await fetchChat(id);
+            if (chatData?.messages && chatData.messages.length > 0) {
+                const typedMessages = chatData.messages as Array<{
+                    id: string;
+                    content: string;
+                    sender: "user" | "ai";
+                }>;
+                
+                const mappedMessages: StreamMessage[] = typedMessages.map((msg) => ({
+                    id: msg.id,
+                    content: msg.content,
+                    sender: msg.sender,
+                    isStreaming: false,
+                }));
+                
+                setMessages(mappedMessages);
+            } else {
+                setMessages([]);
+            }
+            fetchedChatIdRef.current = id;
+        } catch (err) {
+            console.error("Failed to load chat messages:", err);
+            setMessages([]);
+        } finally {
+            isFetchingRef.current = false;
+        }
+    }, []);
+
+    // Auto-load history when chatId changes
+    useEffect(() => {
+        if (chatId && chatId !== fetchedChatIdRef.current) {
+            loadHistory(chatId);
+        } else if (!chatId) {
+            setMessages([]);
+            fetchedChatIdRef.current = null;
+        }
+    }, [chatId, loadHistory]);
+
     const sendMessage = useCallback(
-        async (content: string, fileIds?: string[]) => {
-            if (!chatId || !content.trim()) return;
+        async (content: string, overrideChatId?: string, fileIds?: string[]) => {
+            const currentChatId = overrideChatId || chatId;
+            if (!currentChatId || !content.trim()) return;
+
+            // If we are sending to a new chat, mark it as "fetched" or "processed" 
+            // so our history loader doesn't overwrite the active stream.
+            if (overrideChatId) {
+                fetchedChatIdRef.current = overrideChatId;
+            }
 
             // Reset error state & sources on new message
             setError(null);
@@ -80,7 +137,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
             // 3. Build the SSE URL
             const params = new URLSearchParams({
-                chatId,
+                chatId: currentChatId,
                 content: content.trim(),
             });
             if (fileIds && fileIds.length > 0) {

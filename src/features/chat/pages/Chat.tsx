@@ -1,20 +1,19 @@
-import { useState, useCallback, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useState, useCallback } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import ChatHeader from "../components/ChatHeader";
 import ChatMessages from "../components/ChatMessages";
 import ChatInput from "../components/ChatInput";
 import ChatDesktopHeader from "../components/ChatDesktopHeader";
 import { useChatStream } from "../hooks/useChatStream";
-import { createChat, fetchChat } from "../services";
+import { createChat } from "../services";
 import { toast } from "sonner";
-import type { StreamMessage, StreamStatus, ChatResponse } from "../types";
+import type { StreamStatus, ChatResponse } from "../types";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function Chat() {
     const { chatId } = useParams<{ chatId: string }>();
     const navigate = useNavigate();
-    const location = useLocation();
     const queryClient = useQueryClient();
 
     const [inputValue, setInputValue] = useState("");
@@ -24,56 +23,10 @@ export default function Chat() {
     // Stream hook — active only when we have a chatId
     const {
         messages: streamMessages,
-        setMessages,
         status: streamStatus,
         sendMessage,
         stopStreaming,
     } = useChatStream({ chatId });
-
-    // ─── Pending message from routing state ──
-    const pendingMessage = location.state?.pendingMessage as string | undefined;
-
-    // ─── Load existing messages when navigating to an existing chat ────
-    useEffect(() => {
-        if (!chatId) {
-            // New chat — reset messages
-            setMessages([]);
-            return;
-        }
-
-        // If we just created this chat, we have a pending message that will be 
-        // sent immediately. Skip fetching history because the chat is empty on 
-        // the server, and a fetch would overwrite our brand new streaming messages!
-        if (pendingMessage) {
-            return;
-        }
-
-        // Fetch messages from the server for the selected chat
-        const loadExistingMessages = async () => {
-            try {
-                const chatData = await fetchChat(chatId);
-                if (chatData?.messages && chatData.messages.length > 0) {
-                    const typedMessages = chatData.messages as Array<{ id: string; content: string; sender: "user" | "ai" }>;
-                    const existingMessages: StreamMessage[] = typedMessages.map(
-                        (msg) => ({
-                            id: msg.id,
-                            content: msg.content,
-                            sender: msg.sender,
-                            isStreaming: false,
-                        })
-                    );
-                    setMessages(existingMessages);
-                } else {
-                    setMessages([]);
-                }
-            } catch {
-                // On error, show empty state
-                setMessages([]);
-            }
-        };
-
-        loadExistingMessages();
-    }, [chatId, setMessages, pendingMessage]);
 
     // ─── Handle sending a message ──────────────────────────────────────
     const handleSendMessage = useCallback(async () => {
@@ -104,25 +57,25 @@ export default function Chat() {
                     };
                 });
 
-                // Navigate to the new chat URL with the message in state
-                // This ensures the pending message survives the component unmount/remount
-                navigate(`/chat/${newChat.id}`, {
-                    replace: true,
-                    state: { pendingMessage: trimmedInput }
-                });
-            } catch (error: any) {
-                console.error("Failed to create chat:", error);
-                // Extract the backend's message, fallback to generic if undefined
-                const errorMsg = error?.message || error?.error || "حدث خطأ غير متوقع أثناء إنشاء المحادثة. المرجو المحاولة مجدداً.";
-                toast.error(errorMsg);
-                // Put the text back so user doesn't lose it
-                setInputValue(trimmedInput);
-            } finally {
+                // Start streaming IMMEDIATELY for the new chat
+                // We clear our temporary local optimistic state FIRST, then start the stream 
+                // which will handle its own optimistic message management.
                 setIsCreatingChat(false);
                 setPendingUserMessage(null);
                 
-                // 🔥 Invalidate chats list so sidebar refreshes, EVEN IF there was an error.
-                // (If the server crashed but still inserted the chat into the DB, this will make it appear)
+                await sendMessage(trimmedInput, newChat.id);
+
+                // Navigate to the new chat URL
+                navigate(`/chat/${newChat.id}`, { replace: true });
+            } catch (error: any) {
+                console.error("Failed to create chat:", error);
+                const errorMsg = error?.message || error?.error || "حدث خطأ غير متوقع أثناء إنشاء المحادثة. المرجو المحاولة مجدداً.";
+                toast.error(errorMsg);
+                setInputValue(trimmedInput);
+                // Only clear if there was an error, since we cleared earlier on success
+                setIsCreatingChat(false);
+                setPendingUserMessage(null);
+            } finally {
                 queryClient.invalidateQueries({ queryKey: ["chats"] });
             }
             return;
@@ -131,15 +84,6 @@ export default function Chat() {
         // If we already have a chatId, stream directly
         await sendMessage(trimmedInput);
     }, [inputValue, chatId, navigate, sendMessage, queryClient]);
-
-    // We check router state on mount. If there's a pending message, fire it.
-    useEffect(() => {
-        if (chatId && pendingMessage) {
-            sendMessage(pendingMessage);
-            // Clear the state so it doesn't refire if the component re-renders
-            navigate(`/chat/${chatId}`, { replace: true, state: {} });
-        }
-    }, [chatId, pendingMessage, navigate, sendMessage]);
 
     // ─── Compute overall status and messages ────────────────────────────────────────
     const effectiveStatus: StreamStatus = isCreatingChat ? "creating" : streamStatus;
