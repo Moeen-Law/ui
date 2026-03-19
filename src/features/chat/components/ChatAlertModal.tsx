@@ -13,6 +13,7 @@ import { useDeleteChat } from "../hooks/useDeleteChat";
 import { toast } from "sonner";
 import { successToastStyle } from "@/shared/constants";
 import { Button } from "@/components/ui/button";
+import { useNavigate, useParams } from "react-router-dom";
 
 
 interface ChatAlertModalProps {
@@ -23,12 +24,17 @@ interface ChatAlertModalProps {
 
 function ChatAlertModal({ openAlertModal, setOpenAlertModal, chatIdToDelete }: ChatAlertModalProps) {
     const { deleteChat, isPending } = useDeleteChat();
+    const { chatId } = useParams();
+    const navigate = useNavigate();
 
     const handleDeleteChat = () => {
         deleteChat(chatIdToDelete!, {
             onSuccess: () => {
                 setOpenAlertModal(false);
                 toast.success("تم حذف المحادثة بنجاح", { style: successToastStyle });
+                if (chatIdToDelete === chatId) {
+                    navigate("/chat");
+                }
             }
         })
     };
