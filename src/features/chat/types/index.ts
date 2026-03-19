@@ -70,6 +70,7 @@ export interface StreamMessage {
     content: string;
     sender: Sender;
     isStreaming?: boolean;
+    isError?: boolean;
 }
 
 export interface SourceMetadata {

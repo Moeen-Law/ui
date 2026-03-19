@@ -71,12 +71,31 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     sender: "user" | "ai";
                 }>;
                 
-                const mappedMessages: StreamMessage[] = typedMessages.map((msg) => ({
-                    id: msg.id,
-                    content: msg.content,
-                    sender: msg.sender,
-                    isStreaming: false,
-                }));
+                const mappedMessages: StreamMessage[] = [];
+                for (let i = 0; i < typedMessages.length; i++) {
+                    const msg = typedMessages[i];
+                    mappedMessages.push({
+                        id: msg.id,
+                        content: msg.content,
+                        sender: msg.sender,
+                        isStreaming: false,
+                    });
+
+                    // If this is a user message and it's either the last message 
+                    // or the next message is also from a user, insert a synthetic error response.
+                    if (msg.sender === "user") {
+                        const nextMsg = typedMessages[i + 1];
+                        if (!nextMsg || nextMsg.sender === "user") {
+                            mappedMessages.push({
+                                id: `error-${msg.id}`,
+                                content: "عذراً، حدث خطأ أثناء معالجة طلبك ولم نتمكن من الحصول على رد. يمكنك المحاولة مرة أخرى.",
+                                sender: "ai",
+                                isStreaming: false,
+                                isError: true,
+                            });
+                        }
+                    }
+                }
                 
                 setMessages(mappedMessages);
             } else {
@@ -188,7 +207,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
-                                    ? { ...msg, content: errorPayload, isStreaming: false }
+                                    ? { ...msg, content: errorPayload, isStreaming: false, isError: true }
                                     : msg
                             )
                         );
@@ -227,7 +246,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             setMessages((prev) =>
                                 prev.map((msg) =>
                                     msg.id === aiMessageId
-                                        ? { ...msg, content: data, isStreaming: false }
+                                        ? { ...msg, content: data, isStreaming: false, isError: true }
                                         : msg
                                 )
                             );
@@ -247,11 +266,16 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setStatus("error");
                         toast.error(errorMessage);
 
-                        // Mark AI message as done (with whatever content accumulated)
+                        // Mark AI message as done
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
-                                    ? { ...msg, isStreaming: false }
+                                    ? { 
+                                        ...msg, 
+                                        content: msg.content || errorMessage, 
+                                        isStreaming: false,
+                                        isError: true 
+                                      }
                                     : msg
                             )
                         );

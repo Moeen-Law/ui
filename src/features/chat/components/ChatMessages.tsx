@@ -53,7 +53,9 @@ export default function ChatMessages({ messages, isStreaming }: ChatMessagesProp
                             >
                                 <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[0.95rem] shadow-sm ${msg.sender === "user"
                                     ? "bg-[#252525] text-white border mb-2 border-[#333333]"
-                                    : "bg-transparent text-white"
+                                    : msg.isError
+                                        ? "bg-red-500/10 border border-red-500/20 text-red-200"
+                                        : "bg-transparent text-white"
                                     }`}>
                                     {msg.sender === "ai" ? (
                                         <>
