@@ -7,6 +7,7 @@ interface ChatInputProps {
     handleSendMessage: () => void;
     streamStatus: StreamStatus;
     onStopStreaming: () => void;
+    isLoading?: boolean;
 }
 
 export default function ChatInput({
@@ -15,8 +16,9 @@ export default function ChatInput({
     handleSendMessage,
     streamStatus,
     onStopStreaming,
+    isLoading,
 }: ChatInputProps) {
-    const isProcessing = streamStatus === "streaming" || streamStatus === "creating";
+    const isProcessing = streamStatus === "streaming" || streamStatus === "creating" || isLoading;
     const canSend = inputValue.trim().length > 0 && !isProcessing;
 
     return (
@@ -52,7 +54,7 @@ export default function ChatInput({
                             className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[0.95rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
                             rows={1}
                         />
-                        {isProcessing ? (
+                        {(streamStatus === "streaming" || streamStatus === "creating") ? (
                             <button
                                 onClick={onStopStreaming}
                                 className="p-3 bg-red-500/80 text-white rounded-xl hover:bg-red-500 transition-all shrink-0 cursor-pointer shadow-lg shadow-red-500/20"

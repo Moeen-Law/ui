@@ -24,6 +24,7 @@ export default function Chat() {
     const {
         messages: streamMessages,
         status: streamStatus,
+        isLoading,
         sendMessage,
         stopStreaming,
     } = useChatStream({ chatId });
@@ -118,6 +119,7 @@ export default function Chat() {
                     <ChatMessages
                         messages={displayMessages}
                         isStreaming={effectiveStatus === "streaming" || effectiveStatus === "creating"}
+                        isLoading={isLoading}
                     />
                     <ChatInput
                         inputValue={inputValue}
@@ -125,6 +127,7 @@ export default function Chat() {
                         handleSendMessage={handleSendMessage}
                         streamStatus={effectiveStatus}
                         onStopStreaming={stopStreaming}
+                        isLoading={isLoading}
                     />
                 </div>
             </main>

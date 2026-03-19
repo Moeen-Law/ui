@@ -17,6 +17,7 @@ interface UseChatStreamReturn {
     setMessages: React.Dispatch<React.SetStateAction<StreamMessage[]>>;
     sources: LawSource[];
     status: StreamStatus;
+    isLoading: boolean;
     error: string | null;
     sendMessage: (content: string, overrideChatId?: string, fileIds?: string[]) => Promise<void>;
     stopStreaming: () => void;
@@ -37,6 +38,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     const [messages, setMessages] = useState<StreamMessage[]>([]);
     const [sources, setSources] = useState<LawSource[]>([]);
     const [status, setStatus] = useState<StreamStatus>("idle");
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // AbortController ref so we can cancel mid-stream
@@ -60,6 +62,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         if (isFetchingRef.current || !id) return;
         
         isFetchingRef.current = true;
+        setIsLoading(true);
         setMessages([]); // Clear while loading or set to loading state
         
         try {
@@ -107,6 +110,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             setMessages([]);
         } finally {
             isFetchingRef.current = false;
+            setIsLoading(false);
         }
     }, []);
 
@@ -321,6 +325,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         setMessages,
         sources,
         status,
+        isLoading,
         error,
         sendMessage,
         stopStreaming,
