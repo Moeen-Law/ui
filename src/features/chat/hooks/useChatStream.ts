@@ -5,6 +5,7 @@ import type { LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
 import { fetchChat } from "../services";
 import { toast } from "sonner";
+import { fetchMe } from "@/features/auth/services";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -19,7 +20,7 @@ interface UseChatStreamReturn {
     status: StreamStatus;
     isLoading: boolean;
     error: string | null;
-    sendMessage: (content: string, overrideChatId?: string, fileIds?: string[]) => Promise<void>;
+    sendMessage: (content: string, overrideChatId?: string, fileIds?: string[], retryCount?: number) => Promise<void>;
     stopStreaming: () => void;
 }
 
@@ -60,11 +61,11 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
     const loadHistory = useCallback(async (id: string) => {
         if (isFetchingRef.current || !id) return;
-        
+
         isFetchingRef.current = true;
         setIsLoading(true);
         setMessages([]); // Clear while loading or set to loading state
-        
+
         try {
             const chatData = await fetchChat(id);
             if (chatData?.messages && chatData.messages.length > 0) {
@@ -73,7 +74,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     content: string;
                     sender: "user" | "ai";
                 }>;
-                
+
                 const mappedMessages: StreamMessage[] = [];
                 for (let i = 0; i < typedMessages.length; i++) {
                     const msg = typedMessages[i];
@@ -99,7 +100,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         }
                     }
                 }
-                
+
                 setMessages(mappedMessages);
             } else {
                 setMessages([]);
@@ -134,7 +135,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     }, [chatId, loadHistory]);
 
     const sendMessage = useCallback(
-        async (content: string, overrideChatId?: string, fileIds?: string[]) => {
+        async (content: string, overrideChatId?: string, fileIds?: string[], retryCount = 1) => {
             const currentChatId = overrideChatId || chatId;
             if (!currentChatId || !content.trim()) return;
 
@@ -194,6 +195,10 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     signal: ctrl.signal,
 
                     async onopen(response) {
+                        if (response.status === 401 && retryCount > 0) {
+                            throw new Error("TOKEN_EXPIRED_RETRY");
+                        }
+
                         if (
                             response.ok &&
                             response.headers.get("content-type")?.includes("text/event-stream")
@@ -270,11 +275,16 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         // If the user manually aborted, don't treat as error
                         if (ctrl.signal.aborted) return;
 
+                        // Bypass error UI for token refresh so loading indicator stays active
+                        if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
+                            throw err;
+                        }
+
                         console.error("[SSE] Stream error encountered:", err);
                         const errorMessage = typeof err === "string"
                             ? err
                             : err?.message || "حدث خطأ أثناء الاتصال";
-                        
+
                         setError(errorMessage);
                         setStatus("error");
                         toast.error(errorMessage);
@@ -283,12 +293,12 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
-                                    ? { 
-                                        ...msg, 
-                                        content: msg.content || errorMessage, 
+                                    ? {
+                                        ...msg,
+                                        content: msg.content || errorMessage,
                                         isStreaming: false,
-                                        isError: true 
-                                      }
+                                        isError: true
+                                    }
                                     : msg
                             )
                         );
@@ -315,6 +325,29 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     return;
                 }
 
+                if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
+                    console.warn("[SSE] Token expired. Attempting refresh via dummy request...");
+                    try {
+                        await fetchMe();
+                        // Clean up duplicate optimistic messages before retrying
+                        setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
+                        await sendMessage(content, overrideChatId, fileIds, retryCount - 1);
+                        return;
+                    } catch (refreshErr) {
+                        setError("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.");
+                        setStatus("error");
+                        // Mark AI message as failed
+                        setMessages((prev) =>
+                            prev.map((msg) =>
+                                msg.id === aiMessageId
+                                    ? { ...msg, content: "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.", isStreaming: false, isError: true }
+                                    : msg
+                            )
+                        );
+                        return;
+                    }
+                }
+
                 // If status wasn't already set to error by the handlers above
                 if (status !== "error") {
                     setError(
@@ -323,7 +356,10 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     setStatus("error");
                 }
             } finally {
-                abortControllerRef.current = null;
+                // Only clear if another retry hasn't started and overridden the ref
+                if (abortControllerRef.current === ctrl) {
+                    abortControllerRef.current = null;
+                }
             }
         },
         [chatId, status]
