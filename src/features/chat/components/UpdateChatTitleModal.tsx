@@ -71,8 +71,8 @@ function UpdateChatTitleModal({
   }
 
   return (
-    <Dialog open={openAlertModal} onOpenChange={setOpenAlertModal}>
-      <DialogContent className="bg-[#0d0d0d] border-white/10 rounded-[28px] shadow-2xl p-0 overflow-hidden gap-0 sm:max-w-sm">
+    <Dialog  open={openAlertModal} onOpenChange={setOpenAlertModal}>
+      <DialogContent  className="bg-[#0d0d0d] border-white/10 rounded-[28px] shadow-2xl p-0 overflow-hidden gap-0 sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="p-8 pb-6 flex flex-col items-center text-center">
             <DialogHeader className="items-center gap-4">

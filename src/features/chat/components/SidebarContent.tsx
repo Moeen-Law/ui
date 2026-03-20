@@ -16,13 +16,13 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
     const { chats } = useChats();
     const hasChats = chats?.data && chats.data.length > 0;
     const { profile } = useMe();
-    
+
 
     return (
         <div className="flex flex-col h-full relative">
             {/* Ambient Background Glow */}
             <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/2 blur-3xl rounded-full pointer-events-none" />
-            
+
             <div className="flex items-center justify-between mb-8 relative z-10">
                 <button
                     onClick={() => {
@@ -45,7 +45,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 )}
             </div>
 
-            <button 
+            <button
                 onClick={() => navigate("/chat")}
                 className="flex items-center cursor-pointer justify-center gap-3 w-full bg-white text-black rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-[#f0f0f0] active:scale-[0.98] mb-10 shadow-xl shadow-white/5 border border-transparent relative z-10"
             >
@@ -68,7 +68,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                         {!hasChats ? (
                             <NotFoundChats />
                         ) : (
-                           <ChatsList chats={chats.data} />
+                            <ChatsList chats={chats.data} />
                         )}
                     </AnimatePresence>
                 </div>

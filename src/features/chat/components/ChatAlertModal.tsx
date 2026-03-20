@@ -56,7 +56,7 @@ function ChatAlertModal({ openAlertModal, setOpenAlertModal, chatIdToDelete }: C
                     </AlertDialogHeader>
                 </div>
                 
-                <AlertDialogFooter className="bg-white/[0.02] border-t border-white/5 p-6 flex-row gap-3 sm:justify-stretch sm:space-x-0 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 mx-0 mb-0 rounded-none">
+                <AlertDialogFooter className="bg-white/2 border-t border-white/5 p-6 flex-row gap-3 sm:justify-stretch sm:space-x-0 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 mx-0 mb-0 rounded-none">
                     <AlertDialogCancel
                         disabled={isPending}
                         className="cursor-pointer font-['Cairo'] bg-white/5 border-white/5 hover:bg-white/10 text-white rounded-xl transition-all h-12 text-sm font-bold"
