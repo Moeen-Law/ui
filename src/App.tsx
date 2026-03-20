@@ -17,7 +17,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
-
 const queryClient = new QueryClient();
 
 export function App() {

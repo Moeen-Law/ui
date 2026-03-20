@@ -193,6 +193,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         Accept: "text/event-stream",
                     },
                     signal: ctrl.signal,
+                    openWhenHidden: true,
 
                     async onopen(response) {
                         if (response.status === 401 && retryCount > 0) {

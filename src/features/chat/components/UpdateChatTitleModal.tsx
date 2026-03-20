@@ -77,7 +77,7 @@ function UpdateChatTitleModal({
           <div className="p-8 pb-6 flex flex-col items-center text-center">
             <DialogHeader className="items-center gap-4">
               <div className="bg-primary/10 text-primary border border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.15)] rounded-2xl size-16 mb-2 flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                <Edit3 className="size-7" />
+                <Edit3 className="size-7  text-gray-500" />
               </div>
               <div className="space-y-2">
                 <DialogTitle className="text-2xl font-black font-['Cairo'] text-white">
