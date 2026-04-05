@@ -14,3 +14,5 @@ export const updateChatTitle = ({ id, title }: { id: string, title: string }) =>
 export const deleteChat = (id: string) => request<Promise<void>>(api.delete(`${chatService}/chat/${id}`));
 
 export const fetchMessages = (chatId: string) => request<ChatResponse>(api.get(`${chatService}/messages/${chatId}`));
+
+export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`));
