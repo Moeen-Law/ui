@@ -3,7 +3,7 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import useAuthStore from "@/features/auth/store/auth";
 import type { LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
-import { fetchChat } from "../services";
+import { fetchChat, stopStream as stopStreamService } from "../services";
 import { toast } from "sonner";
 import { fetchMe } from "@/features/auth/services";
 
@@ -44,16 +44,59 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
     // AbortController ref so we can cancel mid-stream
     const abortControllerRef = useRef<AbortController | null>(null);
+    // Tracks which chatId is currently streaming so we can notify the backend from any context
+    const activeStreamChatIdRef = useRef<string | null>(null);
+
+    // ─── Shared helper: notify backend to stop the active stream ─────────
+    const notifyBackendStop = useCallback(async (chatId: string) => {
+        try {
+            await stopStreamService(chatId);
+        } catch {
+            toast.error("فشل إيقاف البث", {
+                description: "يرجى المحاولة مرة أخرى",
+            });
+        }
+    }, []);
+
+    // ─── keepalive variant — used during beforeunload only ───────────────
+    // sendBeacon doesn't support Authorization headers easily, so we use fetch with keepalive.
+    const notifyBackendStopKeepalive = useCallback((chatId: string) => {
+        const token = useAuthStore.getState().accessToken;
+        const url = `${BASE_URL}${chatService}/messages/chat/stream/${chatId}/stop`;
+        fetch(url, {
+            method: "POST",
+            keepalive: true,
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+        }).catch(() => {
+            // Cannot reliably show a toast during beforeunload — silently ignore.
+        });
+    }, []);
 
     const stopStreaming = useCallback(() => {
-        abortControllerRef.current?.abort();
+        if (!abortControllerRef.current) return;
+        const stoppingChatId = activeStreamChatIdRef.current;
+        abortControllerRef.current.abort();
         abortControllerRef.current = null;
+        activeStreamChatIdRef.current = null;
         setStatus((prev) => (prev === "streaming" ? "done" : prev));
-        // Mark the last AI message as no longer streaming
-        setMessages((prev) =>
-            prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg))
-        );
-    }, []);
+        // Mark the last AI message as no longer streaming and add the stop message
+        setMessages((prev) => [
+            ...prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg)),
+            {
+                id: crypto.randomUUID(),
+                content: "تم إيقاف إنشاء الرسائل بواسطة المستخدم",
+                sender: "ai",
+                isStopped: true,
+            },
+        ]);
+        
+        if (stoppingChatId) {
+            notifyBackendStop(stoppingChatId);
+        }
+    }, [notifyBackendStop]);
 
     // ─── History Fetching Logic ─────────────────────────────────────────
     const fetchedChatIdRef = useRef<string | null>(null);
@@ -115,13 +158,44 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         }
     }, []);
 
+    // ─── Scenario 2b: Component unmount — stop any active stream ─────────
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current && activeStreamChatIdRef.current) {
+                const chatIdToStop = activeStreamChatIdRef.current;
+                abortControllerRef.current.abort();
+                abortControllerRef.current = null;
+                activeStreamChatIdRef.current = null;
+                notifyBackendStop(chatIdToStop);
+            }
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // ─── Scenario 3: Tab refresh / close — keepalive fetch ───────────────
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (abortControllerRef.current && activeStreamChatIdRef.current) {
+                notifyBackendStopKeepalive(activeStreamChatIdRef.current);
+                abortControllerRef.current.abort();
+                abortControllerRef.current = null;
+                activeStreamChatIdRef.current = null;
+            }
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [notifyBackendStopKeepalive]);
+
     // Auto-load history when chatId changes
     useEffect(() => {
         // If we switch chats while streaming, stop the current stream
         if (chatId !== fetchedChatIdRef.current) {
-            if (abortControllerRef.current) {
+            if (abortControllerRef.current && activeStreamChatIdRef.current) {
+                const chatIdToStop = activeStreamChatIdRef.current;
                 abortControllerRef.current.abort();
                 abortControllerRef.current = null;
+                activeStreamChatIdRef.current = null;
+                notifyBackendStop(chatIdToStop);
             }
             setStatus("idle");
         }
@@ -132,7 +206,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             setMessages([]);
             fetchedChatIdRef.current = null;
         }
-    }, [chatId, loadHistory]);
+    }, [chatId, loadHistory, notifyBackendStop]);
 
     const sendMessage = useCallback(
         async (content: string, overrideChatId?: string, fileIds?: string[], retryCount = 1) => {
@@ -182,6 +256,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             // 4. Set up AbortController
             const ctrl = new AbortController();
             abortControllerRef.current = ctrl;
+            activeStreamChatIdRef.current = currentChatId;
 
             const token = useAuthStore.getState().accessToken;
 
@@ -360,6 +435,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 // Only clear if another retry hasn't started and overridden the ref
                 if (abortControllerRef.current === ctrl) {
                     abortControllerRef.current = null;
+                    activeStreamChatIdRef.current = null;
                 }
             }
         },
