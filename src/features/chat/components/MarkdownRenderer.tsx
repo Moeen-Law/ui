@@ -7,7 +7,7 @@ interface MarkdownRendererProps {
 
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
     return (
-        <div className="prose prose-invert prose-sm max-w-none
+        <div className="prose prose-invert prose-lg max-w-none
             prose-p:my-2 prose-p:leading-relaxed
             prose-headings:text-white prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-2
             prose-strong:text-white prose-strong:font-bold

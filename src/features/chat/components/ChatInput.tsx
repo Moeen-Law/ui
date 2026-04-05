@@ -51,7 +51,7 @@ export default function ChatInput({
                             autoCorrect="off"
                             spellCheck={false}
                             disabled={isProcessing}
-                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[0.95rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
+                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[1.1rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
                             rows={1}
                         />
                         {(streamStatus === "streaming" || streamStatus === "creating") ? (

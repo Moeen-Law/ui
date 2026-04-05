@@ -100,7 +100,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                                     animate={{ opacity: 1, y: 0 }}
                                     className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
                                 >
-                                    <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[0.95rem] shadow-sm ${msg.sender === "user"
+                                    <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[1.1rem] shadow-sm ${msg.sender === "user"
                                         ? "bg-[#252525] text-white border mb-2 mt-2 border-[#333333]"
                                         : msg.isError
                                             ? "bg-red-500/10 border border-red-500/20 text-red-200"
