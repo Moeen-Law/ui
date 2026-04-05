@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Paperclip, Send, ShieldCheck, Square } from "lucide-react";
 import type { StreamStatus } from "../types";
 
@@ -20,6 +21,15 @@ export default function ChatInput({
 }: ChatInputProps) {
     const isProcessing = streamStatus === "streaming" || streamStatus === "creating" || isLoading;
     const canSend = inputValue.trim().length > 0 && !isProcessing;
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Reset height when input is cleared
+    useEffect(() => {
+        if (inputValue === "" && textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+        }
+    }, [inputValue]);
+
 
     return (
         <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
@@ -30,6 +40,7 @@ export default function ChatInput({
                             <Paperclip className="w-5 h-5 mb-1 cursor-pointer" />
                         </button>
                         <textarea
+                            ref={textareaRef}
                             value={inputValue}
                             onChange={(e) => {
                                 setInputValue(e.target.value);
@@ -41,8 +52,6 @@ export default function ChatInput({
                                     e.preventDefault();
                                     if (canSend) {
                                         handleSendMessage();
-                                        const target = e.target as HTMLTextAreaElement;
-                                        target.style.height = 'auto';
                                     }
                                 }
                             }}
