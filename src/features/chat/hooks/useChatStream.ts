@@ -3,9 +3,11 @@ import { fetchEventSource } from "@microsoft/fetch-event-source";
 import useAuthStore from "@/features/auth/store/auth";
 import type { LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
-import { fetchChat, stopStream as stopStreamService } from "../services";
+import { stopStream as stopStreamService } from "../services";
 import { toast } from "sonner";
 import { fetchMe } from "@/features/auth/services";
+import { useQueryClient } from "@tanstack/react-query";
+import { useChatMessages } from "./useChatMessages";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -28,29 +30,65 @@ interface UseChatStreamReturn {
  * Custom hook that manages a Server-Sent Events (SSE) connection
  * to stream AI chat responses chunk-by-chunk, similar to ChatGPT.
  *
+ * History is loaded via useChatMessages (React Query).
+ * This hook only manages the active streaming state and optimistic updates.
+ *
  * Flow:
- * 1. User sends a message → optimistically adds it to local state.
- * 2. Opens an SSE connection via GET /chat/stream?chatId=...&content=...
- * 3. Appends incoming text chunks to the AI message in real-time.
- * 4. Handles `sources` events and error events from the server.
- * 5. Provides abort capability so the user can stop generation.
+ * 1. useChatMessages loads history from the backend (cached by React Query).
+ * 2. User sends a message → optimistically adds it to local state.
+ * 3. Opens an SSE connection via GET /chat/stream?chatId=...&content=...
+ * 4. Appends incoming text chunks to the AI message in real-time.
+ * 5. On stream close, invalidates the React Query cache so real IDs replace optimistic ones.
  */
 export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamReturn => {
+    const queryClient = useQueryClient();
+
+    // ─── History from React Query ───────────────────────────────────────
+    const { data: historyMessages, isLoading: isHistoryLoading } = useChatMessages(chatId);
+
+    // ─── Local streaming state ──────────────────────────────────────────
     const [messages, setMessages] = useState<StreamMessage[]>([]);
     const [sources, setSources] = useState<LawSource[]>([]);
     const [status, setStatus] = useState<StreamStatus>("idle");
-    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    // Keep a ref of status so we can read it synchronously in effects
+    // without adding it to dependency arrays.
+    const statusRef = useRef<StreamStatus>("idle");
+    statusRef.current = status;
 
     // AbortController ref so we can cancel mid-stream
     const abortControllerRef = useRef<AbortController | null>(null);
     // Tracks which chatId is currently streaming so we can notify the backend from any context
     const activeStreamChatIdRef = useRef<string | null>(null);
 
+    // ─── Sync history into local state ────────
+    useEffect(() => {
+        if (!historyMessages) return;
+
+        // If we switch chats, we SHOULD sync the new history immediately.
+        // We only want to block hydration if we are actively streaming the EXACT chat we are currently viewing.
+        const isStreamingCurrentChat = 
+            (statusRef.current === "streaming" || statusRef.current === "creating") &&
+            activeStreamChatIdRef.current === chatId;
+
+        if (!isStreamingCurrentChat) {
+            setMessages(historyMessages);
+        }
+    }, [chatId, historyMessages]);
+
+    // Reset local state when chatId is cleared (new-chat page)
+    useEffect(() => {
+        if (!chatId) {
+            setMessages([]);
+            setStatus("idle");
+        }
+    }, [chatId]);
+
     // ─── Shared helper: notify backend to stop the active stream ─────────
-    const notifyBackendStop = useCallback(async (chatId: string) => {
+    const notifyBackendStop = useCallback(async (chatIdToStop: string) => {
         try {
-            await stopStreamService(chatId);
+            await stopStreamService(chatIdToStop);
         } catch {
             toast.error("فشل إيقاف البث", {
                 description: "يرجى المحاولة مرة أخرى",
@@ -59,10 +97,9 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     }, []);
 
     // ─── keepalive variant — used during beforeunload only ───────────────
-    // sendBeacon doesn't support Authorization headers easily, so we use fetch with keepalive.
-    const notifyBackendStopKeepalive = useCallback((chatId: string) => {
+    const notifyBackendStopKeepalive = useCallback((chatIdToStop: string) => {
         const token = useAuthStore.getState().accessToken;
-        const url = `${BASE_URL}${chatService}/messages/chat/stream/${chatId}/stop`;
+        const url = `${BASE_URL}${chatService}/messages/chat/stream/${chatIdToStop}/stop`;
         fetch(url, {
             method: "POST",
             keepalive: true,
@@ -81,7 +118,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
         activeStreamChatIdRef.current = null;
-        setStatus((prev) => (prev === "streaming" ? "done" : prev));
+        setStatus("done");
         // Mark the last AI message as no longer streaming and add the stop message
         setMessages((prev) => [
             ...prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg)),
@@ -92,73 +129,13 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 isStopped: true,
             },
         ]);
-        
+
         if (stoppingChatId) {
             notifyBackendStop(stoppingChatId);
         }
     }, [notifyBackendStop]);
 
-    // ─── History Fetching Logic ─────────────────────────────────────────
-    const fetchedChatIdRef = useRef<string | null>(null);
-    const isFetchingRef = useRef(false);
-
-    const loadHistory = useCallback(async (id: string) => {
-        if (isFetchingRef.current || !id) return;
-
-        isFetchingRef.current = true;
-        setIsLoading(true);
-        setMessages([]); // Clear while loading or set to loading state
-
-        try {
-            const chatData = await fetchChat(id);
-            if (chatData?.messages && chatData.messages.length > 0) {
-                const typedMessages = chatData.messages as Array<{
-                    id: string;
-                    content: string;
-                    sender: "user" | "ai";
-                }>;
-
-                const mappedMessages: StreamMessage[] = [];
-                for (let i = 0; i < typedMessages.length; i++) {
-                    const msg = typedMessages[i];
-                    mappedMessages.push({
-                        id: msg.id,
-                        content: msg.content,
-                        sender: msg.sender,
-                        isStreaming: false,
-                    });
-
-                    // If this is a user message and it's either the last message 
-                    // or the next message is also from a user, insert a synthetic error response.
-                    if (msg.sender === "user") {
-                        const nextMsg = typedMessages[i + 1];
-                        if (!nextMsg || nextMsg.sender === "user") {
-                            mappedMessages.push({
-                                id: `error-${msg.id}`,
-                                content: "عذراً، حدث خطأ أثناء معالجة طلبك ولم نتمكن من الحصول على رد. يمكنك المحاولة مرة أخرى.",
-                                sender: "ai",
-                                isStreaming: false,
-                                isError: true,
-                            });
-                        }
-                    }
-                }
-
-                setMessages(mappedMessages);
-            } else {
-                setMessages([]);
-            }
-            fetchedChatIdRef.current = id;
-        } catch (err) {
-            console.error("Failed to load chat messages:", err);
-            setMessages([]);
-        } finally {
-            isFetchingRef.current = false;
-            setIsLoading(false);
-        }
-    }, []);
-
-    // ─── Scenario 2b: Component unmount — stop any active stream ─────────
+    // ─── Component unmount — stop any active stream ─────────────────────
     useEffect(() => {
         return () => {
             if (abortControllerRef.current && activeStreamChatIdRef.current) {
@@ -172,7 +149,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // ─── Scenario 3: Tab refresh / close — keepalive fetch ───────────────
+    // ─── Tab refresh / close — keepalive fetch ──────────────────────────
     useEffect(() => {
         const handleBeforeUnload = () => {
             if (abortControllerRef.current && activeStreamChatIdRef.current) {
@@ -186,10 +163,10 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
     }, [notifyBackendStopKeepalive]);
 
-    // Auto-load history when chatId changes
+    // ─── Stop stream when switching chats ────────────────────────────────
+    const prevChatIdRef = useRef<string | undefined>(chatId);
     useEffect(() => {
-        // If we switch chats while streaming, stop the current stream
-        if (chatId !== fetchedChatIdRef.current) {
+        if (chatId !== prevChatIdRef.current) {
             if (abortControllerRef.current && activeStreamChatIdRef.current) {
                 const chatIdToStop = activeStreamChatIdRef.current;
                 abortControllerRef.current.abort();
@@ -198,26 +175,14 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 notifyBackendStop(chatIdToStop);
             }
             setStatus("idle");
+            prevChatIdRef.current = chatId;
         }
-
-        if (chatId && chatId !== fetchedChatIdRef.current) {
-            loadHistory(chatId);
-        } else if (!chatId) {
-            setMessages([]);
-            fetchedChatIdRef.current = null;
-        }
-    }, [chatId, loadHistory, notifyBackendStop]);
+    }, [chatId, notifyBackendStop]);
 
     const sendMessage = useCallback(
         async (content: string, overrideChatId?: string, fileIds?: string[], retryCount = 1) => {
             const currentChatId = overrideChatId || chatId;
             if (!currentChatId || !content.trim()) return;
-
-            // If we are sending to a new chat, mark it as "fetched" or "processed" 
-            // so our history loader doesn't overwrite the active stream.
-            if (overrideChatId) {
-                fetchedChatIdRef.current = overrideChatId;
-            }
 
             // Reset error state & sources on new message
             setError(null);
@@ -279,7 +244,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             response.ok &&
                             response.headers.get("content-type")?.includes("text/event-stream")
                         ) {
-                            // Connection established successfully
                             return;
                         }
 
@@ -306,7 +270,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             )
                         );
 
-                        console.log(response)
                         throw new Error(`SSE connection failed: ${response.status}`);
                     },
 
@@ -324,7 +287,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                                 )
                             );
                         } else if (eventType === "sources") {
-                            // Parse sources JSON
                             try {
                                 const parsedSources: LawSource[] = JSON.parse(data);
                                 setSources(parsedSources);
@@ -332,7 +294,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                                 console.error("Failed to parse sources event:", data);
                             }
                         } else if (eventType === "error") {
-                            // Server-sent error event
                             console.error("[SSE] Received error event from server:", data);
                             setError(data);
                             setStatus("error");
@@ -348,10 +309,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     },
 
                     onerror(err) {
-                        // If the user manually aborted, don't treat as error
                         if (ctrl.signal.aborted) return;
 
-                        // Bypass error UI for token refresh so loading indicator stays active
                         if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
                             throw err;
                         }
@@ -365,7 +324,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setStatus("error");
                         toast.error(errorMessage);
 
-                        // Mark AI message as done
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
@@ -379,7 +337,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             )
                         );
 
-                        // Throw to prevent auto-retry
                         throw err;
                     },
 
@@ -393,10 +350,13 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                                     : msg
                             )
                         );
+
+                        // Invalidate cache so React Query fetches the real server-side
+                        // message IDs, replacing optimistic UUIDs without mid-stream flicker.
+                        queryClient.invalidateQueries({ queryKey: ["messages", currentChatId] });
                     },
                 });
             } catch (err) {
-                // Ignore AbortError (user-initiated cancellation)
                 if (err instanceof DOMException && err.name === "AbortError") {
                     return;
                 }
@@ -409,10 +369,9 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
                         await sendMessage(content, overrideChatId, fileIds, retryCount - 1);
                         return;
-                    } catch (refreshErr) {
+                    } catch {
                         setError("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.");
                         setStatus("error");
-                        // Mark AI message as failed
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
@@ -425,21 +384,20 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 }
 
                 // If status wasn't already set to error by the handlers above
-                if (status !== "error") {
+                if (statusRef.current !== "error") {
                     setError(
                         err instanceof Error ? err.message : "حدث خطأ غير متوقع"
                     );
                     setStatus("error");
                 }
             } finally {
-                // Only clear if another retry hasn't started and overridden the ref
                 if (abortControllerRef.current === ctrl) {
                     abortControllerRef.current = null;
                     activeStreamChatIdRef.current = null;
                 }
             }
         },
-        [chatId, status]
+        [chatId, queryClient]
     );
 
     return {
@@ -447,7 +405,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         setMessages,
         sources,
         status,
-        isLoading,
+        isLoading: isHistoryLoading,
         error,
         sendMessage,
         stopStreaming,

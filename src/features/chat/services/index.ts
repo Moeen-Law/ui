@@ -3,7 +3,7 @@ import request from "@/shared/api/request";
 import type { ChatResponse, CreateChatResponse, fetchAndUpdateTitleChatResponse } from "../types";
 import { chatService } from "../helpers";
 
-export const fetchChats = () => request<ChatResponse>(api.get(`${chatService}/chat?size=40&sortOrder=DESC`));
+export const fetchChats = () => request<ChatResponse>(api.get(`${chatService}/chat?size=40&sortOrder=DESC&includeMessages=false`));
 
 export const createChat = (title: string) => request<CreateChatResponse>(api.post(`${chatService}/chat`, { title }));
 
@@ -15,4 +15,4 @@ export const deleteChat = (id: string) => request<Promise<void>>(api.delete(`${c
 
 export const fetchMessages = (chatId: string) => request<ChatResponse>(api.get(`${chatService}/messages/${chatId}`));
 
-export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`));
+export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`)); 

@@ -54,7 +54,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
     }, []);
 
     return (
-        <div 
+        <div
             ref={scrollRef}
             className="flex-1 overflow-y-auto pt-4 md:pt-8 pb-40 md:pb-48 space-y-6 custom-scrollbar"
         >
@@ -87,7 +87,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                             </p>
                         </motion.div>
                     ) : (
-                        <motion.div 
+                        <motion.div
                             key="messages-list"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}

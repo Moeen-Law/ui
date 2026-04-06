@@ -3,6 +3,7 @@ import { AxiosError, type AxiosResponse } from "axios";
 
 const request = async <T>(promise: Promise<AxiosResponse<T>>) => {
     try {
+        
         const response = await promise;
         return response.data;
 
