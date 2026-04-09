@@ -23,7 +23,7 @@ export interface Message {
     chatId: string;
 }
 
-export type Sender = "ai" | "user";
+export type Sender = "ai" | "user" | "system";
 
 export interface Meta {
     page: number;
@@ -89,5 +89,28 @@ export interface SourceMetadata {
 
 export interface LawSource {
     metadata: SourceMetadata;
+}
+
+// ─── Messages Endpoint Types ────────────────────────────────────────
+
+export interface MessageResponse {
+    data: MessageDatum[];
+    meta: Meta;
+}
+
+export interface MessageDatum {
+    id:             string;
+    content:        string;
+    sender:         Sender;
+    createdAt:      Date;
+    chatId:         string;
+    responseSource: ResponseSource | null;
+    files:          any[];
+}
+
+export interface ResponseSource {
+    id:        string;
+    data:      any[];
+    messageId: string;
 }
 

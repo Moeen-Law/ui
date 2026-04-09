@@ -1,6 +1,6 @@
 import api from "@/shared/api";
 import request from "@/shared/api/request";
-import type { ChatResponse, CreateChatResponse, fetchAndUpdateTitleChatResponse } from "../types";
+import type { ChatResponse, CreateChatResponse, fetchAndUpdateTitleChatResponse, MessageResponse } from "../types";
 import { chatService } from "../helpers";
 
 export const fetchChats = () => request<ChatResponse>(api.get(`${chatService}/chat?size=40&sortOrder=DESC&includeMessages=false`));
@@ -13,6 +13,6 @@ export const updateChatTitle = ({ id, title }: { id: string, title: string }) =>
 
 export const deleteChat = (id: string) => request<Promise<void>>(api.delete(`${chatService}/chat/${id}`));
 
-export const fetchMessages = (chatId: string) => request<ChatResponse>(api.get(`${chatService}/messages/${chatId}`));
+export const fetchMessages = (chatId: string) => request<MessageResponse>(api.get(`${chatService}/messages/${chatId}?sortOrder=ASC`));
 
 export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`)); 

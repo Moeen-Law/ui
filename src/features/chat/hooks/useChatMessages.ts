@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchChat } from "../services";
+import { fetchMessages } from "../services";
 import type { StreamMessage } from "../types";
 
 /**
@@ -15,22 +15,17 @@ export const useChatMessages = (chatId: string | undefined) => {
         queryFn: async () => {
             if (!chatId) return [];
 
-            const chatData = await fetchChat(chatId);
+            const response = await fetchMessages(chatId);
 
-            if (!chatData?.messages || chatData.messages.length === 0) {
+            if (!response?.data || response.data.length === 0) {
                 return [];
             }
 
-            const typedMessages = chatData.messages as Array<{
-                id: string;
-                content: string;
-                sender: "user" | "ai";
-            }>;
-
+            const messages = response.data;
             const mapped: StreamMessage[] = [];
 
-            for (let i = 0; i < typedMessages.length; i++) {
-                const msg = typedMessages[i];
+            for (let i = 0; i < messages.length; i++) {
+                const msg = messages[i];
                 mapped.push({
                     id: msg.id,
                     content: msg.content,
@@ -41,7 +36,7 @@ export const useChatMessages = (chatId: string | undefined) => {
                 // If this is a user message and it's either the last message
                 // or the next message is also from a user, insert a synthetic error response.
                 if (msg.sender === "user") {
-                    const nextMsg = typedMessages[i + 1];
+                    const nextMsg = messages[i + 1];
                     if (!nextMsg || nextMsg.sender === "user") {
                         mapped.push({
                             id: `error-${msg.id}`,
