@@ -68,7 +68,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
         // If we switch chats, we SHOULD sync the new history immediately.
         // We only want to block hydration if we are actively streaming the EXACT chat we are currently viewing.
-        const isStreamingCurrentChat = 
+        const isStreamingCurrentChat =
             (statusRef.current === "streaming" || statusRef.current === "creating") &&
             activeStreamChatIdRef.current === chatId;
 

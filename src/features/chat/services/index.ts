@@ -3,7 +3,8 @@ import request from "@/shared/api/request";
 import type { ChatResponse, CreateChatResponse, fetchAndUpdateTitleChatResponse, MessageResponse } from "../types";
 import { chatService } from "../helpers";
 
-export const fetchChats = () => request<ChatResponse>(api.get(`${chatService}/chat?size=40&sortOrder=DESC&includeMessages=false`));
+export const fetchChats = ({ page = 1, size = 7 }: { page?: number; size?: number } = {}) => 
+    request<ChatResponse>(api.get(`${chatService}/chat?page=${page}&size=${size}&sortOrder=DESC&includeMessages=false`));
 
 export const createChat = (title: string) => request<CreateChatResponse>(api.post(`${chatService}/chat`, { title }));
 

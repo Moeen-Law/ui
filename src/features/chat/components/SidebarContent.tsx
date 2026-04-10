@@ -6,6 +6,8 @@ import NotFoundChats from "./NotFoundChats";
 import ChatsList from "./ChatsList";
 import UserCard from "./UserCard";
 import { useMe } from "@/features/auth/hooks/useMe";
+import { useEffect, useRef } from "react";
+import { Loader2 } from "lucide-react";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -13,9 +15,28 @@ interface SidebarContentProps {
 
 export default function SidebarContent({ onClose }: SidebarContentProps) {
     const navigate = useNavigate();
-    const { chats } = useChats();
-    const hasChats = chats?.data && chats.data.length > 0;
+    const { chats, meta, hasNextPage, fetchNextPage, isFetchingNextPage } = useChats();
+    const hasChats = chats && chats.length > 0;
     const { profile } = useMe();
+
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+                    fetchNextPage();
+                }
+            },
+            { threshold: 0.1 }
+        );
+
+        if (loadMoreRef.current) {
+            observer.observe(loadMoreRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
 
     return (
@@ -58,7 +79,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                     <h3 className="text-[#444] text-[10px] font-black uppercase tracking-[0.2em] font-['Cairo']">المحادثات السابقة</h3>
                     {hasChats && (
                         <div className="px-2 py-0.5 rounded-full bg-white/5 border border-white/5 text-[9px] text-[#666] font-mono">
-                            {chats.data.length}
+                            {meta?.total}
                         </div>
                     )}
                 </div>
@@ -68,7 +89,21 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                         {!hasChats ? (
                             <NotFoundChats />
                         ) : (
-                            <ChatsList chats={chats.data} />
+                            <>
+                                <ChatsList chats={chats} />
+                                {hasNextPage && (
+                                    <div 
+                                        ref={loadMoreRef} 
+                                        className="py-4 flex justify-center items-center"
+                                    >
+                                        {isFetchingNextPage ? (
+                                            <Loader2 className="w-4 h-4 text-[#444] animate-spin" />
+                                        ) : (
+                                            <div className="h-4" /> // Trigger area
+                                        )}
+                                    </div>
+                                )}
+                            </>
                         )}
                     </AnimatePresence>
                 </div>

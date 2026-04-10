@@ -9,7 +9,7 @@ import { useChatStream } from "../hooks/useChatStream";
 import { createChat } from "../services";
 import { toast } from "sonner";
 import type { StreamStatus, ChatResponse } from "../types";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
 
 export default function Chat() {
     const { chatId } = useParams<{ chatId: string }>();
@@ -50,11 +50,23 @@ export default function Chat() {
                 const newChat = await createChat(title);
 
                 // Eagerly update the cache so the sidebar shows the new chat instantly
-                queryClient.setQueryData<ChatResponse>(["chats"], (old) => {
+                queryClient.setQueryData<InfiniteData<ChatResponse>>(["chats"], (old) => {
                     if (!old) return old;
                     return {
                         ...old,
-                        data: [{ ...newChat, messages: [] }, ...old.data],
+                        pages: old.pages.map((page, index) => {
+                            if (index === 0) {
+                                return {
+                                    ...page,
+                                    data: [{ ...newChat, messages: [] }, ...page.data],
+                                    meta: {
+                                        ...page.meta,
+                                        total: page.meta.total + 1,
+                                    }
+                                };
+                            }
+                            return page;
+                        }),
                     };
                 });
 
