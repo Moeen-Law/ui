@@ -8,6 +8,7 @@ import UserCard from "./UserCard";
 import { useMe } from "@/features/auth/hooks/useMe";
 import { useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -87,9 +88,9 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 <div className="space-y-1.5 focus:outline-none">
                     <AnimatePresence mode="popLayout">
                         {!hasChats ? (
-                            <NotFoundChats />
+                            <NotFoundChats key="not-found-chats" />
                         ) : (
-                            <>
+                            <motion.div key="chats-list-container">
                                 <ChatsList chats={chats} />
                                 {hasNextPage && (
                                     <div 
@@ -103,7 +104,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                                         )}
                                     </div>
                                 )}
-                            </>
+                            </motion.div>
                         )}
                     </AnimatePresence>
                 </div>
