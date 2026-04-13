@@ -19,8 +19,8 @@ function OAuthProcessing() {
                 <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 text-blue-500 animate-pulse" />
             </div>
             <div className="space-y-2">
-                <h2 className="text-2xl font-black text-white">جاري المصادقة...</h2>
-                <p className="text-[#a0a0a0]">يرجى الانتظار بينما نقوم بإنهاء تسجيل دخولك</p>
+                <h2 className="text-2xl font-black text-foreground">جاري المصادقة...</h2>
+                <p className="text-muted-foreground">يرجى الانتظار بينما نقوم بإنهاء تسجيل دخولك</p>
             </div>
         </motion.div>
     );

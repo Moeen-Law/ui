@@ -32,11 +32,11 @@ export default function ChatInput({
 
 
     return (
-        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-[#0a0a0a] via-[#0a0a0a]/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
+        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto relative">
-                <div className="relative bg-[#111111] border border-[#2a2a2a] rounded-2xl p-2 focus-within:border-blue-500/50 transition-all shadow-2xl backdrop-blur-sm">
+                <div className="relative bg-card border border-border rounded-2xl p-2 focus-within:border-blue-500/50 transition-all shadow-2xl backdrop-blur-sm">
                     <div className="flex items-end gap-2 px-2 py-1">
-                        <button className="p-2 text-[#707070] hover:text-white transition-colors">
+                        <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                             <Paperclip className="w-5 h-5 mb-1 cursor-pointer" />
                         </button>
                         <textarea
@@ -60,7 +60,7 @@ export default function ChatInput({
                             autoCorrect="off"
                             spellCheck={false}
                             disabled={isProcessing}
-                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-white placeholder-[#707070] text-[1.1rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
+                            className="w-full bg-transparent border-none outline-none focus:ring-0 text-foreground placeholder-muted-foreground text-[1.1rem] py-2 resize-none max-h-[200px] min-h-[44px] custom-scrollbar disabled:opacity-50"
                             rows={1}
                         />
                         {(streamStatus === "streaming" || streamStatus === "creating") ? (
@@ -82,7 +82,7 @@ export default function ChatInput({
                         )}
                     </div>
                 </div>
-                <p className="text-center text-[#505050] text-[10px] md:text-xs mt-3 flex items-center justify-center gap-2">
+                <p className="text-center text-muted-foreground text-[10px] md:text-xs mt-3 flex items-center justify-center gap-2">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>مُعين يمكن أن يخطئ. تحقق من المعلومات المهمة.</span>
                 </p>

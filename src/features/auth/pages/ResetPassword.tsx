@@ -35,20 +35,20 @@ export default function ResetPassword() {
             {isVerifying ? <ResetPasswordVerifying /> :  isSuccess ? <ResetPasswordSuccess /> : isError ? <ResetPasswordError /> : (
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">كلمة المرور الجديدة</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">كلمة المرور الجديدة</label>
                     <div className="relative group">
                         <input
                             {...register("password")}
                             type={showPassword ? "text" : "password"}
-                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                            className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                             placeholder="••••••••"
                             dir="ltr"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute left-4 top-4 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                            className="absolute left-4 top-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title={showPassword ? "إخفاء" : "إظهار"}
                         >
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -58,20 +58,20 @@ export default function ResetPassword() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">تأكيد كلمة المرور</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">تأكيد كلمة المرور</label>
                     <div className="relative group">
                         <input
                             {...register("confirmPassword")}
                             type={showConfirmPassword ? "text" : "password"}
-                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                            className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                             placeholder="••••••••"
                             dir="ltr"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                         <button
                             type="button"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="absolute left-4 top-4 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                            className="absolute left-4 top-4 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title={showConfirmPassword ? "إخفاء" : "إظهار"}
                         >
                             {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -85,10 +85,10 @@ export default function ResetPassword() {
                     whileTap={{ scale: 0.99 }}
                     disabled={isSubmitting}
                     type="submit"
-                    className="w-full cursor-pointer disabled:cursor-not-allowed bg-white text-[#0a0a0a] font-black rounded-xl py-4 mt-2 hover:bg-[#e0e0e0] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                    className="w-full cursor-pointer disabled:cursor-not-allowed bg-blue-500 text-white font-black rounded-xl py-4 mt-2 hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group"
                 >
                     {isSubmitting ? (
-                        <div className="w-5 h-5 border-2 border-[#0a0a0a]/20 border-t-[#0a0a0a] rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                     ) : (
                         "تغيير كلمة المرور"
                     )}

@@ -103,14 +103,14 @@ export function Hero() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
                     {/* Content */}
                     <div className="max-w-[600px] mt-10 lg:mt-0 text-center lg:text-right flex flex-col items-center lg:items-start">
-                        <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-white">
+                        <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-foreground">
                             المساعد القانوني الذكي
                             <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-2 pt-1">
                                 المدعوم بالذكاء الاصطناعي
                             </span>
                         </h1>
 
-                        <p className="text-xl md:text-[1.25rem] text-[#a0a0a0] leading-[1.8] mb-10 max-w-xl">
+                        <p className="text-xl md:text-[1.25rem] text-muted-foreground leading-[1.8] mb-10 max-w-xl">
                             نبسط لك القانون المصري. نحلل المستندات، ننشئ العقود، ونجيب على
                             أسئلتك القانونية بدقة وسرعة فائقة
                         </p>
@@ -136,7 +136,7 @@ export function Hero() {
                                 </svg>
                             </button>
 
-                            <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-white border-2 border-[#3a3a3a] py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all flex items-center justify-center">
+                            <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all flex items-center justify-center">
                                 اكتشف المزيد
                             </button>
                         </div>
@@ -147,7 +147,7 @@ export function Hero() {
                         {cards.map((card) => (
                             <motion.div
                                 key={card.id}
-                                className={`absolute bg-[#1f1f1f] border border-[#2a2a2a] rounded-[14px] p-5 flex flex-row-reverse items-center gap-4 shadow-2xl w-fit ${card.position}`}
+                                className={`absolute bg-card border border-border rounded-[14px] p-5 flex flex-row-reverse items-center gap-4 shadow-2xl w-fit ${card.position}`}
                                 animate={{
                                     y: [0, -20, 0],
                                     z: 0
@@ -175,7 +175,7 @@ export function Hero() {
                                 <div className="w-8 h-8 text-blue-500 shrink-0">
                                     {card.icon}
                                 </div>
-                                <span className="font-semibold text-[0.95rem] whitespace-nowrap text-white">
+                                <span className="font-semibold text-[0.95rem] whitespace-nowrap text-foreground">
                                     {card.title}
                                 </span>
                             </motion.div>

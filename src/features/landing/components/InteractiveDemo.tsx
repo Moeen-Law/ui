@@ -45,7 +45,7 @@ export function InteractiveDemo() {
     };
 
     return (
-        <section className="bg-[#111111] py-24 px-8 overflow-hidden">
+        <section className="bg-muted/50 py-24 px-8 overflow-hidden">
             <div className="max-w-[1280px] mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
@@ -57,9 +57,9 @@ export function InteractiveDemo() {
                         transition={{ duration: 0.8 }}
                         className="relative"
                     >
-                        <div className="bg-[#0a0a0a] border border-[#2a2a2a] rounded-2xl overflow-hidden shadow-2xl">
+                        <div className="bg-card border border-border rounded-2xl overflow-hidden shadow-2xl">
                             {/* Window Header */}
-                            <div className="bg-[#1a1a1a] p-4 border-b border-[#2a2a2a] flex gap-2">
+                            <div className="bg-muted p-4 border-b border-border flex gap-2">
                                 <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
                                 <span className="w-3 h-3 rounded-full bg-[#f59e0b]" />
                                 <span className="w-3 h-3 rounded-full bg-[#10b981]" />
@@ -77,17 +77,17 @@ export function InteractiveDemo() {
                                     <div className="w-8 h-8 rounded-full bg-amber-400 text-black flex items-center justify-center font-bold text-sm shrink-0">
                                         م
                                     </div>
-                                    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 text-white text-[0.95rem] max-w-[80%]">
+                                    <div className="bg-muted border border-border rounded-xl p-4 text-foreground text-[0.95rem] max-w-[80%]">
                                         حلل عقد الإيجار هذا
                                     </div>
                                 </motion.div>
 
                                 {/* File Upload */}
-                                <motion.div variants={itemVariants} className="flex items-center gap-3 bg-[#111111] border border-[#2a2a2a] rounded-xl p-4 mr-12 w-fit">
+                                <motion.div variants={itemVariants} className="flex items-center gap-3 bg-background border border-border rounded-xl p-4 mr-12 w-fit">
                                     <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeWidth="2" />
                                     </svg>
-                                    <span className="text-[#a0a0a0] text-sm font-semibold">عقد_إيجار.pdf</span>
+                                    <span className="text-muted-foreground text-sm font-semibold">عقد_إيجار.pdf</span>
                                 </motion.div>
 
                                 {/* AI Response with Typewriter */}
@@ -95,7 +95,7 @@ export function InteractiveDemo() {
                                     <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
                                         AI
                                     </div>
-                                    <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-xl p-4 text-white text-[0.95rem] max-w-[80%] whitespace-pre-line min-h-[60px]">
+                                    <div className="bg-muted border border-border rounded-xl p-4 text-foreground text-[0.95rem] max-w-[80%] whitespace-pre-line min-h-[60px]">
                                         {isTyping ? (
                                             <div className="flex gap-1.5 py-2">
                                                 <motion.span
@@ -134,10 +134,10 @@ export function InteractiveDemo() {
                         <span className="text-sm font-bold text-blue-500 uppercase tracking-widest mb-4">
                             المساعد
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6 font-['Cairo']">
+                        <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight mb-6 font-['Cairo']">
                             مصمم خصيصاً لخبرتك القانونية
                         </h2>
-                        <p className="text-[#a0a0a0] text-lg md:text-[1.15rem] leading-relaxed mb-8 max-w-xl font-['Cairo']">
+                        <p className="text-muted-foreground text-lg md:text-[1.15rem] leading-relaxed mb-8 max-w-xl font-['Cairo']">
                             وفّر المهام المعقدة بلغة طبيعية لمساعدك الشخصي المتخصص في القانون المصري.
                             يفهم مُعين السياق القانوني ويقدم إجابات دقيقة ومفصلة.
                         </p>

@@ -8,14 +8,14 @@ export function About() {
     ];
 
     return (
-        <section id="about" className="py-24 bg-[#0a0a0a] overflow-hidden">
+        <section id="about" className="py-24 bg-muted/50 overflow-hidden">
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="max-w-[900px] mx-auto text-center mb-16">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl md:text-5xl font-black text-white mb-8 font-['Cairo']"
+                        className="text-4xl md:text-5xl font-black text-foreground mb-8 font-['Cairo']"
                     >
                         لماذا مُعين؟
                     </motion.h2>
@@ -24,7 +24,7 @@ export function About() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-[#a0a0a0] text-lg md:text-xl leading-relaxed font-['Cairo']"
+                        className="text-muted-foreground text-lg md:text-xl leading-relaxed font-['Cairo']"
                     >
                         مُعين هو أول مساعد قانوني ذكي متخصص في القانون المصري. نستخدم أحدث تقنيات الذكاء الاصطناعي
                         لتقديم استشارات قانونية دقيقة وسريعة، مما يوفر عليك الوقت والجهد والتكلفة.
@@ -44,7 +44,7 @@ export function About() {
                             <div className="text-5xl md:text-6xl font-black text-blue-500 mb-4 font-['Cairo'] group-hover:scale-110 transition-transform duration-300">
                                 {stat.number}
                             </div>
-                            <div className="text-[#a0a0a0] text-xl font-bold font-['Cairo']">
+                            <div className="text-muted-foreground text-xl font-bold font-['Cairo']">
                                 {stat.label}
                             </div>
                         </motion.div>

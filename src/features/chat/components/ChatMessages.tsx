@@ -66,7 +66,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="bg-[#0a0a0a]"
+                            className="bg-background"
                         >
                             <MessagesSkeleton />
                         </motion.div>
@@ -81,8 +81,8 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                             <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-500 shadow-inner">
                                 <MessageSquare className="w-8 h-8" />
                             </div>
-                            <h2 className="text-2xl md:text-4xl font-black mb-4 bg-linear-to-br from-white to-[#707070] bg-clip-text text-transparent">كيف يمكنني مساعدتك؟</h2>
-                            <p className="text-[#808080] max-w-md mx-auto leading-relaxed text-sm md:text-base">
+                            <h2 className="text-2xl md:text-4xl font-black mb-4 bg-linear-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">كيف يمكنني مساعدتك؟</h2>
+                            <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-sm md:text-base">
                                 ابدأ محادثة جديدة مع مساعدك القانوني الذكي. يمكنني مساعدتك في تحليل المستندات، إنشاء العقود، وشرح المصطلحات القانونية المصرية.
                             </p>
                         </motion.div>
@@ -100,13 +100,13 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                                     animate={{ opacity: 1, y: 0 }}
                                     className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
                                 >
-                                    <div className={`max-w-[85%] md:max-w-[80%] p-4 rounded-2xl leading-relaxed text-[1.1rem] shadow-sm ${msg.sender === "user"
-                                        ? "bg-[#252525] text-white border mb-2 mt-2 border-[#333333]"
+                                    <div className={`max-w-[85%] md:max-w-[80%] leading-relaxed text-[1.1rem] ${msg.sender === "user"
+                                        ? "bg-blue-500 text-white px-4 py-3 rounded-2xl mb-2 mt-2"
                                         : msg.isStopped
-                                            ? "bg-red-500/20 border border-red-500/30 text-red-100 font-medium"
+                                            ? "bg-red-500/20 border border-red-500/30 text-red-100 font-medium rounded-2xl p-4"
                                             : msg.isError
-                                                ? "bg-red-500/10 border border-red-500/20 text-red-200"
-                                                : "bg-transparent text-white"
+                                                ? "bg-red-500/10 border border-red-500/20 text-red-200 rounded-2xl p-4"
+                                                : ""
                                         }`}>
                                         {msg.sender === "ai" ? (
                                             <>

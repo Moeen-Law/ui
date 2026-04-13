@@ -30,8 +30,8 @@ export default function ChatCard({
             className={cn(
                 "group relative flex items-center gap-3 w-full p-3 rounded-xl transition-all cursor-pointer border border-transparent",
                 isActive
-                    ? "bg-white/10 ring-1 ring-white/10 shadow-[0_0_20px_rgba(0,0,0,0.3)]"
-                    : "hover:bg-white/[0.03] text-[#a0a0a0] hover:text-white"
+                    ? "bg-blue-500/15 ring-1 ring-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
+                    : "hover:bg-blue-500/10 text-muted-foreground hover:text-blue-400 dark:hover:text-blue-300"
             )}
         >
             {/* Active Indicator Line */}
@@ -41,9 +41,9 @@ export default function ChatCard({
 
             <div className={cn(
                 "w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300",
-                isActive 
-                    ? "bg-blue-500/20 text-blue-400 scale-105" 
-                    : "bg-white/5 group-hover:bg-white/10 text-[#666] group-hover:text-white"
+                isActive
+                    ? "bg-blue-500/25 text-blue-400 scale-105"
+                    : "bg-muted group-hover:bg-muted/70 text-muted-foreground group-hover:text-foreground"
             )}>
                 <MessageSquare className="w-4.5 h-4.5" />
             </div>
@@ -52,7 +52,7 @@ export default function ChatCard({
                 <div className="flex items-center gap-2 mb-1">
                     <p className={cn(
                         "text-sm font-bold truncate leading-none transition-colors",
-                        isActive ? "text-white" : "text-[#d0d0d0] group-hover:text-white"
+                        isActive ? "text-blue-600 dark:text-blue-400" : "text-muted-foreground/80 group-hover:text-foreground"
                     )}>
                         {chat.title || "محادثة جديدة"}
                     </p>
@@ -60,7 +60,7 @@ export default function ChatCard({
                         <span className="px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[8px] font-black uppercase">جديد</span>
                     )}
                 </div>
-                <p className="text-[10px] text-[#555] group-hover:text-[#888] transition-colors truncate">
+                <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors truncate">
                     {new Date(chat.createdAt).toLocaleDateString('ar-EG', { month: 'long', day: 'numeric', year: 'numeric' })}
                 </p>
             </div>

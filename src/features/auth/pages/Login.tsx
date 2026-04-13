@@ -31,10 +31,10 @@ export default function Login() {
         <AuthLayout title="تسجيل الدخول" subtitle="أدخل بريدك الإلكتروني للدخول إلى حسابك">
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">البريد الإلكتروني</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">البريد الإلكتروني</label>
                     <input
                         {...register("email")}
-                        className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                        className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-blue-500 transition-colors"
                         placeholder="m@example.com"
                         dir="ltr"
                     />
@@ -43,22 +43,22 @@ export default function Login() {
 
                 <div>
                     <div className="flex justify-between mb-2">
-                        <label className="block text-sm font-bold text-[#a0a0a0] mr-1">كلمة المرور</label>
-                        <Link to="/forgot-password" title="نسيت كلمة المرور" className="text-xs text-[#707070] hover:text-white transition-colors">نسيت كلمة المرور؟</Link>
+                        <label className="block text-sm font-bold text-muted-foreground mr-1">كلمة المرور</label>
+                        <Link to="/forgot-password" title="نسيت كلمة المرور" className="text-xs text-muted-foreground hover:text-foreground transition-colors">نسيت كلمة المرور؟</Link>
                     </div>
                     <div className="relative group">
                         <input
                             {...register("password")}
                             type={showPassword ? "text" : "password"}
-                            className="w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pl-11 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all font-sans"
+                            className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                             placeholder="••••••••"
                             dir="ltr"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#707070] group-focus-within:text-blue-500 transition-colors" />
+                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-[#707070] hover:text-white transition-colors cursor-pointer"
+                            className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title={showPassword ? "إخفاء" : "إظهار"}
                         >
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -70,23 +70,23 @@ export default function Login() {
                 <button
                     disabled={isSubmitting}
                     type="submit"
-                    className="w-full bg-white text-[#0a0a0a] font-black rounded-xl py-3 mt-4 hover:bg-[#e0e0e0] transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="w-full bg-blue-500 text-white font-black rounded-xl py-3 mt-4 hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
                     {isSubmitting ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
                 </button>
 
                 <div className="relative my-8 text-center flex items-center justify-center">
                     <div className="absolute inset-0 flex items-center">
-                        <span className="w-full border-t border-[#2a2a2a]"></span>
+                        <span className="w-full border-t border-border"></span>
                     </div>
-                    <span className="relative z-10 bg-[#111111] px-4 text-[#707070] text-xs font-bold uppercase tracking-wider">
+                    <span className="relative z-10 bg-card px-4 text-muted-foreground text-xs font-bold uppercase tracking-wider">
                         أو المتابعة باستخدام
                     </span>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4">
 
-                    <button type="button" disabled={loading} onClick={handleGoogleAuth} className="flex disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#4285F4]/10 hover:border-[#4285F4] transition-all group cursor-pointer">
+                    <button type="button" disabled={loading} onClick={handleGoogleAuth} className="flex disabled:opacity-50 disabled:cursor-not-allowed items-center justify-center bg-muted/50 border border-border rounded-xl py-3 hover:bg-muted transition-all group cursor-pointer">
                         <svg className="w-5 h-5" viewBox="0 0 24 24">
                             <path
                                 fill="#4285F4"
@@ -106,20 +106,20 @@ export default function Login() {
                             />
                         </svg>
                     </button>
-                    
+
                 </div>
 
-                <p className="text-center text-[#a0a0a0] text-sm mt-8">
+                <p className="text-center text-muted-foreground text-sm mt-8">
                     ليس لديك حساب؟{" "}
-                    <Link to="/signup" className="text-white font-bold hover:underline">
+                    <Link to="/signup" className="text-foreground font-bold hover:underline">
                         إنشاء حساب جديد
                     </Link>
                 </p>
 
-                <p className="text-center text-[#707070] text-xs mt-8 px-4 leading-relaxed">
+                <p className="text-center text-muted-foreground/60 text-xs mt-8 px-4 leading-relaxed">
                     بالنقر فوق الزر أعلاه، فإنك توافق على{" "}
-                    <span className="text-[#a0a0a0] underline cursor-pointer">شروط الخدمة</span> و{" "}
-                    <span className="text-[#a0a0a0] underline cursor-pointer">سياسة الخصوصية</span>
+                    <span className="text-muted-foreground underline cursor-pointer">شروط الخدمة</span> و{" "}
+                    <span className="text-muted-foreground underline cursor-pointer">سياسة الخصوصية</span>
                 </p>
             </form>
         </AuthLayout>

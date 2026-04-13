@@ -33,7 +33,7 @@ export function Navbar() {
         <>
             <nav
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                    ? "bg-[#0a0a0a] bg-opacity-95 backdrop-blur-xl border-b border-[#2a2a2a] shadow-lg"
+                    ? "bg-background bg-opacity-95 backdrop-blur-xl border-b border-border shadow-lg"
                     : "bg-transparent"
                     }`}
             >
@@ -50,7 +50,7 @@ export function Navbar() {
                         >
                             <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
                         </svg>
-                        <span className="text-[1.75rem] font-black text-white font-['Cairo'] tracking-tight">
+                        <span className="text-[1.75rem] font-black text-foreground font-['Cairo'] tracking-tight">
                             مُعين
                         </span>
                     </div>
@@ -59,21 +59,21 @@ export function Navbar() {
                     <div className="hidden md:flex items-center gap-10">
                         <a
                             href="#features"
-                            className="relative text-[#a0a0a0] no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-white"
+                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
                         >
                             الخدمات
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
                         <a
                             href="#pricing"
-                            className="relative text-[#a0a0a0] no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-white"
+                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
                         >
                             الأسعار
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
                         <a
                             href="#about"
-                            className="relative text-[#a0a0a0] no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-white"
+                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
                         >
                             من نحن
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
@@ -82,12 +82,12 @@ export function Navbar() {
                         <div className="flex items-center gap-4 ">
                             <button
                                 onClick={handleStart}
-                                className="relative cursor-pointer overflow-hidden bg-[#0a0a0a] text-white border border-[#3a3a3a] px-7 py-3 rounded-md font-bold text-[0.95rem] font-['Cairo'] tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(255,255,255,0.3),0_0_60px_rgba(59,130,246,0.2)] hover:border-white"
+                                className="relative cursor-pointer overflow-hidden bg-card text-foreground border border-border px-7 py-3 rounded-md font-bold text-[0.95rem] font-['Cairo'] tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-blue-500"
                             >
-                                <span className="relative z-10 group-hover:text-[#0a0a0a] transition-colors duration-250">
+                                <span className="relative z-10 group-hover:text-background transition-colors duration-250">
                                     ابدأ الآن
                                 </span>
-                                <div className="absolute inset-0 bg-white origin-right scale-x-0 group-hover:scale-x-100 group-hover:origin-left transition-transform duration-250"></div>
+                                <div className="absolute inset-0 bg-blue-500 origin-right scale-x-0 group-hover:scale-x-100 group-hover:origin-left transition-transform duration-250"></div>
                             </button>
 
                             {accessToken && (
@@ -106,26 +106,26 @@ export function Navbar() {
 
                     {/* Mobile Burger Menu Button */}
                     <button
-                        className="md:hidden cursor-pointer flex flex-col justify-center items-center w-10 h-10 border border-[#3a3a3a] rounded-md bg-[#111111] z-60 transition-colors hover:border-white"
+                        className="md:hidden cursor-pointer flex flex-col justify-center items-center w-10 h-10 border border-border rounded-md bg-card z-60 transition-colors hover:border-foreground"
                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                     >
                         <div className="relative w-5 h-4 flex flex-col justify-between items-center">
                             <motion.span
                                 animate={isMobileMenuOpen ? { rotate: 45, y: 7.5 } : { rotate: 0, y: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="w-full h-[2px] bg-white rounded-full origin-center"
+                                className="w-full h-[2px] bg-foreground rounded-full origin-center"
                             />
                             <motion.span
                                 animate={isMobileMenuOpen ? { rotate: -45, y: -7.5 } : { rotate: 0, y: 0 }}
                                 transition={{ duration: 0.3 }}
-                                className="w-full h-[2px] bg-white rounded-full origin-center"
+                                className="w-full h-[2px] bg-foreground rounded-full origin-center"
                             />
                         </div>
                     </button>
 
-                    {/* White Bottom Line Effect */}
+                    {/* White/Black Bottom Line Effect */}
                     <div
-                        className={`absolute bottom-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent via-white to-transparent opacity-0 transition-opacity duration-300 ${isScrolled ? "opacity-100" : "group-hover:opacity-100"
+                        className={`absolute bottom-0 left-0 right-0 h-[2px] bg-linear-to-r from-transparent dark:via-white via-black to-transparent opacity-0 transition-opacity duration-300 ${isScrolled ? "opacity-100" : "group-hover:opacity-100"
                             }`}
                     ></div>
                 </div>

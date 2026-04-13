@@ -40,7 +40,7 @@ export default function VerifyEmail() {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.99 }}
                         onClick={() => navigate("/login")}
-                        className="w-full cursor-pointer bg-white text-[#0a0a0a] font-black rounded-xl py-4 mt-2 hover:bg-[#e0e0e0] transition-all flex items-center justify-center gap-2 group shadow-[0_10px_30px_rgba(255,255,255,0.1)]"
+                        className="w-full cursor-pointer bg-blue-500 text-white font-black rounded-xl py-4 mt-2 hover:bg-blue-600 transition-all flex items-center justify-center gap-2 group"
                     >
                         <LogIn className="w-5 h-5 transition-transform group-hover:translate-x-1" />
                         الذهاب لتسجيل الدخول
@@ -50,12 +50,12 @@ export default function VerifyEmail() {
 
             {!token && !loading && !success && !error && (
                 <div className="text-center py-8 space-y-4">
-                    <p className="text-[#a0a0a0]">عذراً، يبدو أن رابط التحقق غير موجود في العنوان.</p>
+                    <p className="text-muted-foreground">عذراً، يبدو أن رابط التحقق غير موجود في العنوان.</p>
                     <motion.button
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.99 }}
                         onClick={() => navigate("/signup")}
-                        className="w-full cursor-pointer  bg-[#1a1a1a] text-white border border-[#3a3a3a] rounded-xl py-3 hover:bg-[#252525] transition-all"
+                        className="w-full cursor-pointer bg-blue-500 text-white font-black rounded-xl py-3 hover:bg-blue-600 transition-all"
                     >
                         العودة لإنشاء حساب
                     </motion.button>

@@ -14,18 +14,18 @@ function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModa
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <button className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-white/10 text-[#a0a0a0] hover:text-white transition-colors cursor-pointer">
+                <button className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                     <MoreHorizontal className="w-4 h-4" />
                 </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="bg-[#111] border-white/10 text-white min-w-[160px] p-1.5 rounded-xl shadow-2xl">
+            <DropdownMenuContent align="end" className="bg-popover text-popover-foreground border border-border min-w-[160px] p-1.5 rounded-xl shadow-2xl">
                 <DropdownMenuItem
                     onClick={(e) => {
                         e.stopPropagation();
                         setOpenUpdateChatTitleModal(true);
                         setSelectedChat(chat);
                     }}
-                    className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-white/5"
+                    className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-muted"
                 >
                     <Edit3 className="w-3.5 h-3.5" />
                     <span>تعديل العنوان</span>

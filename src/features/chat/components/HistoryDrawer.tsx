@@ -31,7 +31,7 @@ export default function HistoryDrawer() {
       {/* Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 text-[#666] hover:text-white transition-colors cursor-pointer active:scale-95 outline-none"
+        className="p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer active:scale-95 outline-none"
         aria-label="Open History"
       >
         <History className="w-5 h-5" />
@@ -55,7 +55,7 @@ export default function HistoryDrawer() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 bottom-0 right-0 w-[300px] bg-[#0a0a0a] border-l border-white/5 flex flex-col p-5 text-white font-['Cairo'] overflow-hidden"
+              className="absolute top-0 bottom-0 right-0 w-[300px] bg-background border-l border-border flex flex-col p-5 text-foreground font-['Cairo'] overflow-hidden"
             >
                 <SidebarContent onClose={() => setIsOpen(false)} />
             </motion.div>

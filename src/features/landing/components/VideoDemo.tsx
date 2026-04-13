@@ -31,16 +31,16 @@ export function VideoDemo() {
     };
 
     return (
-        <section ref={sectionRef} className="relative min-h-[200vh] bg-[#0a0a0a]">
+        <section ref={sectionRef} className="relative min-h-[200vh] bg-background">
             <div className="sticky top-20 h-[calc(100vh-80px)] flex flex-col items-center justify-center px-8 overflow-hidden">
                 <motion.div
                     style={{ maxWidth }}
                     className="relative w-full aspect-video transition-all duration-300"
                 >
-                    <div className="relative w-full h-full bg-linear-to-br from-[#1a1a1a] to-[#2a2a2a] rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.5)] border border-[#2a2a2a]">
+                    <div className="relative w-full h-full bg-linear-to-br from-card to-muted rounded-2xl overflow-hidden shadow-2xl border border-border">
                         <video
                             ref={videoRef}
-                            className="absolute inset-0 w-full h-full object-cover bg-neutral-900"
+                            className="absolute inset-0 w-full h-full object-cover bg-muted"
                             autoPlay
                             loop
                             muted
@@ -72,10 +72,10 @@ export function VideoDemo() {
                     style={{ opacity: contentOpacity, y: contentY }}
                     className="absolute bottom-[10%] left-0 right-0 text-center px-8 pointer-events-none"
                 >
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-white">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-foreground">
                         مصمم للمحترفين
                     </h2>
-                    <p className="text-[#a0a0a0] text-lg md:text-xl font-['Cairo']">
+                    <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
                         مساعد قانوني ذكي مدعوم بالذكاء الاصطناعي للمحامين والشركات
                     </p>
                 </motion.div>

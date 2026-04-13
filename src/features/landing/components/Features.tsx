@@ -2,13 +2,13 @@ import { features } from "../data";
 
 export function Features() {
     return (
-        <section id="features" className="py-24 bg-[#0a0a0a]">
+        <section id="features" className="py-24 bg-background">
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-white mb-4 font-['Cairo']">
+                    <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4 font-['Cairo']">
                         خدماتنا القانونية
                     </h2>
-                    <p className="text-[#a0a0a0] text-lg md:text-xl font-['Cairo']">
+                    <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
                         كل ما تحتاجه من خدمات قانونية في مكان واحد
                     </p>
                 </div>
@@ -20,7 +20,7 @@ export function Features() {
                             style={{ animationDelay: `${index * 0.5}s` }}
                             className="animate-float will-change-transform"
                         >
-                            <div className="group bg-[#111111] border border-[#2a2a2a] rounded-2xl p-10 transition-all duration-300 cursor-pointer hover:bg-[#1a1a1a] hover:border-blue-500 hover:-translate-y-5 hover:shadow-[0_20px_40px_rgba(59,130,246,0.2)]">
+                            <div className="group bg-card border border-border rounded-2xl p-10 transition-all duration-300 cursor-pointer hover:bg-muted hover:border-blue-500 hover:-translate-y-5 hover:shadow-[0_20px_40px_rgba(59,130,246,0.2)]">
                                 <div className="w-14 h-14 bg-blue-500/10 text-blue-500 rounded-lg p-3.5 mb-6 transition-colors group-hover:bg-blue-500 group-hover:text-white">
                                     <svg
                                         viewBox="0 0 24 24"
@@ -34,10 +34,10 @@ export function Features() {
                                         <path d={feature.icon} />
                                     </svg>
                                 </div>
-                                <h3 className="text-2xl font-extrabold text-white mb-4 font-['Cairo']">
+                                <h3 className="text-2xl font-extrabold text-foreground mb-4 font-['Cairo']">
                                     {feature.title}
                                 </h3>
-                                <p className="text-[#a0a0a0] leading-relaxed text-[1.05rem] font-['Cairo']">
+                                <p className="text-muted-foreground leading-relaxed text-[1.05rem] font-['Cairo']">
                                     {feature.description}
                                 </p>
                             </div>

@@ -70,18 +70,18 @@ function UpdateChatTitleModal({
 
   return (
     <Dialog  open={openAlertModal} onOpenChange={setOpenAlertModal}>
-      <DialogContent  className="bg-[#0d0d0d] border-white/10 rounded-[28px] shadow-2xl p-0 overflow-hidden gap-0 sm:max-w-sm">
+      <DialogContent className="bg-background border border-border rounded-[28px] shadow-2xl p-0 overflow-hidden gap-0 sm:max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="p-8 pb-6 flex flex-col items-center text-center">
             <DialogHeader className="items-center gap-4">
               <div className="bg-primary/10 text-primary border border-primary/20 shadow-[0_0_30px_rgba(var(--primary),0.15)] rounded-2xl size-16 mb-2 flex items-center justify-center transition-transform hover:scale-105 duration-300">
-                <Edit3 className="size-7  text-gray-500" />
+                <Edit3 className="size-7 text-muted-foreground" />
               </div>
               <div className="space-y-2">
-                <DialogTitle className="text-2xl font-black font-['Cairo'] text-white">
+                <DialogTitle className="text-2xl font-black font-['Cairo']">
                   تعديل العنوان
                 </DialogTitle>
-                <DialogDescription className="text-white/50 font-['Cairo'] text-sm leading-relaxed max-w-[260px]">
+                <DialogDescription className="font-['Cairo'] text-sm leading-relaxed max-w-[260px]">
                   قم بتغيير عنوان المحادثة لسهولة الوصول إليها لاحقاً.
                 </DialogDescription>
               </div>
@@ -90,13 +90,13 @@ function UpdateChatTitleModal({
 
           <div className="px-8 pb-8">
             <Field>
-              <FieldLabel htmlFor="title" className="text-white/70 font-['Cairo'] mb-2 block text-sm">
+              <FieldLabel htmlFor="title" className="font-['Cairo'] mb-2 block text-sm">
                 العنوان الجديد
               </FieldLabel>
               <Input
                 id="title"
                 {...register("title")}
-                className="bg-white/5 border-white/10 text-white font-['Cairo'] rounded-xl h-12 focus:border-primary/50 focus:ring-primary/20 transition-all"
+                className="rounded-xl h-12 transition-all"
                 placeholder="أدخل عنوان المحادثة..."
                 autoComplete="off"
               />
@@ -104,13 +104,13 @@ function UpdateChatTitleModal({
             </Field>
           </div>
 
-          <DialogFooter className="bg-white/2 border-t border-white/5 p-6 flex-row gap-3 sm:justify-stretch sm:space-x-0 mx-0 mb-0 rounded-none">
+          <DialogFooter className="border-t border-border p-6 flex-row gap-3 sm:justify-stretch sm:space-x-0 mx-0 mb-0 rounded-none">
             <DialogClose asChild>
               <Button
                 type="button"
                 disabled={isPending}
                 variant="outline"
-                className="flex-1 cursor-pointer font-['Cairo'] bg-white/5 border-white/10 hover:bg-white/10 text-white rounded-xl transition-all h-12 text-sm font-bold"
+                className="flex-1 cursor-pointer font-['Cairo'] rounded-xl transition-all h-12 text-sm font-bold"
               >
                 إلغاء
               </Button>

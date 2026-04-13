@@ -11,12 +11,12 @@ function ResetPasswordError() {
                     <AlertCircle className="w-12 h-12 text-red-500" />
                 </div>
                 <div className="space-y-4">
-                    <p className="text-white text-lg font-bold">انتهت صلاحية الرابط</p>
-                    <p className="text-[#a0a0a0] max-w-xs mx-auto">يرجى طلب رابط جديد لإعادة تعيين كلمة المرور الخاصة بك.</p>
+                    <p className="text-foreground text-lg font-bold">انتهت صلاحية الرابط</p>
+                    <p className="text-muted-foreground max-w-xs mx-auto">يرجى طلب رابط جديد لإعادة تعيين كلمة المرور الخاصة بك.</p>
                 </div>
                 <Link
                     to="/forgot-password"
-                    className="flex items-center gap-2 bg-white text-[#0a0a0a] px-8 py-3 rounded-xl font-bold transition-transform hover:scale-105"
+                    className="flex items-center gap-2 bg-blue-500 text-white px-8 py-3 rounded-xl font-bold transition-transform hover:scale-105"
                 >
                     طلب رابط جديد
                     <ArrowRight className="w-4 h-4" />

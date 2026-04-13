@@ -3,13 +3,12 @@ import type { SignUpResponse, SignUpValues } from "../types";
 import api from "@/shared/api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
-import { useNavigate } from "react-router-dom";
 import { errorToastStyle, successToastStyle } from "@/shared/constants";
 import { authService } from "../helpers";
 
 export const useSignUp = () => {
     const [loading, setLoading] = useState<boolean>(false);
-    const navigate = useNavigate();
+    
 
     const handleSignUp = async (data: SignUpValues) => {
         try {
@@ -20,7 +19,7 @@ export const useSignUp = () => {
                 password: data.password,
             });
             toast.success("تم التسجيل بنجاح برجاء انتظار التحقق من البريد الالكتروني", { style: successToastStyle });
-            navigate("/");
+            
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {

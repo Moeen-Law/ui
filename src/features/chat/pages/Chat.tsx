@@ -118,7 +118,7 @@ export default function Chat() {
     }
 
     return (
-        <div className="flex h-dvh bg-[#0a0a0a] text-white font-['Cairo'] overflow-hidden">
+        <div className="flex h-dvh bg-background text-foreground font-['Cairo'] overflow-hidden">
             <Sidebar />
 
             <main className="flex-1 flex flex-col relative w-full h-full overflow-hidden">

@@ -19,8 +19,8 @@ function OAuthSuccess() {
                 <CheckCircle2 className="w-12 h-12 text-green-500" />
             </div>
             <div className="space-y-2">
-                <h2 className="text-2xl font-black text-white">تم تسجيل الدخول بنجاح!</h2>
-                <p className="text-[#a0a0a0]">أهلاً بك في معين، سيتم توجيهك الآن...</p>
+                <h2 className="text-2xl font-black text-foreground">تم تسجيل الدخول بنجاح!</h2>
+                <p className="text-muted-foreground">أهلاً بك في معين، سيتم توجيهك الآن...</p>
             </div>
         </motion.div>
     );

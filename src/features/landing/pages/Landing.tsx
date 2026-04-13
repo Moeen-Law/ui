@@ -9,7 +9,7 @@ import { Footer } from "../components/Footer";
 
 function Landing() {
   return (
-    <div className="w-full bg-[#0a0a0a] min-h-screen">
+    <div className="w-full bg-background min-h-screen">
       <Navbar />
       <Hero />
       <VideoDemo />

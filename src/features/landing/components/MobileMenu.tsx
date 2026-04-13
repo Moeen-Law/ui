@@ -17,24 +17,24 @@ function MobileMenu({ setIsMobileMenuOpen }: MobileMenuProps) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-40 bg-[#0a0a0a] border-l border-[#2a2a2a] px-8 pt-32 pb-8 flex flex-col items-center md:hidden"
+            className="fixed inset-0 z-40 bg-background border-l border-border px-8 pt-32 pb-8 flex flex-col items-center md:hidden"
         >
             <div className="flex flex-col items-center gap-8 w-full max-w-sm">
                 <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-[#a0a0a0] hover:text-white transition-colors"
+                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-muted-foreground hover:text-foreground transition-colors"
                 >
                     الخدمات
                 </button>
                 <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-[#a0a0a0] hover:text-white transition-colors"
+                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-muted-foreground hover:text-foreground transition-colors"
                 >
                     الأسعار
                 </button>
                 <button
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-[#a0a0a0] hover:text-white transition-colors"
+                    className="text-2xl cursor-pointer font-bold font-['Cairo'] text-muted-foreground hover:text-foreground transition-colors"
                 >
                     من نحن
                 </button>

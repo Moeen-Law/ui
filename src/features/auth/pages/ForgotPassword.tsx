@@ -30,16 +30,16 @@ export default function ForgotPassword() {
         >
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-[#a0a0a0] mb-2 mr-1">البريد الإلكتروني</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">البريد الإلكتروني</label>
                     <div className="relative group">
                         <input
                             {...register("email")}
                             disabled={isCooldownActive}
-                            className={`w-full placeholder:opacity-25 bg-[#1a1a1a] border border-[#3a3a3a] rounded-xl px-4 py-3 pr-11 text-white focus:outline-none focus:border-blue-500 transition-all ${isCooldownActive ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className={`w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all ${isCooldownActive ? 'opacity-50 cursor-not-allowed' : ''}`}
                             placeholder="m@example.com"
                             dir="ltr"
                         />
-                        <Mail className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isCooldownActive ? 'text-[#3a3a3a]' : 'text-[#707070] group-focus-within:text-blue-500'}`} />
+                        <Mail className={`absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${isCooldownActive ? 'text-muted-foreground/30' : 'text-muted-foreground group-focus-within:text-blue-500'}`} />
                     </div>
                     {errors.email && <p className="text-red-500 text-xs mt-1 mr-1">{errors.email.message}</p>}
                 </div>
@@ -49,10 +49,10 @@ export default function ForgotPassword() {
                     whileTap={!isCooldownActive && !loading ? { scale: 0.99 } : {}}
                     disabled={loading || isCooldownActive}
                     type="submit"
-                    className="w-full cursor-pointer disabled:cursor-not-allowed bg-white text-[#0a0a0a] font-black rounded-xl py-4 mt-2 hover:bg-[#e0e0e0] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group relative overflow-hidden"
+                    className="w-full cursor-pointer disabled:cursor-not-allowed bg-blue-500 text-white font-black rounded-xl py-4 mt-2 hover:bg-blue-600 transition-all disabled:opacity-50 flex items-center justify-center gap-2 group relative overflow-hidden"
                 >
                     {loading ? (
-                        <div className="w-5 h-5 border-2 border-[#0a0a0a]/20 border-t-[#0a0a0a] rounded-full animate-spin" />
+                        <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
                     ) : isCooldownActive ? (
                         <div className="flex items-center gap-2">
                             <Clock className="w-4 h-4" />
@@ -79,7 +79,7 @@ export default function ForgotPassword() {
                 <div className="pt-4 text-center">
                     <Link
                         to="/login"
-                        className="inline-flex items-center gap-2 text-sm text-[#707070] hover:text-white transition-colors group"
+                        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
                     >
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         العودة لتسجيل الدخول
