@@ -1,25 +1,29 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
-import { signUpSchema } from "../schema";
+import { getSignUpSchema } from "../schema";
 import type { SignUpValues } from "../types";
 import { useSignUp } from "../hooks/useSignUp";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 
 
 
 
 export default function SignUp() {
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { handleGoogleAuth, loading } = useGoogleAuth();
 
+    const schema = useMemo(() => getSignUpSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpValues>({
-        resolver: zodResolver(signUpSchema),
+        resolver: zodResolver(schema),
     });
 
     const { handleSignUp } = useSignUp();
@@ -29,74 +33,74 @@ export default function SignUp() {
     };
 
     return (
-        <AuthLayout title="إنشاء حساب جديد" subtitle="أدخل بياناتك لإنشاء حساب مع مُعين">
+        <AuthLayout title={t("auth.signupTitle")} subtitle={t("auth.signupSubtitle")}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">الاسم</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 ms-1">{t("auth.name")}</label>
                     <input
                         {...register("name")}
                         className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="أدخل اسمك الكامل"
-                        dir="rtl"
+                        placeholder={t("auth.placeholderName")}
+                        dir="auto"
                     />
-                    {errors.name && <p className="text-red-500 text-xs mt-1 mr-1">{errors.name.message}</p>}
+                    {errors.name && <p className="text-red-500 text-xs mt-1 ms-1">{errors.name.message}</p>}
                 </div>
 
                 <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">البريد الإلكتروني</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 ms-1">{t("auth.email")}</label>
                     <input
                         {...register("email")}
                         className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-blue-500 transition-colors"
-                        placeholder="m@example.com"
+                        placeholder={t("auth.placeholderEmail")}
                         dir="ltr"
                     />
-                    {errors.email && <p className="text-red-500 text-xs mt-1 mr-1">{errors.email.message}</p>}
+                    {errors.email && <p className="text-red-500 text-xs mt-1 ms-1">{errors.email.message}</p>}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">كلمة المرور</label>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2 ms-1">{t("auth.password")}</label>
                         <div className="relative group">
                             <input
                                 {...register("password")}
                                 type={showPassword ? "text" : "password"}
-                                className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
+                                className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 ps-11 pe-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                                 placeholder="••••••••"
                                 dir="ltr"
                             />
-                            <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                            <Lock className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                                title={showPassword ? "إخفاء" : "إظهار"}
+                                className="absolute end-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                                title={showPassword ? t("auth.hide") : t("auth.show")}
                             >
                                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                         </div>
-                        {errors.password && <p className="text-red-500 text-xs mt-1 mr-1">{errors.password.message}</p>}
+                        {errors.password && <p className="text-red-500 text-xs mt-1 ms-1">{errors.password.message}</p>}
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">تأكيد كلمة المرور</label>
+                        <label className="block text-sm font-bold text-muted-foreground mb-2 ms-1">{t("auth.confirmPassword")}</label>
                         <div className="relative group">
                             <input
                                 {...register("confirmPassword")}
                                 type={showConfirmPassword ? "text" : "password"}
-                                className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
+                                className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 ps-11 pe-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                                 placeholder="••••••••"
                                 dir="ltr"
                             />
-                            <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                            <Lock className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                             <button
                                 type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                                title={showConfirmPassword ? "إخفاء" : "إظهار"}
+                                className="absolute end-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                                title={showConfirmPassword ? t("auth.hide") : t("auth.show")}
                             >
                                 {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                         </div>
-                        {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 mr-1">{errors.confirmPassword.message}</p>}
+                        {errors.confirmPassword && <p className="text-red-500 text-xs mt-1 ms-1">{errors.confirmPassword.message}</p>}
                     </div>
                 </div>
 
@@ -105,7 +109,7 @@ export default function SignUp() {
                     type="submit"
                     className="w-full bg-blue-500 text-white font-black rounded-xl py-3 mt-4 hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
-                    {isSubmitting ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
+                    {isSubmitting ? t("auth.submittingSignUp") : t("auth.signup")}
                 </button>
 
                 <div className="relative my-8 text-center flex items-center justify-center">
@@ -113,7 +117,7 @@ export default function SignUp() {
                         <span className="w-full border-t border-border"></span>
                     </div>
                     <span className="relative z-10 bg-card px-4 text-muted-foreground text-xs font-bold uppercase tracking-wider">
-                        أو المتابعة باستخدام
+                        {t("auth.orContinueWith")}
                     </span>
                 </div>
 
@@ -143,16 +147,16 @@ export default function SignUp() {
                 </div>
 
                 <p className="text-center text-muted-foreground text-sm mt-8">
-                    لديك حساب بالفعل؟{" "}
+                    {t("auth.haveAccount")}{" "}
                     <Link to="/login" className="text-foreground font-bold hover:underline">
-                        تسجيل الدخول
+                        {t("auth.login")}
                     </Link>
                 </p>
 
                 <p className="text-center text-muted-foreground/60 text-xs mt-8 px-4 leading-relaxed">
-                    بالنقر فوق الزر أعلاه، فإنك توافق على{" "}
-                    <span className="text-muted-foreground underline cursor-pointer">شروط الخدمة</span> و{" "}
-                    <span className="text-muted-foreground underline cursor-pointer">سياسة الخصوصية</span>
+                    {t("auth.agreeTo")}{" "}
+                    <span className="text-muted-foreground underline cursor-pointer">{t("auth.termsOfService")}</span> {t("auth.and")}{" "}
+                    <span className="text-muted-foreground underline cursor-pointer">{t("auth.privacyPolicy")}</span>
                 </p>
             </form>
         </AuthLayout>

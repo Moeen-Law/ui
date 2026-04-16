@@ -1,33 +1,47 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
+import { useTranslation } from "react-i18next";
 
 export function InteractiveDemo() {
+    const { t } = useTranslation();
     const [displayText, setDisplayText] = useState("");
     const [isTyping, setIsTyping] = useState(true);
     const containerRef = useRef(null);
     const isInView = useInView(containerRef, { once: true, amount: 0.5 });
 
-    const fullText = "تحليل العقد:\n\n• مدة العقد: سنة واحدة قابلة للتجديد\n• قيمة الإيجار: 3000 جنيه شهرياً\n• التأمين: شهرين مقدماً\n• المسؤول عن الصيانة: المالك";
+    const fullText = t("interactiveDemo.typedText");
 
     useEffect(() => {
+        let timeoutId: ReturnType<typeof setTimeout>;
+        let intervalId: ReturnType<typeof setInterval>;
+
         if (isInView) {
-            const timer = setTimeout(() => {
+            // Reset state when text/language changes
+            setIsTyping(true);
+            setDisplayText("");
+            
+            timeoutId = setTimeout(() => {
                 setIsTyping(false);
                 let currentText = "";
                 let index = 0;
-                const interval = setInterval(() => {
+                intervalId = setInterval(() => {
                     if (index < fullText.length) {
                         currentText += fullText[index];
                         setDisplayText(currentText);
                         index++;
                     } else {
-                        clearInterval(interval);
+                        clearInterval(intervalId);
                     }
                 }, 30);
             }, 2000); // 2 seconds of jumping dots
-            return () => clearTimeout(timer);
         }
-    }, [isInView]);
+
+        // Cleanup any pending timeouts or intervals if the component re-renders (like when language changes) or unmounts
+        return () => {
+            clearTimeout(timeoutId);
+            clearInterval(intervalId);
+        };
+    }, [isInView, fullText]);
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -78,16 +92,15 @@ export function InteractiveDemo() {
                                         م
                                     </div>
                                     <div className="bg-muted border border-border rounded-xl p-4 text-foreground text-[0.95rem] max-w-[80%]">
-                                        حلل عقد الإيجار هذا
+                                        {t("interactiveDemo.userMsg")}
                                     </div>
                                 </motion.div>
 
-                                {/* File Upload */}
-                                <motion.div variants={itemVariants} className="flex items-center gap-3 bg-background border border-border rounded-xl p-4 mr-12 w-fit">
-                                    <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <motion.div variants={itemVariants} className="flex items-center gap-3 bg-background border border-border rounded-xl p-4 me-12 w-fit">
+                                    <svg className="w-6 h-6 text-blue-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                         <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeWidth="2" />
                                     </svg>
-                                    <span className="text-muted-foreground text-sm font-semibold">عقد_إيجار.pdf</span>
+                                    <span className="text-muted-foreground text-sm font-semibold">{t("interactiveDemo.fileName")}</span>
                                 </motion.div>
 
                                 {/* AI Response with Typewriter */}
@@ -132,18 +145,17 @@ export function InteractiveDemo() {
                         className="flex flex-col items-center lg:items-start text-center lg:text-right"
                     >
                         <span className="text-sm font-bold text-blue-500 uppercase tracking-widest mb-4">
-                            المساعد
+                            {t("interactiveDemo.assistantLabel")}
                         </span>
                         <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight mb-6 font-['Cairo']">
-                            مصمم خصيصاً لخبرتك القانونية
+                            {t("interactiveDemo.title")}
                         </h2>
                         <p className="text-muted-foreground text-lg md:text-[1.15rem] leading-relaxed mb-8 max-w-xl font-['Cairo']">
-                            وفّر المهام المعقدة بلغة طبيعية لمساعدك الشخصي المتخصص في القانون المصري.
-                            يفهم مُعين السياق القانوني ويقدم إجابات دقيقة ومفصلة.
+                            {t("interactiveDemo.description")}
                         </p>
                         <button className="group inline-flex items-center gap-2 text-blue-500 font-bold text-lg cursor-pointer transition-all hover:gap-3 hover:text-blue-400 font-['Cairo']">
-                            استكشف المساعد
-                            <svg className="w-5 h-5 transition-transform group-hover:translate-x-[-4px] rtl:group-hover:translate-x-[-4px]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            {t("interactiveDemo.exploreBtn")}
+                            <svg className="w-5 h-5 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                             </svg>
                         </button>

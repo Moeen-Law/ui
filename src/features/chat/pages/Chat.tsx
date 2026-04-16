@@ -10,8 +10,10 @@ import { createChat } from "../services";
 import { toast } from "sonner";
 import type { StreamStatus, ChatResponse } from "../types";
 import { useQueryClient, type InfiniteData } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
 export default function Chat() {
+    const { t } = useTranslation();
     const { chatId } = useParams<{ chatId: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
@@ -82,7 +84,7 @@ export default function Chat() {
                 navigate(`/chat/${newChat.id}`, { replace: true });
             } catch (error: any) {
                 console.error("Failed to create chat:", error);
-                const errorMsg = error?.message || error?.error || "حدث خطأ غير متوقع أثناء إنشاء المحادثة. المرجو المحاولة مجدداً.";
+                const errorMsg = error?.message || error?.error || t("chat.errors.createFailed");
                 toast.error(errorMsg);
                 setInputValue(trimmedInput);
                 // Only clear if there was an error, since we cleared earlier on success

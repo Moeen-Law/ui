@@ -4,8 +4,10 @@ import OAuthProcessing from "../components/OAuthProcessing";
 import OAuthSuccess from "../components/OAuthSuccess";
 import OAuthError from "../components/OAuthError";
 import { useOAuthAuthorize } from "../hooks/useOAuthAuthorize";
+import { useTranslation } from "react-i18next";
 
 export default function OAuthAuthorize() {
+    const { t } = useTranslation();
 
     const { status } = useOAuthAuthorize();
 
@@ -22,8 +24,8 @@ export default function OAuthAuthorize() {
 
     return (
         <AuthLayout
-            title={status === "error" ? "خطأ في المصادقة" : "مصادقة جوجل"}
-            subtitle={status === "error" ? "فشل الاتصال" : "نقوم بالتحقق من بياناتك"}
+            title={status === "error" ? t("auth.authError") : t("auth.authorizedTitle")}
+            subtitle={status === "error" ? t("auth.verificationFailed") : t("auth.oauthProcessing")}
         >
             <div className="relative overflow-hidden min-h-[400px] flex items-center justify-center">
                 <AnimatePresence mode="wait">

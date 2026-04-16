@@ -1,7 +1,9 @@
 import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export function VideoDemo() {
+    const { t } = useTranslation();
     const sectionRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(true); // Autoplay is on
@@ -62,7 +64,7 @@ export function VideoDemo() {
                             <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M8 5v14l11-7z" />
                             </svg>
-                            <span>شاهد الفيديو</span>
+                            <span>{t("videoDemo.playBtn")}</span>
                         </button>
                     </div>
                 </motion.div>
@@ -73,10 +75,10 @@ export function VideoDemo() {
                     className="absolute bottom-[10%] left-0 right-0 text-center px-8 pointer-events-none"
                 >
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-foreground">
-                        مصمم للمحترفين
+                        {t("videoDemo.title")}
                     </h2>
                     <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
-                        مساعد قانوني ذكي مدعوم بالذكاء الاصطناعي للمحامين والشركات
+                        {t("videoDemo.subtitle")}
                     </p>
                 </motion.div>
             </div>

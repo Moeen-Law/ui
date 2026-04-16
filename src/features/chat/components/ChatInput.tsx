@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Paperclip, Send, ShieldCheck, Square } from "lucide-react";
 import type { StreamStatus } from "../types";
+import { useTranslation } from "react-i18next";
 
 interface ChatInputProps {
     inputValue: string;
@@ -19,6 +20,7 @@ export default function ChatInput({
     onStopStreaming,
     isLoading,
 }: ChatInputProps) {
+    const { t } = useTranslation();
     const isProcessing = streamStatus === "streaming" || streamStatus === "creating" || isLoading;
     const canSend = inputValue.trim().length > 0 && !isProcessing;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -55,7 +57,7 @@ export default function ChatInput({
                                     }
                                 }
                             }}
-                            placeholder="اكتب سؤالك القانوني هنا..."
+                            placeholder={t("chat.ui.inputPlaceholder")}
                             autoComplete="off"
                             autoCorrect="off"
                             spellCheck={false}
@@ -67,7 +69,7 @@ export default function ChatInput({
                             <button
                                 onClick={onStopStreaming}
                                 className="p-3 bg-red-500/80 text-white rounded-xl hover:bg-red-500 transition-all shrink-0 cursor-pointer shadow-lg shadow-red-500/20"
-                                title="إيقاف التوليد"
+                                title={t("chat.ui.stopGeneration")}
                             >
                                 <Square className="w-5 h-5 fill-current" />
                             </button>
@@ -84,7 +86,7 @@ export default function ChatInput({
                 </div>
                 <p className="text-center text-muted-foreground text-[10px] md:text-xs mt-3 flex items-center justify-center gap-2">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>مُعين يمكن أن يخطئ. تحقق من المعلومات المهمة.</span>
+                    <span>{t("chat.ui.disclaimer")}</span>
                 </p>
             </div>
         </div>

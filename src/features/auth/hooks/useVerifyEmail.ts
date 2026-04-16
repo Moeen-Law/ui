@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { VerifyEmailResponse } from "../types";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 export const useVerifyEmail = () => {
     const [loading, setLoading] = useState(false);
@@ -14,7 +15,7 @@ export const useVerifyEmail = () => {
 
     const verifyEmail = async () => {
         if (!token) {
-            setError("رمز التحقق مفقود");
+            setError(i18n.t("auth.verifyTokenMissing"));
             return;
         }
 
@@ -28,11 +29,11 @@ export const useVerifyEmail = () => {
             setSuccess(false);
 
             if (err instanceof AxiosError) {
-                const message = err.response?.data.message || "حدث خطأ أثناء التحقق من البريد الإلكتروني";
+                const message = err.response?.data.message || i18n.t("auth.verifyError");
                 setError(message);
                 return;
             }
-            setError("حدث خطأ أثناء التحقق من البريد الإلكتروني");
+            setError(i18n.t("auth.verifyError"));
         } finally {
             setLoading(false);
         }

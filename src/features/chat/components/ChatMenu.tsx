@@ -1,6 +1,7 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Edit3, MoreHorizontal, Trash2 } from 'lucide-react';
 import type { ChatResponseDatum } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface ChatMenuProps {
     setOpenAlertModal: (open: boolean) => void;
@@ -11,6 +12,7 @@ interface ChatMenuProps {
 }
 
 function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModal, setSelectedChat, chat }: ChatMenuProps) {
+    const { t } = useTranslation();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -28,7 +30,7 @@ function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModa
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-muted"
                 >
                     <Edit3 className="w-3.5 h-3.5" />
-                    <span>تعديل العنوان</span>
+                    <span>{t("chat.ui.editTitle")}</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
                     onClick={(e) => {
@@ -40,7 +42,7 @@ function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModa
                     className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
-                    <span>حذف المحادثة</span>
+                    <span>{t("chat.ui.deleteChat")}</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

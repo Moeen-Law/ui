@@ -7,6 +7,7 @@ import { errorToastStyle, successToastStyle } from "@/shared/constants";
 import { AxiosError } from "axios";
 import useAuthStore from "../store/auth";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 
 export const useLogin = () => {
@@ -18,16 +19,16 @@ export const useLogin = () => {
         setLoading(true);
         try {
             const response = await api.post<LoginResponse>(`${authService}/auth/login`, data);
-            toast.success("تم تسجيل الدخول بنجاح", { style: successToastStyle });
+            toast.success(i18n.t("toast.loginSuccess"), { style: successToastStyle });
             setAccessToken(response.data.accessToken);
             navigate("/");
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
+                toast.error(error.response?.data.message || i18n.t("toast.defaultError"), { style: errorToastStyle });
                 return
             }
-            toast.error("حدث خطأ", { style: errorToastStyle });
+            toast.error(i18n.t("toast.defaultError"), { style: errorToastStyle });
 
         }
         finally {

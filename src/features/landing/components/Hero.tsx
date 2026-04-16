@@ -1,11 +1,12 @@
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 
 const cards = [
         {
             id: 1,
-            title: "تحليل المستندات",
+            titleKey: "docAnalysis",
             delay: 0,
             position: "top-[15%] right-[5%]",
             icon: (
@@ -19,7 +20,7 @@ const cards = [
         },
         {
             id: 2,
-            title: "إنشاء العقود",
+            titleKey: "contractGen",
             delay: 0,
             position: "top-[15%] right-[55%]",
             icon: (
@@ -33,7 +34,7 @@ const cards = [
         },
         {
             id: 3,
-            title: "استشارات فورية",
+            titleKey: "instantConsult",
             delay: 2,
             position: "top-[42%] right-[0%]",
             icon: (
@@ -47,7 +48,7 @@ const cards = [
         },
         {
             id: 4,
-            title: "شرح المصطلحات",
+            titleKey: "termExp",
             delay: 2,
             position: "top-[42%] right-[60%]",
             icon: (
@@ -62,7 +63,7 @@ const cards = [
         },
         {
             id: 5,
-            title: "استشارات قانونية",
+            titleKey: "legalConsult",
             delay: 4,
             position: "top-[69%] right-[5%]",
             icon: (
@@ -76,7 +77,7 @@ const cards = [
         },
         {
             id: 6,
-            title: "متابعة القضايا",
+            titleKey: "caseTrack",
             delay: 4,
             position: "top-[69%] right-[55%]",
             icon: (
@@ -91,7 +92,7 @@ const cards = [
     ];
 
 export function Hero() {
-
+    const { t } = useTranslation();
     const { handleStart } = useHandleStart();
 
     return (
@@ -100,19 +101,18 @@ export function Hero() {
             <div className="absolute inset-0 pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(90deg,transparent_0%,rgba(59,130,246,0.05)_50%,transparent_100%),radial-gradient(circle_at_20%_50%,rgba(251,191,36,0.05),transparent_40%)]" />
 
             <div className="max-w-[1280px] mx-auto px-8 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
                     {/* Content */}
-                    <div className="max-w-[600px] mt-10 lg:mt-0 text-center lg:text-right flex flex-col items-center lg:items-start">
+                    <div className="max-w-[800px] lg:max-w-[600px] mt-10 lg:mt-0 text-center lg:text-right flex flex-col items-center lg:items-start mx-auto lg:mx-0">
                         <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-foreground">
-                            المساعد القانوني الذكي
-                            <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-2 pt-1">
-                                المدعوم بالذكاء الاصطناعي
+                            {t("hero.titleMain")}
+                            <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-3 pt-1">
+                                {t("hero.titleSub")}
                             </span>
                         </h1>
 
-                        <p className="text-xl md:text-[1.25rem] text-muted-foreground leading-[1.8] mb-10 max-w-xl">
-                            نبسط لك القانون المصري. نحلل المستندات، ننشئ العقود، ونجيب على
-                            أسئلتك القانونية بدقة وسرعة فائقة
+                        <p className="text-lg md:text-xl lg:text-[1.25rem] text-muted-foreground leading-[1.8] mb-10 max-w-2xl lg:max-w-xl">
+                            {t("hero.subtitle")}
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
@@ -120,12 +120,12 @@ export function Hero() {
                                 onClick={handleStart}
                                 className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
                             >
-                                ابدأ الآن
+                                {t("hero.startNow")}
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     stroke="currentColor"
-                                    className="w-5 h-5 rtl:mr-2"
+                                    className="w-5 h-5 ms-2"
                                 >
                                     <path
                                         d="M13 7l5 5m0 0l-5 5m5-5H6"
@@ -137,13 +137,13 @@ export function Hero() {
                             </button>
 
                             <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all flex items-center justify-center">
-                                اكتشف المزيد
+                                {t("hero.discoverMore")}
                             </button>
                         </div>
                     </div>
 
                     {/* Visual Elements */}
-                    <div className="relative h-[400px] md:h-[500px] hidden md:block">
+                    <div className="relative h-[400px] md:h-[500px] hidden lg:block">
                         {cards.map((card) => (
                             <motion.div
                                 key={card.id}
@@ -176,7 +176,7 @@ export function Hero() {
                                     {card.icon}
                                 </div>
                                 <span className="font-semibold text-[0.95rem] whitespace-nowrap text-foreground">
-                                    {card.title}
+                                    {t(`hero.${card.titleKey}`)}
                                 </span>
                             </motion.div>
                         ))}

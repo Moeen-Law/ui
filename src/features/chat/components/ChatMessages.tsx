@@ -5,6 +5,7 @@ import type { StreamMessage } from "../types";
 import MarkdownRenderer from "./MarkdownRenderer";
 import TypingIndicator from "./TypingIndicator";
 import MessagesSkeleton from "./MessagesSkeleton";
+import { useTranslation } from "react-i18next";
 
 interface ChatMessagesProps {
     messages: StreamMessage[];
@@ -15,6 +16,7 @@ interface ChatMessagesProps {
 
 
 export default function ChatMessages({ messages, isStreaming, isLoading }: ChatMessagesProps) {
+    const { t } = useTranslation();
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll reliably by observing actual physical DOM resizing
@@ -81,9 +83,9 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                             <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mb-6 text-blue-500 shadow-inner">
                                 <MessageSquare className="w-8 h-8" />
                             </div>
-                            <h2 className="text-2xl md:text-4xl font-black mb-4 bg-linear-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">كيف يمكنني مساعدتك؟</h2>
+                            <h2 className="text-2xl md:text-4xl font-black mb-4 bg-linear-to-br from-foreground to-muted-foreground bg-clip-text text-transparent">{t("chat.ui.howCanIHelp")}</h2>
                             <p className="text-muted-foreground max-w-md mx-auto leading-relaxed text-sm md:text-base">
-                                ابدأ محادثة جديدة مع مساعدك القانوني الذكي. يمكنني مساعدتك في تحليل المستندات، إنشاء العقود، وشرح المصطلحات القانونية المصرية.
+                                {t("chat.ui.welcomeMessage")}
                             </p>
                         </motion.div>
                     ) : (
@@ -117,7 +119,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                                                 ) : null}
                                                 {msg.content && msg.isStreaming && (
                                                     <motion.span
-                                                        className="inline-block w-0.5 h-4 bg-blue-400 ml-0.5 align-middle"
+                                                        className="inline-block w-0.5 h-4 bg-blue-400 ms-0.5 align-middle"
                                                         animate={{ opacity: [1, 0] }}
                                                         transition={{ duration: 0.7, repeat: Infinity }}
                                                     />

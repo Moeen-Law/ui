@@ -7,6 +7,7 @@ import { stopStream as stopStreamService } from "../services";
 import { toast } from "sonner";
 import { fetchMe } from "@/features/auth/services";
 import { useQueryClient } from "@tanstack/react-query";
+import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -90,8 +91,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         try {
             await stopStreamService(chatIdToStop);
         } catch {
-            toast.error("فشل إيقاف البث", {
-                description: "يرجى المحاولة مرة أخرى",
+            toast.error(i18n.t("toast.stopStreamError"), {
+                description: i18n.t("toast.tryAgain"),
             });
         }
     }, []);
@@ -124,7 +125,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             ...prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg)),
             {
                 id: crypto.randomUUID(),
-                content: "تم إيقاف إنشاء الرسائل بواسطة المستخدم",
+                content: i18n.t("toast.streamStopped"),
                 sender: "ai",
                 isStopped: true,
             },
@@ -318,7 +319,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         console.error("[SSE] Stream error encountered:", err);
                         const errorMessage = typeof err === "string"
                             ? err
-                            : err?.message || "حدث خطأ أثناء الاتصال";
+                            : err?.message || i18n.t("toast.connectionError");
 
                         setError(errorMessage);
                         setStatus("error");
@@ -370,12 +371,12 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         await sendMessage(content, overrideChatId, fileIds, retryCount - 1);
                         return;
                     } catch {
-                        setError("انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.");
+                        setError(i18n.t("toast.sessionExpired"));
                         setStatus("error");
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
-                                    ? { ...msg, content: "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.", isStreaming: false, isError: true }
+                                    ? { ...msg, content: i18n.t("toast.sessionExpired"), isStreaming: false, isError: true }
                                     : msg
                             )
                         );
@@ -386,7 +387,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 // If status wasn't already set to error by the handlers above
                 if (statusRef.current !== "error") {
                     setError(
-                        err instanceof Error ? err.message : "حدث خطأ غير متوقع"
+                        err instanceof Error ? err.message : i18n.t("toast.unexpectedError")
                     );
                     setStatus("error");
                 }

@@ -1,41 +1,46 @@
 import z from "zod";
+import type { TFunction } from "i18next";
 
-
-
-export const loginSchema = z.object({
-    email: z.string().email("البريد الإلكتروني غير صالح"),
-    password: z.string().min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل"),
+export const getLoginSchema = (t: TFunction) => z.object({
+    email: z.string().email(t("auth.errors.invalidEmail")),
+    password: z.string().min(8, t("auth.errors.passwordMin")),
 });
 
-
-export const signUpSchema = z.object({
-    name: z.string().min(2, "يجب أن يكون الاسم حرفين على الأقل"),
-    email: z.string().email("البريد الإلكتروني غير صالح"),
+export const getSignUpSchema = (t: TFunction) => z.object({
+    name: z.string().min(2, t("auth.errors.nameMin")),
+    email: z.string().email(t("auth.errors.invalidEmail")),
     password: z.string()
-        .min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل")
-        .regex(/[A-Z]/, "يجب أن تحتوي على حرف كبير واحد على الأقل")
-        .regex(/[a-z]/, "يجب أن تحتوي على حرف صغير واحد على الأقل")
-        .regex(/[0-9]/, "يجب أن تحتوي على رقم واحد على الأقل")
-        .regex(/[^A-Za-z0-9]/, "يجب أن تحتوي على رمز خاص واحد على الأقل"),
-    confirmPassword: z.string().min(8, "يجب تأكيد كلمة المرور"),
+        .min(8, t("auth.errors.passwordMin"))
+        .regex(/[A-Z]/, t("auth.errors.upperCase"))
+        .regex(/[a-z]/, t("auth.errors.lowerCase"))
+        .regex(/[0-9]/, t("auth.errors.number"))
+        .regex(/[^A-Za-z0-9]/, t("auth.errors.specialChar")),
+    confirmPassword: z.string().min(8, t("auth.errors.passwordMin")),
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "كلمات المرور غير متطابقة",
+    message: t("auth.errors.passwordMismatch"),
     path: ["confirmPassword"],
 });
 
-export const forgotPasswordSchema = z.object({
-    email: z.string().email("البريد الإلكتروني غير صالح"),
+export const getForgotPasswordSchema = (t: TFunction) => z.object({
+    email: z.string().email(t("auth.errors.invalidEmail")),
 });
 
-export const resetPasswordSchema = z.object({
+export const getResetPasswordSchema = (t: TFunction) => z.object({
     password: z.string()
-        .min(8, "يجب أن تكون كلمة المرور 8 أحرف على الأقل")
-        .regex(/[A-Z]/, "يجب أن تحتوي على حرف كبير واحد على الأقل")
-        .regex(/[a-z]/, "يجب أن تحتوي على حرف صغير واحد على الأقل")
-        .regex(/[0-9]/, "يجب أن تحتوي على رقم واحد على الأقل")
-        .regex(/[^A-Za-z0-9]/, "يجب أن تحتوي على رمز خاص واحد على الأقل"),
-    confirmPassword: z.string().min(8, "يجب تأكيد كلمة المرور"),
+        .min(8, t("auth.errors.passwordMin"))
+        .regex(/[A-Z]/, t("auth.errors.upperCase"))
+        .regex(/[a-z]/, t("auth.errors.lowerCase"))
+        .regex(/[0-9]/, t("auth.errors.number"))
+        .regex(/[^A-Za-z0-9]/, t("auth.errors.specialChar")),
+    confirmPassword: z.string().min(8, t("auth.errors.passwordMin")),
 }).refine((data) => data.password === data.confirmPassword, {
-    message: "كلمات المرور غير متطابقة",
+    message: t("auth.errors.passwordMismatch"),
     path: ["confirmPassword"],
 });
+
+// For type inference
+const dummyT = (() => "") as any;
+export const loginSchema = getLoginSchema(dummyT);
+export const signUpSchema = getSignUpSchema(dummyT);
+export const forgotPasswordSchema = getForgotPasswordSchema(dummyT);
+export const resetPasswordSchema = getResetPasswordSchema(dummyT);

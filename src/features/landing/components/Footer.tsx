@@ -1,4 +1,7 @@
+import { useTranslation } from "react-i18next";
+
 export function Footer() {
+    const { t } = useTranslation();
     return (
         <footer className="py-12 bg-background border-t border-border">
             <div className="max-w-[1280px] mx-auto px-8">
@@ -8,8 +11,8 @@ export function Footer() {
                             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
                         </svg>
                     </div>
-                    <p className="text-muted-foreground text-center md:text-right leading-relaxed font-['Cairo'] text-[1.05rem]">
-                        هذه الخدمة توفر معلومات ومساعدة قانونية، وليست استشارة قانونية رسمية. يُرجى استشارة محامٍ مرخص للأمور الرسمية.
+                    <p className="text-muted-foreground text-center md:text-start md:ms-auto leading-relaxed font-['Cairo'] text-[1.05rem]">
+                        {t("footer.disclaimer")}
                     </p>
                 </div>
             </div>

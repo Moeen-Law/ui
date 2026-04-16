@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createChat as createChatService  } from "../services";
 import { toast } from "sonner";
+import i18n from "@/lib/i18n";
 
 
 
@@ -13,7 +14,7 @@ export const useCreateChat = () => {
             queryClient.invalidateQueries({ queryKey: ["chats"] });
         },
         onError: (error) => {
-            toast.error(error?.message || "فشل في إنشاء محادثة جديدة");
+            toast.error(error?.message || i18n.t("toast.createChatError"));
         } 
     }); 
     

@@ -25,12 +25,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import useThemeStore from "@/shared/store/theme";
+import { useTranslation } from "react-i18next";
 
 interface SidebarContentProps {
     onClose?: () => void;
 }
 
 export default function SidebarContent({ onClose }: SidebarContentProps) {
+    const { t } = useTranslation();
     const { chats, meta, hasNextPage, fetchNextPage, isFetchingNextPage } = useChats();
     const { profile } = useMe();
     const { handleLogout, loading } = useLogout();
@@ -73,7 +75,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                     className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-all group self-start"
                 >
                     <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-bold text-xs font-['Cairo'] uppercase tracking-wider">العودة للرئيسية</span>
+                    <span className="font-bold text-xs font-['Cairo'] uppercase tracking-wider">{t("chat.ui.backToHome")}</span>
                 </button>
 
                 {onClose && (
@@ -91,12 +93,12 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 className="flex items-center cursor-pointer justify-center gap-3 w-full bg-blue-500 text-white rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-blue-600 active:scale-[0.98] mb-10 shadow-xl shadow-blue-500/10 border border-transparent relative z-10"
             >
                 <Plus className="w-4 h-4" />
-                <span className="font-['Cairo']">محادثة جديدة</span>
+                <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
             </button>
 
             <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
                 <div className="flex items-center justify-between mb-6 px-1">
-                    <h3 className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] font-['Cairo']">المحادثات السابقة</h3>
+                    <h3 className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] font-['Cairo']">{t("chat.ui.pastChats")}</h3>
                     {hasChats && (
                         <div className="px-2 py-0.5 rounded-full bg-muted/50 border border-border text-[9px] text-muted-foreground font-mono">
                             {meta?.total}
@@ -140,22 +142,22 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
                                     <PaletteIcon className="size-4 shrink-0" />
-                                    المظهر
+                                    {t("chat.ui.theme")}
                                 </DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
                                     <DropdownMenuSubContent>
                                         <DropdownMenuRadioGroup value={mode} onValueChange={(v) => setMode(v as "system" | "dark" | "light")}>
                                             <DropdownMenuRadioItem value="system">
                                                 <MonitorIcon className="size-4 shrink-0" />
-                                                النظام
+                                                {t("chat.ui.system")}
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem value="dark">
                                                 <MoonIcon className="size-4 shrink-0" />
-                                                داكن
+                                                {t("chat.ui.dark")}
                                             </DropdownMenuRadioItem>
                                             <DropdownMenuRadioItem value="light">
                                                 <SunIcon className="size-4 shrink-0" />
-                                                فاتح
+                                                {t("chat.ui.light")}
                                             </DropdownMenuRadioItem>
                                         </DropdownMenuRadioGroup>
                                     </DropdownMenuSubContent>
@@ -165,7 +167,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                             {/* ── الإعدادات (Settings) ── */}
                             <DropdownMenuItem onClick={() => navigate("/settings")}>
                                 <SettingsIcon className="size-4 shrink-0" />
-                                الإعدادات
+                                {t("chat.ui.settings")}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
 
@@ -175,7 +177,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                             {/* ── تسجيل الخروج (Logout) ── */}
                             <DropdownMenuItem variant="destructive" onSelect={(e) => e.preventDefault()} onClick={handleLogout} disabled={loading}>
                                 <LogOutIcon className="size-4 shrink-0" />
-                                تسجيل الخروج
+                                {t("chat.ui.logout")}
                                 {loading && <Loader2 className="size-3 shrink-0 animate-spin" />}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>

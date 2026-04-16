@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import type { GoogleResponse } from "../types";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 
 
@@ -19,10 +20,10 @@ export const useGoogleAuth = () => {
             window.location.href = url;
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
+                toast.error(error.response?.data.message || i18n.t("toast.defaultError"), { style: errorToastStyle });
                 return;
             }
-            toast.error("حدث خطأ", { style: errorToastStyle });
+            toast.error(i18n.t("toast.defaultError"), { style: errorToastStyle });
         } finally {
             setLoading(false);
         }

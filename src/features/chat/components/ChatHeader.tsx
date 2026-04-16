@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import HistoryDrawer from "./HistoryDrawer";
+import { useTranslation } from "react-i18next";
 
 export default function ChatHeader() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
@@ -12,7 +14,7 @@ export default function ChatHeader() {
                 className="flex items-center gap-1 hover:text-foreground cursor-pointer text-muted-foreground font-semibold text-sm"
             >
                 <ChevronLeft className="w-5 h-5" />
-                <span>الرئيسية</span>
+                <span>{t("chat.ui.home")}</span>
             </button>
 
             <HistoryDrawer />

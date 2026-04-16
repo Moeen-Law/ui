@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion'
 import { CheckCircle2 } from 'lucide-react'
+import { useTranslation } from "react-i18next";
 
 function OAuthSuccess() {
+    const { t } = useTranslation();
     return (
         <motion.div
             key="success"
@@ -19,8 +21,8 @@ function OAuthSuccess() {
                 <CheckCircle2 className="w-12 h-12 text-green-500" />
             </div>
             <div className="space-y-2">
-                <h2 className="text-2xl font-black text-foreground">تم تسجيل الدخول بنجاح!</h2>
-                <p className="text-muted-foreground">أهلاً بك في معين، سيتم توجيهك الآن...</p>
+                <h2 className="text-2xl font-black text-foreground">{t("auth.oauthSuccess")}</h2>
+                <p className="text-muted-foreground">{t("auth.oauthSuccessSub")}</p>
             </div>
         </motion.div>
     );

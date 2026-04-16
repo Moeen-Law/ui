@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { errorToastStyle, successToastStyle } from "@/shared/constants";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 export const useSignUp = () => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -18,15 +19,15 @@ export const useSignUp = () => {
                 email: data.email,
                 password: data.password,
             });
-            toast.success("تم التسجيل بنجاح برجاء انتظار التحقق من البريد الالكتروني", { style: successToastStyle });
+            toast.success(i18n.t("toast.signupSuccess"), { style: successToastStyle });
             
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(error.response?.data.message || "حدث خطأ", { style: errorToastStyle });
+                toast.error(error.response?.data.message || i18n.t("toast.defaultError"), { style: errorToastStyle });
                 return
             }
-            toast.error("حدث خطأ", { style: errorToastStyle });
+            toast.error(i18n.t("toast.defaultError"), { style: errorToastStyle });
 
         }
         finally {

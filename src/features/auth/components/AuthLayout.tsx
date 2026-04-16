@@ -1,5 +1,6 @@
 import { type ReactNode } from "react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 interface AuthLayoutProps {
     children: ReactNode;
@@ -8,6 +9,7 @@ interface AuthLayoutProps {
 }
 
 export default function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+    const { t } = useTranslation();
     return (
         <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8 font-['Cairo'] relative overflow-hidden">
             {/* Hero-like background gradient */}
@@ -30,7 +32,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
                 </div>
 
                 {/* Info Side (Logo/Image) */}
-                <div className="hidden md:flex flex-1 bg-muted border-l border-border p-12 flex-col items-center justify-center text-center relative overflow-hidden">
+                <div className="hidden md:flex flex-1 bg-muted border-s border-border p-12 flex-col items-center justify-center text-center relative overflow-hidden">
                     {/* Decorative Circles */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border border-foreground/5 rounded-full pointer-events-none" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] border border-foreground/10 rounded-full pointer-events-none" />
@@ -60,13 +62,13 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
 
                         <h2 className="text-5xl font-black mb-6 tracking-tight">
                             <span className="bg-linear-to-l from-blue-500 via-foreground to-amber-400 bg-clip-text text-transparent animate-gradient-x">
-                                مُعين
+                                {t("nav.logo")}
                             </span>
                         </h2>
 
                         <p className="text-muted-foreground text-lg leading-relaxed max-w-sm font-medium">
-                            المحامي الذكي في جيبك. <br />
-                            <span className="text-foreground/80">استشارات، عقود، وتحليلات قانونية فورية.</span>
+                            {t("hero.titleMain")}. <br />
+                            <span className="text-foreground/80">{t("hero.subtitle").split('. ')[0]}.</span>
                         </p>
                     </motion.div>
                 </div>

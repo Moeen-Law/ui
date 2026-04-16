@@ -1,7 +1,9 @@
 import { Plus } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useTranslation } from 'react-i18next'
 
 function NotFoundChats() {
+    const { t } = useTranslation();
     return (
         <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -11,9 +13,8 @@ function NotFoundChats() {
             <div className="w-12 h-12 rounded-2xl bg-muted border border-border flex items-center justify-center mb-4">
                 <Plus className="w-6 h-6 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-xs font-['Cairo'] leading-relaxed">
-                ابدأ محادثة جديدة الآن<br />
-                وسوف تظهر هنا
+            <p className="text-muted-foreground text-xs font-['Cairo'] leading-relaxed whitespace-pre-wrap">
+                {t("chat.ui.startNewChatInfo")}
             </p>
         </motion.div>
     )

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateChatTitle as updateChatService } from "../services";
 import { toast } from "sonner";
+import i18n from "@/lib/i18n";
 
 
 
@@ -14,7 +15,7 @@ export const useUpdateChat = () => {
         },
         onError: (error) => {
             console.log(error);
-            toast.error(error?.message || "فشل في تحديث المحادثة");
+            toast.error(error?.message || i18n.t("toast.updateChatError"));
         } 
     }); 
     

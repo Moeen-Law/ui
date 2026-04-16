@@ -5,6 +5,7 @@ import type { ForgotPasswordResponse } from "../types";
 import { toast } from "sonner";
 import { successToastStyle, errorToastStyle } from "@/shared/constants";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 const COOLDOWN_KEY = "forgot-password-cooldown";
 const COOLDOWN_SECONDS = 90;
@@ -51,7 +52,7 @@ export const useForgotPassword = () => {
             setLoading(true);
             await api.post<ForgotPasswordResponse>(`${authService}/auth/password/forgot`, { email });
 
-            toast.success("تم ارسال رابط تغيير كلمة المرور", { style: successToastStyle });
+            toast.success(i18n.t("toast.forgotPasswordSuccess"), { style: successToastStyle });
 
             // Set cooldown
             const expiryTime = Date.now() + COOLDOWN_SECONDS * 1000;
@@ -61,10 +62,10 @@ export const useForgotPassword = () => {
             return true;
         } catch (err: unknown) {
             if (err instanceof AxiosError) {
-                toast.error(`خطأ اثناء ارسال رابط تغيير كلمة المرور (${err.response?.status})`, { style: errorToastStyle });
+                toast.error(i18n.t("toast.forgotPasswordFailedStatus", { status: err.response?.status }), { style: errorToastStyle });
                 console.log(err.response?.data);
             } else {
-                toast.error("حدث خطأ أثناء تغيير كلمة المرور", { style: errorToastStyle });
+                toast.error(i18n.t("toast.resetPasswordFailed"), { style: errorToastStyle });
             }
             return false;
         } finally {

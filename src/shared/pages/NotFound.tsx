@@ -1,12 +1,14 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Home, ArrowRight } from "lucide-react";
 
 const NotFound = () => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
 
     return (
-        <div className="relative min-h-screen w-full bg-[#0a0a0a] flex flex-col items-center justify-center overflow-hidden font-['Cairo']">
+        <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden font-[var(--font-family,Cairo)]">
             {/* Background Decorative Elements */}
             <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.15),transparent_60%)]" />
             <div className="absolute inset-0 pointer-events-none opacity-20"
@@ -54,11 +56,11 @@ const NotFound = () => {
                     className="space-y-8 max-w-2xl"
                 >
                     <div className="space-y-4">
-                        <h2 className="text-4xl md:text-6xl font-black text-white tracking-tight">
-                            الصفحة <span className="text-amber-400">مفقودة</span> في الفضاء القانوني
+                        <h2 className="text-4xl md:text-6xl  font-black text-foreground tracking-tight">
+                            {t("notfound.title_1")}<span className="text-amber-400">{t("notfound.titleHighlight")}</span>{t("notfound.title_2")}
                         </h2>
-                        <p className="text-[#a0a0a0] text-lg md:text-xl font-medium leading-relaxed max-w-lg mx-auto">
-                            نعتذر، ولكن يبدو أن هذا المرجع القانوني لا وجود له حالياً. دعنا نعيدك إلى الطريق الصحيح.
+                        <p className="text-muted-foreground text-lg md:text-xl  font-medium leading-relaxed max-w-lg mx-auto">
+                            {t("notfound.subtitle")}
                         </p>
                     </div>
 
@@ -67,20 +69,20 @@ const NotFound = () => {
                             whileHover={{ scale: 1.05, translateY: -5 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => navigate("/")}
-                            className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-3 bg-white text-[#0a0a0a] px-12 py-5 rounded-2xl font-black text-xl transition-all shadow-[0_20px_40px_rgba(255,255,255,0.15)] group"
+                            className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-3 bg-foreground text-background px-12 py-5 rounded-2xl font-black text-xl transition-all shadow-lg group"
                         >
                             <Home className="w-6 h-6" />
-                            الرئيسية
+                            {t("notfound.home")}
                         </motion.button>
 
                         <motion.button
                             whileHover={{ scale: 1.05, translateY: -5 }}
                             whileTap={{ scale: 0.95 }}
                             onClick={() => window.history.back()}
-                            className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-3 bg-transparent text-white border-2 border-[#3a3a3a] hover:border-blue-500/50 hover:bg-blue-500/5 px-12 py-5 rounded-2xl font-black text-xl transition-all"
+                            className="w-full sm:w-auto cursor-pointer flex items-center justify-center gap-3 bg-transparent text-foreground border-2 border-border hover:border-blue-500/50 hover:bg-blue-500/5 px-12 py-5 rounded-2xl font-black text-xl transition-all"
                         >
-                            العودة
-                            <ArrowRight className="w-6 h-6 rotate-180 transition-transform group-hover:translate-x-2" />
+                            {t("notfound.back")}
+                            <ArrowRight className="w-6 h-6 rotate-180 rtl:rotate-0 transition-transform group-hover:-translate-x-2 rtl:group-hover:translate-x-2" />
                         </motion.button>
                     </div>
                 </motion.div>

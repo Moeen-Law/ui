@@ -6,6 +6,7 @@ import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { errorToastStyle } from "@/shared/constants";
 import { authService } from "../helpers";
+import i18n from "@/lib/i18n";
 
 
 
@@ -33,10 +34,10 @@ export const useResetPassword = () => {
             setTimeout(() => navigate("/login"), 3000);
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
-                toast.error(`خطأ اثناء تغيير كلمة المرور (${error.response?.status})`, { style: errorToastStyle });
+                toast.error(i18n.t("toast.authResetErrorStatus", { status: error.response?.status }), { style: errorToastStyle });
                 console.log(error.response?.data);
             } else {
-                toast.error("حدث خطأ أثناء تغيير كلمة المرور", { style: errorToastStyle });
+                toast.error(i18n.t("toast.authResetError"), { style: errorToastStyle });
             }
             setIsError(true);
         } finally {

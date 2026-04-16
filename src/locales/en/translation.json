@@ -1,0 +1,291 @@
+{
+  "auth": {
+    "login": "Sign In",
+    "signup": "Sign Up",
+    "logout": "Log Out",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "name": "Name",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "loginSubtitle": "Enter your email to log in to your account",
+    "forgotPasswordTitle": "Forgot Password?",
+    "forgotPasswordSubtitle": "Enter your email and we'll send you a link to reset your password",
+    "resetPasswordTitle": "Set New Password",
+    "resetPasswordSubtitle": "Please enter and confirm your new password",
+    "signupTitle": "Create a New Account",
+    "signupSubtitle": "Enter your details to create your account with Moeen",
+    "verifyEmailTitle": "Email Verification",
+    "verifyEmailSubtitle": "Please click the verify button to activate your account",
+    "orContinueWith": "Or continue with",
+    "termsOfService": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "agreeTo": "By clicking the button above, you agree to our",
+    "and": "and",
+    "show": "Show",
+    "hide": "Hide",
+    "sendResetLink": "Send Reset Link",
+    "backToLogin": "Back to Login",
+    "checkEmail": "Check Your Email",
+    "checkEmailSub": "We've sent a link to reset your password to your email address.",
+    "passwordChanged": "Password Changed Successfully",
+    "passwordChangedSub": "You can now log in with your new password.",
+    "verifying": "Verifying...",
+    "verificationSuccess": "Verification Successful",
+    "verificationSuccessSub": "Congratulations! Your account has been successfully activated.",
+    "verificationFailed": "Verification Failed",
+    "verificationFailedSub": "A problem occurred while trying to activate your account.",
+    "goLogin": "Go to Login",
+    "goSignup": "Back to Sign Up",
+    "linkInvalid": "Link Invalid",
+    "linkInvalidSub": "Sorry, it seems the verification link is missing from the address.",
+    "placeholderName": "Enter your full name",
+    "placeholderEmail": "m@example.com",
+    "placeholderPassword": "••••••••",
+    "submittingSignUp": "Creating account...",
+    "submittingLogin": "Logging in...",
+    "submittingReset": "Changing password...",
+    "errors": {
+      "invalidEmail": "Invalid email address",
+      "passwordMin": "Password must be at least 8 characters",
+      "nameMin": "Name must be at least 2 characters",
+      "upperCase": "Must contain at least one uppercase letter",
+      "lowerCase": "Must contain at least one lowercase letter",
+      "number": "Must contain at least one number",
+      "specialChar": "Must contain at least one special character",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "wait": "Please wait",
+    "sentRequestInfo": "Request sent. You can request a new link after the timeout.",
+    "oauthHeader": "Login Failed",
+    "oauthError": "An error occurred while trying to log in via Google. Please try again.",
+    "oauthProcessing": "Authenticating...",
+    "oauthProcessingSub": "Please wait while we finalize your login",
+    "oauthSuccess": "Logged in successfully!",
+    "oauthSuccessSub": "Welcome to Moeen, you will be redirected now...",
+    "authorizedTitle": "Google Authentication",
+    "authorizedHeader": "Authenticated",
+    "authorizedSub": "You have successfully logged in via Google.",
+    "redirecting": "Redirecting...",
+    "authError": "Authentication Error",
+    "authErrorSub": "Failed to connect to authentication servers",
+    "verifyTokenMissing": "Verification token is missing",
+    "verifyError": "An error occurred while verifying your email"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "language": "Language"
+  },
+  "hero": {
+    "docAnalysis": "Document Analysis",
+    "contractGen": "Contract Generation",
+    "instantConsult": "Instant Consultations",
+    "termExp": "Terminology Explanation",
+    "legalConsult": "Legal Consultations",
+    "caseTrack": "Case Tracking",
+    "titleMain": "Your Smart Legal Assistant",
+    "titleSub": "Powered by AI",
+    "subtitle": "We simplify Egyptian law for you. We analyze documents, generate contracts, and answer your legal questions with high accuracy and speed.",
+    "startNow": "Start Now",
+    "discoverMore": "Discover More"
+  },
+  "nav": {
+    "logo": "Moeen",
+    "services": "Services",
+    "pricing": "Pricing",
+    "about": "About Us",
+    "logoutFull": "Log Out",
+    "logout": "Exit"
+  },
+  "features": {
+    "header": "Our Legal Services",
+    "subheader": "Everything you need in one place",
+    "items": {
+      "chat": {
+        "title": "Chat with Assistant",
+        "description": "Talk to the smart legal assistant and get instant answers for your legal questions"
+      },
+      "analysis": {
+        "title": "Document Analysis",
+        "description": "Upload any legal document and get a simplified summary and instant answers"
+      },
+      "template": {
+        "title": "Contract Generation",
+        "description": "Choose the contract type and fill in the required data to generate a professional contract"
+      },
+      "explanation": {
+        "title": "Terminology Explanation",
+        "description": "Enter any complex legal term and get a clear explanation in simple language"
+      },
+      "legal-advice": {
+        "title": "Legal Consultations",
+        "description": "Get specialized legal consultation in various fields from Egyptian law experts"
+      },
+      "case-tracking": {
+        "title": "Case Tracking",
+        "description": "Track the status of your legal cases and get instant updates on session dates"
+      }
+    }
+  },
+  "pricing": {
+    "header": "Pricing Plans",
+    "subheader": "Choose the plan that fits your legal needs",
+    "plans": {
+      "free": {
+        "name": "Free",
+        "price": "0",
+        "features": [
+          "5 consultations monthly",
+          "1 document analysis",
+          "Legal terminology explanation"
+        ],
+        "buttonText": "Start for Free"
+      },
+      "pro": {
+        "name": "Professional",
+        "price": "299",
+        "features": [
+          "Unlimited consultations",
+          "20 document analyses monthly",
+          "10 contract generations monthly",
+          "Priority support"
+        ],
+        "buttonText": "Subscribe Now"
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "price": "999",
+        "features": [
+          "All Pro features",
+          "Unlimited documents and contracts",
+          "Multiple team accounts",
+          "Specialized lawyer consultation"
+        ],
+        "buttonText": "Contact Us"
+      }
+    },
+    "popular": "Most Popular",
+    "currency": "EGP",
+    "monthly": "/mo"
+  },
+  "about": {
+    "title": "Why Moeen?",
+    "subtitle": "Moeen is the first smart legal assistant specialized in Egyptian law. We use the latest AI technologies to provide accurate and fast legal consultations, saving you time, effort, and cost.",
+    "stats": {
+      "activeUsers": "Active Users",
+      "consultations": "Legal Consultations",
+      "satisfaction": "Satisfaction Rate"
+    }
+  },
+  "interactiveDemo": {
+    "userMsg": "Analyze this lease contract",
+    "fileName": "lease_contract.pdf",
+    "assistantLabel": "Assistant",
+    "title": "Designed specifically for your legal expertise",
+    "description": "Offload complex tasks using natural language to your personal assistant specialized in Egyptian law. Moeen understands legal context and provides accurate, detailed answers.",
+    "exploreBtn": "Explore the Assistant",
+    "typedText": "Contract Analysis:\n\n• Duration: One year renewable\n• Rent: 3000 EGP monthly\n• Deposit: Two months in advance\n• Maintenance responsibility: Owner"
+  },
+  "videoDemo": {
+    "playBtn": "Watch Video",
+    "title": "Designed for Professionals",
+    "subtitle": "Smart AI-powered legal assistant for lawyers and businesses"
+  },
+  "footer": {
+    "disclaimer": "This service provides legal information and assistance, not formal legal advice. Please consult a licensed attorney for formal matters."
+  },
+  "chat": {
+    "errors": {
+      "titleRequired": "Chat title is required",
+      "titleTooLong": "Chat title is too long",
+      "createFailed": "An unexpected error occurred while creating the chat. Please try again.",
+      "updateFailed": "Failed to update chat",
+      "stopFailedTitle": "Failed to stop stream",
+      "stopFailedDesc": "Please try again later",
+      "deleteFailed": "Failed to delete chat",
+      "userStopped": "Message generation stopped by user",
+      "connectionError": "Connection error occurred",
+      "sessionExpired": "Session expired. Please log in again.",
+      "unexpected": "An unexpected error occurred",
+      "createChatFailed": "Failed to create a new chat",
+      "processingError": "Sorry, an error occurred while processing your request. Please try again."
+    },
+    "ui": {
+      "updateSuccess": "Chat name updated successfully",
+      "editTitle": "Edit Title",
+      "editTitleDesc": "Change the chat title for easy access later.",
+      "newTitle": "New Title",
+      "titlePlaceholder": "Enter chat title...",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "saveChanges": "Save Changes",
+      "backToHome": "Back to Home",
+      "newChat": "New Chat",
+      "pastChats": "Past Chats",
+      "theme": "Theme",
+      "system": "System",
+      "dark": "Dark",
+      "light": "Light",
+      "settings": "Settings",
+      "logout": "Logout",
+      "startNewChatInfo": "Start a new chat now\nand it will appear here",
+      "howCanIHelp": "How can I help you?",
+      "welcomeMessage": "Start a new conversation with your smart legal assistant. I can help you analyze documents, draft contracts, and explain Egyptian legal terms.",
+      "deleteChat": "Delete Chat",
+      "inputPlaceholder": "Type your legal question here...",
+      "stopGeneration": "Stop generating",
+      "disclaimer": "Moeen can make mistakes. Verify important information.",
+      "home": "Home",
+      "appTitle": "Moeen",
+      "newBadge": "New",
+      "deleteSuccess": "Chat deleted successfully",
+      "closeSidebar": "Close sidebar",
+      "openSidebar": "Open sidebar",
+      "deleteWarningTitle": "Are you sure you want to delete this chat?",
+      "deleteWarningDesc": "This action cannot be undone.",
+      "deleteConfirmBtn": "Delete",
+      "deleting": "Deleting..."
+    },
+    "validation": {
+      "titleMin": "Chat title is required",
+      "titleMax": "Chat title is too long"
+    }
+  },
+  "notfound": {
+    "title_1": "Page ",
+    "titleHighlight": "Lost",
+    "title_2": " in Legal Space",
+    "subtitle": "We apologize, but it seems this legal reference does not currently exist. Let's get you back on track.",
+    "home": "Home",
+    "back": "Go Back"
+  },
+  "toast": {
+    "loginSuccess": "Logged in successfully",
+    "signupSuccess": "Registered successfully, please verify your email",
+    "logoutSuccess": "Logged out successfully",
+    "forgotPasswordSuccess": "Password reset link sent",
+    "forgotPasswordFailedStatus": "Error sending reset link ({{status}})",
+    "resetPasswordFailedStatus": "Error resetting password ({{status}})",
+    "resetPasswordFailed": "Error resetting password",
+    "defaultError": "An error occurred",
+    "updateChatError": "Failed to update chat",
+    "deleteChatError": "Failed to delete chat",
+    "createChatError": "Failed to create new chat",
+    "stopStreamError": "Failed to stop stream",
+    "authResetError": "An error occurred while changing password",
+    "authResetErrorStatus": "Error changing password ({{status}})",
+    "googleAuthError": "An error occurred during Google authentication",
+    "tryAgain": "Please try again",
+    "streamStopped": "Message generation stopped by user",
+    "connectionError": "An error occurred during connection",
+    "sessionExpired": "Session expired. Please log in again.",
+    "unexpectedError": "An unexpected error occurred",
+    "logoutFailed": "An error occurred while logging out"
+  }
+}

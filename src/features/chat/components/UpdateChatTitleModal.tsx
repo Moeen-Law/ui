@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Edit3 } from "lucide-react"
@@ -20,7 +20,8 @@ import { successToastStyle } from "@/shared/constants"
 
 import type { ChatResponseDatum } from "../types"
 import { useUpdateChat } from "../hooks/useUpdateChat"
-import { ChatTitleSchema, type ChatTitleSchemaType } from "../schemas"
+import { getChatTitleSchema, type ChatTitleSchemaType } from "../schemas"
+import { useTranslation } from "react-i18next"
 
 interface UpdateChatTitleModalProps {
   openAlertModal: boolean
@@ -34,6 +35,9 @@ function UpdateChatTitleModal({
   selectedChat,
 }: UpdateChatTitleModalProps) {
   const { updateChat, isPending } = useUpdateChat()
+  const { t } = useTranslation();
+
+  const schema = useMemo(() => getChatTitleSchema(t), [t]);
 
   const {
     register,
@@ -41,7 +45,7 @@ function UpdateChatTitleModal({
     reset,
     formState: { errors },
   } = useForm<ChatTitleSchemaType>({
-    resolver: zodResolver(ChatTitleSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       title: selectedChat?.title || "",
     },
@@ -62,7 +66,7 @@ function UpdateChatTitleModal({
       {
         onSuccess: () => {
           setOpenAlertModal(false)
-          toast.success("تم تحديث اسم المحادثة بنجاح", { style: successToastStyle })
+          toast.success(t("chat.ui.updateSuccess"), { style: successToastStyle })
         },
       }
     )
@@ -79,10 +83,10 @@ function UpdateChatTitleModal({
               </div>
               <div className="space-y-2">
                 <DialogTitle className="text-2xl font-black font-['Cairo']">
-                  تعديل العنوان
+                  {t("chat.ui.editTitle")}
                 </DialogTitle>
                 <DialogDescription className="font-['Cairo'] text-sm leading-relaxed max-w-[260px]">
-                  قم بتغيير عنوان المحادثة لسهولة الوصول إليها لاحقاً.
+                  {t("chat.ui.editTitleDesc")}
                 </DialogDescription>
               </div>
             </DialogHeader>
@@ -91,13 +95,13 @@ function UpdateChatTitleModal({
           <div className="px-8 pb-8">
             <Field>
               <FieldLabel htmlFor="title" className="font-['Cairo'] mb-2 block text-sm">
-                العنوان الجديد
+                {t("chat.ui.newTitle")}
               </FieldLabel>
               <Input
                 id="title"
                 {...register("title")}
                 className="rounded-xl h-12 transition-all"
-                placeholder="أدخل عنوان المحادثة..."
+                placeholder={t("chat.ui.titlePlaceholder")}
                 autoComplete="off"
               />
               <FieldError errors={[errors.title]} className="font-['Cairo'] text-xs mt-1 text-red-400" />
@@ -112,7 +116,7 @@ function UpdateChatTitleModal({
                 variant="outline"
                 className="flex-1 cursor-pointer font-['Cairo'] rounded-xl transition-all h-12 text-sm font-bold"
               >
-                إلغاء
+                {t("chat.ui.cancel")}
               </Button>
             </DialogClose>
             <Button
@@ -120,7 +124,7 @@ function UpdateChatTitleModal({
               disabled={isPending}
               className="flex-1 cursor-pointer disabled:cursor-not-allowed font-['Cairo'] bg-primary hover:bg-primary/90 text-primary-foreground border-none rounded-xl shadow-[0_0_25px_rgba(var(--primary),0.25)] transition-all h-12 text-sm font-bold active:scale-[0.98]"
             >
-              {isPending ? "جاري الحفظ..." : "حفظ التغييرات"}
+              {isPending ? t("chat.ui.saving") : t("chat.ui.saveChanges")}
             </Button>
           </DialogFooter>
         </form>

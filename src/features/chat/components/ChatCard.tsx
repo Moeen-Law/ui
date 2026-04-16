@@ -36,7 +36,7 @@ export default function ChatCard({
         >
             {/* Active Indicator Line */}
             {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-2/3 bg-blue-500 rounded-r-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
+                <div className="absolute start-0 top-1/2 -translate-y-1/2 w-1 h-2/3 bg-blue-500 rounded-e-full shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
             )}
 
             <div className={cn(
@@ -54,10 +54,10 @@ export default function ChatCard({
                         "text-sm font-bold truncate leading-none transition-colors",
                         isActive ? "text-blue-600 dark:text-blue-400" : "text-muted-foreground/80 group-hover:text-foreground"
                     )}>
-                        {chat.title || "محادثة جديدة"}
+                        {chat.title || t("chat.ui.newChat")}
                     </p>
                     {!chat.title && (
-                        <span className="px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[8px] font-black uppercase">جديد</span>
+                        <span className="px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 text-[8px] font-black uppercase">{t("chat.ui.newBadge")}</span>
                     )}
                 </div>
                 <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors truncate">

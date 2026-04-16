@@ -1,10 +1,14 @@
-import { z } from "zod";
+import z from "zod";
+import type { TFunction } from "i18next";
 
-export const ChatTitleSchema = z.object({
-  title: z
-    .string()
-    .min(2, { message: "عنوان المحادثة مطلوب" })
-    .max(100, { message: "عنوان المحادثة طويل جداً" }),
+export const getChatTitleSchema = (t: TFunction) => z.object({
+    title: z.string()
+        .min(2, { message: t("chat.validation.titleMin") })
+        .max(100, { message: t("chat.validation.titleMax") }),
 });
+
+// For type inference only
+const dummyT = (() => "") as any;
+export const ChatTitleSchema = getChatTitleSchema(dummyT);
 
 export type ChatTitleSchemaType = z.infer<typeof ChatTitleSchema>;

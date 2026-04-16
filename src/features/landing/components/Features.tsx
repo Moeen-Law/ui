@@ -1,15 +1,17 @@
 import { features } from "../data";
+import { useTranslation } from "react-i18next";
 
 export function Features() {
+    const { t } = useTranslation();
     return (
         <section id="features" className="py-24 bg-background">
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4 font-['Cairo']">
-                        خدماتنا القانونية
+                        {t("features.header")}
                     </h2>
                     <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
-                        كل ما تحتاجه من خدمات قانونية في مكان واحد
+                        {t("features.subheader")}
                     </p>
                 </div>
 
@@ -35,10 +37,10 @@ export function Features() {
                                     </svg>
                                 </div>
                                 <h3 className="text-2xl font-extrabold text-foreground mb-4 font-['Cairo']">
-                                    {feature.title}
+                                    {t(`features.items.${feature.id}.title`)}
                                 </h3>
                                 <p className="text-muted-foreground leading-relaxed text-[1.05rem] font-['Cairo']">
-                                    {feature.description}
+                                    {t(`features.items.${feature.id}.description`)}
                                 </p>
                             </div>
                         </div>

@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion'
 import { AlertCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from "react-i18next";
 
 function OAuthError() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     return (
         <motion.div
@@ -15,16 +17,16 @@ function OAuthError() {
                 <AlertCircle className="w-12 h-12 text-red-500" />
             </div>
             <div className="space-y-4">
-                <h2 className="text-2xl font-black text-foreground">فشل تسجيل الدخول</h2>
+                <h2 className="text-2xl font-black text-foreground">{t("auth.oauthHeader")}</h2>
                 <p className="text-muted-foreground max-w-xs mx-auto">
-                    حدث خطأ أثناء محاولة تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.
+                    {t("auth.oauthError")}
                 </p>
             </div>
             <button
                 onClick={() => navigate("/login")}
                 className="bg-blue-500 text-white cursor-pointer px-8 py-4 rounded-xl font-black hover:bg-blue-600 transition-all"
             >
-                العودة لتسجيل الدخول
+                {t("auth.backToLogin")}
             </button>
         </motion.div>
     );

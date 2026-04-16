@@ -1,24 +1,28 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
-import { loginSchema } from "../schema";
+import { getLoginSchema } from "../schema";
 import type { LoginValues } from "../types";
 import { useLogin } from "../hooks/useLogin";
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 
 
 
 export default function Login() {
+    const { t } = useTranslation();
     const [showPassword, setShowPassword] = useState(false);
     const { handleGoogleAuth, loading } = useGoogleAuth();
 
 
+    const schema = useMemo(() => getLoginSchema(t), [t]);
+
     const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginValues>({
-        resolver: zodResolver(loginSchema),
+        resolver: zodResolver(schema),
     });
 
     const { handleLogin } = useLogin();
@@ -28,43 +32,43 @@ export default function Login() {
     };
 
     return (
-        <AuthLayout title="تسجيل الدخول" subtitle="أدخل بريدك الإلكتروني للدخول إلى حسابك">
+        <AuthLayout title={t("auth.login")} subtitle={t("auth.loginSubtitle")}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-bold text-muted-foreground mb-2 mr-1">البريد الإلكتروني</label>
+                    <label className="block text-sm font-bold text-muted-foreground mb-2 ms-1">{t("auth.email")}</label>
                     <input
                         {...register("email")}
                         className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-blue-500 transition-colors"
                         placeholder="m@example.com"
                         dir="ltr"
                     />
-                    {errors.email && <p className="text-red-500 text-xs mt-1 mr-1">{errors.email.message}</p>}
+                    {errors.email && <p className="text-red-500 text-xs mt-1 ms-1">{errors.email.message}</p>}
                 </div>
 
                 <div>
                     <div className="flex justify-between mb-2">
-                        <label className="block text-sm font-bold text-muted-foreground mr-1">كلمة المرور</label>
-                        <Link to="/forgot-password" title="نسيت كلمة المرور" className="text-xs text-muted-foreground hover:text-foreground transition-colors">نسيت كلمة المرور؟</Link>
+                        <label className="block text-sm font-bold text-muted-foreground ms-1">{t("auth.password")}</label>
+                        <Link to="/forgot-password" title={t("auth.forgotPassword")} className="text-xs text-muted-foreground hover:text-foreground transition-colors">{t("auth.forgotPassword")}</Link>
                     </div>
                     <div className="relative group">
                         <input
                             {...register("password")}
                             type={showPassword ? "text" : "password"}
-                            className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 pl-11 pr-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
+                            className="w-full placeholder:opacity-60 bg-muted border border-border rounded-xl px-4 py-3 ps-11 pe-11 text-foreground focus:outline-none focus:border-blue-500 transition-all font-sans"
                             placeholder="••••••••"
                             dir="ltr"
                         />
-                        <Lock className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
+                        <Lock className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-blue-500 transition-colors" />
                         <button
                             type="button"
                             onClick={() => setShowPassword(!showPassword)}
-                            className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                            title={showPassword ? "إخفاء" : "إظهار"}
+                            className="absolute end-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                            title={showPassword ? t("auth.hide") : t("auth.show")}
                         >
                             {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                         </button>
                     </div>
-                    {errors.password && <p className="text-red-500 text-xs mt-1 mr-1">{errors.password.message}</p>}
+                    {errors.password && <p className="text-red-500 text-xs mt-1 ms-1">{errors.password.message}</p>}
                 </div>
 
                 <button
@@ -72,7 +76,7 @@ export default function Login() {
                     type="submit"
                     className="w-full bg-blue-500 text-white font-black rounded-xl py-3 mt-4 hover:bg-blue-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
-                    {isSubmitting ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+                    {isSubmitting ? t("common.loading") : t("auth.login")}
                 </button>
 
                 <div className="relative my-8 text-center flex items-center justify-center">
@@ -80,7 +84,7 @@ export default function Login() {
                         <span className="w-full border-t border-border"></span>
                     </div>
                     <span className="relative z-10 bg-card px-4 text-muted-foreground text-xs font-bold uppercase tracking-wider">
-                        أو المتابعة باستخدام
+                        {t("auth.orContinueWith")}
                     </span>
                 </div>
 
@@ -110,16 +114,16 @@ export default function Login() {
                 </div>
 
                 <p className="text-center text-muted-foreground text-sm mt-8">
-                    ليس لديك حساب؟{" "}
+                    {t("auth.noAccount")} {" "}
                     <Link to="/signup" className="text-foreground font-bold hover:underline">
-                        إنشاء حساب جديد
+                        {t("auth.signup")}
                     </Link>
                 </p>
 
                 <p className="text-center text-muted-foreground/60 text-xs mt-8 px-4 leading-relaxed">
-                    بالنقر فوق الزر أعلاه، فإنك توافق على{" "}
-                    <span className="text-muted-foreground underline cursor-pointer">شروط الخدمة</span> و{" "}
-                    <span className="text-muted-foreground underline cursor-pointer">سياسة الخصوصية</span>
+                    {t("auth.agreeTo")}{" "}
+                    <span className="text-muted-foreground underline cursor-pointer">{t("auth.termsOfService")}</span> {t("auth.and")}{" "}
+                    <span className="text-muted-foreground underline cursor-pointer">{t("auth.privacyPolicy")}</span>
                 </p>
             </form>
         </AuthLayout>

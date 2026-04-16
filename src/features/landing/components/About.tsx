@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 export function About() {
+    const { t } = useTranslation();
     const stats = [
-        { number: "10,000+", label: "مستخدم نشط" },
-        { number: "50,000+", label: "استشارة قانونية" },
-        { number: "98%", label: "نسبة الرضا" },
+        { number: "10,000+", label: t("about.stats.activeUsers") },
+        { number: "50,000+", label: t("about.stats.consultations") },
+        { number: "98%", label: t("about.stats.satisfaction") },
     ];
 
     return (
@@ -17,7 +19,7 @@ export function About() {
                         viewport={{ once: true }}
                         className="text-4xl md:text-5xl font-black text-foreground mb-8 font-['Cairo']"
                     >
-                        لماذا مُعين؟
+                        {t("about.title")}
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -26,8 +28,7 @@ export function About() {
                         transition={{ delay: 0.1 }}
                         className="text-muted-foreground text-lg md:text-xl leading-relaxed font-['Cairo']"
                     >
-                        مُعين هو أول مساعد قانوني ذكي متخصص في القانون المصري. نستخدم أحدث تقنيات الذكاء الاصطناعي
-                        لتقديم استشارات قانونية دقيقة وسريعة، مما يوفر عليك الوقت والجهد والتكلفة.
+                        {t("about.subtitle")}
                     </motion.p>
                 </div>
 
