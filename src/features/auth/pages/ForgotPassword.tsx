@@ -6,7 +6,7 @@ import AuthLayout from "../components/AuthLayout";
 import { getForgotPasswordSchema } from "../schema";
 import type { ForgotPasswordValues } from "../types";
 import { motion } from "framer-motion";
-import { Mail, ArrowRight, ArrowLeft, Clock } from "lucide-react";
+import {  ArrowRight, ArrowLeft, Clock } from "lucide-react";
 import { useForgotPassword } from "../hooks/useForgotPassword";
 import { formatTime } from "../helpers";
 import { useTranslation } from "react-i18next";

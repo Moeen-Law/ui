@@ -3,6 +3,7 @@ import type { ChatResponseDatum } from "../types";
 import { cn } from "@/lib/utils";
 import ChatMenu from "./ChatMenu";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface ChatCardProps {
     chat: ChatResponseDatum;
@@ -22,6 +23,7 @@ export default function ChatCard({
     setSelectedChat,
 }: ChatCardProps) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     
     return (
         <div
