@@ -23,7 +23,7 @@ export default function ChatCard({
     setSelectedChat,
 }: ChatCardProps) {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     
     return (
         <div
@@ -63,7 +63,10 @@ export default function ChatCard({
                     )}
                 </div>
                 <p className="text-[10px] text-muted-foreground group-hover:text-muted-foreground/80 transition-colors truncate">
-                    {new Date(chat.createdAt).toLocaleDateString('ar-EG', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    {new Date(chat.createdAt).toLocaleDateString(
+                        i18n.language === "ar" ? "ar-EG" : "en-US",
+                        { month: 'long', day: 'numeric', year: 'numeric' }
+                    )}
                 </p>
             </div>
 

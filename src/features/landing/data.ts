@@ -40,26 +40,21 @@ export const features = [
 export const pricingPlans = [
     {
         id: 'free',
-        name: 'مجاني',
         price: '0',
-        features: ['5 استشارات شهرياً', 'تحليل مستند واحد', 'شرح المصطلحات القانونية'],
-        buttonText: 'ابدأ مجاناً',
+        featuresCount: 3,
         featured: false
     },
     {
         id: 'pro',
-        name: 'احترافي',
         price: '299',
-        features: ['استشارات غير محدودة', 'تحليل 20 مستند شهرياً', 'إنشاء 10 عقود شهرياً', 'دعم فني أولوية'],
-        buttonText: 'اشترك الآن',
+        featuresCount: 4,
         featured: true
     },
     {
         id: 'enterprise',
-        name: 'للشركات',
         price: '999',
-        features: ['كل مميزات الخطة الاحترافية', 'مستندات وعقود غير محدودة', 'حسابات متعددة للفريق', 'استشارة محامي متخصص'],
-        buttonText: 'تواصل معنا',
+        featuresCount: 4,
         featured: false
     }
 ];
+

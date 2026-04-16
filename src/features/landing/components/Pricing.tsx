@@ -50,7 +50,7 @@ export function Pricing() {
                             </div>
 
                             <ul className="mb-8 space-y-4">
-                                {plan.features.map((i) => (
+                                {Array.from({ length: plan.featuresCount }, (_, i) => (
                                     <li key={i} className="flex items-center gap-3 text-muted-foreground font-['Cairo']">
                                         <svg
                                             className="w-5 h-5 text-blue-500 shrink-0"
