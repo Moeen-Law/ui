@@ -29,7 +29,9 @@ interface UpdateChatTitleModalProps {
   selectedChat: ChatResponseDatum | null
 }
 
-function UpdateChatTitleModal({
+
+
+export default function UpdateChatTitleModal({
   openAlertModal,
   setOpenAlertModal,
   selectedChat,
@@ -133,4 +135,3 @@ function UpdateChatTitleModal({
   )
 }
 
-export default UpdateChatTitleModal

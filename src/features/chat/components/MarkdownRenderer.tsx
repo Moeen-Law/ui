@@ -1,11 +1,14 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { memo } from "react";
 
 interface MarkdownRendererProps {
     content: string;
 }
 
-export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
+const remarkPlugins = [remarkGfm];
+
+function MarkdownRenderer({ content }: MarkdownRendererProps) {
     return (
         <div className="prose prose-lg max-w-none
             dark:prose-invert
@@ -25,9 +28,11 @@ export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
             text-right"
             dir="rtl"
         >
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            <ReactMarkdown remarkPlugins={remarkPlugins}>
                 {content}
             </ReactMarkdown>
         </div>
     );
 }
+
+export default memo(MarkdownRenderer);

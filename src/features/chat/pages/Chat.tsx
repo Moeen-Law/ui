@@ -82,9 +82,12 @@ export default function Chat() {
 
                 // Navigate to the new chat URL
                 navigate(`/chat/${newChat.id}`, { replace: true });
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error("Failed to create chat:", error);
-                const errorMsg = error?.message || error?.error || t("chat.errors.createFailed");
+                const errorMsg =
+                    error instanceof Error
+                        ? error.message
+                        : t("chat.errors.createFailed");
                 toast.error(errorMsg);
                 setInputValue(trimmedInput);
                 // Only clear if there was an error, since we cleared earlier on success
@@ -98,7 +101,7 @@ export default function Chat() {
 
         // If we already have a chatId, stream directly
         await sendMessage(trimmedInput);
-    }, [inputValue, chatId, navigate, sendMessage, queryClient]);
+    }, [inputValue, chatId, navigate, sendMessage, queryClient, t]);
 
     // ─── Compute overall status and messages ────────────────────────────────────────
     const effectiveStatus: StreamStatus = isCreatingChat ? "creating" : streamStatus;
@@ -131,6 +134,7 @@ export default function Chat() {
                 <ChatHeader />
                 <div className="flex-1 relative overflow-hidden flex flex-col">
                     <ChatMessages
+                        chatId={chatId}
                         messages={displayMessages}
                         isStreaming={effectiveStatus === "streaming" || effectiveStatus === "creating"}
                         isLoading={isLoading}

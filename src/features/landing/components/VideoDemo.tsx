@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 export function VideoDemo() {
@@ -7,18 +7,32 @@ export function VideoDemo() {
     const sectionRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isPlaying, setIsPlaying] = useState(true); // Autoplay is on
+    const shouldReduceMotion = useReducedMotion();
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
         offset: ["start start", "end end"],
     });
 
-    // Transition max-width from 95% to 65% based on scroll
-    const maxWidth = useTransform(scrollYProgress, [0, 0.8], ["95%", "65%"]);
+    const videoScale = useTransform(
+        scrollYProgress,
+        [0, 0.35, 1],
+        shouldReduceMotion ? [1, 1, 1] : [1, 0.82, 0.82]
+    );
+    const videoY = useTransform(
+        scrollYProgress,
+        [0, 0.35, 1],
+        shouldReduceMotion ? [0, 0, 0] : [0, -42, -42]
+    );
+    const videoOpacity = useTransform(scrollYProgress, [0, 0.9, 1], [1, 1, 0.82]);
 
-    // Fade in post-video content
-    const contentOpacity = useTransform(scrollYProgress, [0.7, 0.9], [0, 1]);
-    const contentY = useTransform(scrollYProgress, [0.7, 0.9], [30, 0]);
+    const contentOpacity = useTransform(scrollYProgress, [0.28, 0.48], [0, 1]);
+    const contentY = useTransform(
+        scrollYProgress,
+        [0.28, 0.48],
+        shouldReduceMotion ? [0, 0] : [24, 0]
+    );
+    const progressScale = useTransform(scrollYProgress, [0, 1], [0.08, 1]);
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -33,11 +47,31 @@ export function VideoDemo() {
     };
 
     return (
-        <section ref={sectionRef} className="relative min-h-[200vh] bg-background">
-            <div className="sticky top-20 h-[calc(100vh-80px)] flex flex-col items-center justify-center px-8 overflow-hidden">
+        <section
+            id="video-demo"
+            ref={sectionRef}
+            className="relative min-h-[155vh] bg-background scroll-mt-20 snap-start"
+        >
+            <div className="sticky top-20 h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4 md:px-8 overflow-hidden">
+                <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 hidden sm:flex flex-col items-center gap-3">
+                    <div className="relative h-24 w-1 overflow-hidden rounded-full bg-border">
+                        <motion.div
+                            style={{ scaleY: progressScale }}
+                            className="absolute inset-x-0 top-0 h-full origin-top rounded-full bg-blue-500"
+                        />
+                    </div>
+                    <div className="h-2 w-2 rounded-full bg-blue-500" />
+                    <div className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+                    <div className="h-2 w-2 rounded-full bg-muted-foreground/40" />
+                </div>
+
                 <motion.div
-                    style={{ maxWidth }}
-                    className="relative w-full aspect-video transition-all duration-300"
+                    style={{
+                        scale: videoScale,
+                        y: videoY,
+                        opacity: videoOpacity,
+                    }}
+                    className="relative w-full max-w-[1180px] aspect-video will-change-transform"
                 >
                     <div className="relative w-full h-full bg-linear-to-br from-card to-muted rounded-2xl overflow-hidden shadow-2xl border border-border">
                         <video
@@ -72,7 +106,7 @@ export function VideoDemo() {
                 {/* Content that appears after video transitions */}
                 <motion.div
                     style={{ opacity: contentOpacity, y: contentY }}
-                    className="absolute bottom-[10%] left-0 right-0 text-center px-8 pointer-events-none"
+                    className="absolute bottom-[8%] left-0 right-0 text-center px-6 md:px-8 pointer-events-none"
                 >
                     <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-foreground">
                         {t("videoDemo.title")}

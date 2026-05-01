@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare } from "lucide-react";
 import type { StreamMessage } from "../types";
@@ -6,52 +6,138 @@ import MarkdownRenderer from "./MarkdownRenderer";
 import TypingIndicator from "./TypingIndicator";
 import MessagesSkeleton from "./MessagesSkeleton";
 import { useTranslation } from "react-i18next";
+import StreamingCursor from "./StreamingCursor";
 
 interface ChatMessagesProps {
+    chatId?: string;
     messages: StreamMessage[];
     isStreaming?: boolean;
     isLoading?: boolean;
 }
 
+interface MessageRowProps {
+    msg: StreamMessage;
+}
 
 
-export default function ChatMessages({ messages, isStreaming, isLoading }: ChatMessagesProps) {
+
+const MessageRow = memo(function MessageRow({ msg }: MessageRowProps) {
+    return (
+        <motion.div
+            layout={false}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.12 }}
+            className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
+        >
+            <div className={`max-w-[85%] md:max-w-[80%] leading-relaxed text-[1.1rem] ${msg.sender === "user"
+                ? "bg-blue-500 text-white px-4 py-3 rounded-2xl mb-2 mt-2"
+                : msg.isStopped
+                    ? "bg-red-500/20 border border-red-500/30 text-red-100 font-medium rounded-2xl p-4"
+                    : msg.isError
+                        ? "bg-red-500/10 border border-red-500/20 text-red-200 rounded-2xl p-4"
+                        : ""
+                }`}
+            >
+                {msg.sender === "ai" ? (
+                    <>
+                        {msg.content ? (
+                            <MarkdownRenderer content={msg.content} />
+                        ) : msg.isStreaming ? (
+                            <TypingIndicator />
+                        ) : null}
+                        {msg.content && msg.isStreaming && <StreamingCursor />}
+                    </>
+                ) : (
+                    msg.content
+                )}
+            </div>
+        </motion.div>
+    );
+}, (prev, next) =>
+    prev.msg.id === next.msg.id &&
+    prev.msg.content === next.msg.content &&
+    prev.msg.isStreaming === next.msg.isStreaming &&
+    prev.msg.isError === next.msg.isError &&
+    prev.msg.isStopped === next.msg.isStopped &&
+    prev.msg.sender === next.msg.sender
+);
+
+export default function ChatMessages({ chatId, messages, isStreaming, isLoading }: ChatMessagesProps) {
     const { t } = useTranslation();
     const scrollRef = useRef<HTMLDivElement>(null);
+    const shouldStickToBottomRef = useRef(true);
+    const scrollFrameRef = useRef<number | null>(null);
+    const previousChatIdRef = useRef<string | undefined>(chatId);
 
-    // Auto-scroll reliably by observing actual physical DOM resizing
+    const isNearBottom = useCallback(() => {
+        const container = scrollRef.current;
+        if (!container) return true;
+        return container.scrollHeight - container.scrollTop - container.clientHeight < 120;
+    }, []);
+
+    const scheduleScrollToBottom = useCallback((force = false, afterLayout = false) => {
+        if (force && scrollFrameRef.current !== null) {
+            window.cancelAnimationFrame(scrollFrameRef.current);
+            scrollFrameRef.current = null;
+        }
+
+        if ((!force && !shouldStickToBottomRef.current) || scrollFrameRef.current !== null) return;
+
+        scrollFrameRef.current = window.requestAnimationFrame(() => {
+            const scroll = () => {
+                const container = scrollRef.current;
+                scrollFrameRef.current = null;
+                if (container && (force || shouldStickToBottomRef.current)) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            };
+
+            if (afterLayout) {
+                scrollFrameRef.current = window.requestAnimationFrame(scroll);
+                return;
+            }
+
+            scroll();
+        });
+    }, []);
+
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
-        let isUserScrolling = false;
-
-        const observer = new ResizeObserver(() => {
-            // Scroll to the bottom whenever the physical content resizes 
-            // (e.g., when Skeleton swaps to Messages, or during streaming)
-            if (!isUserScrolling) {
-                container.scrollTop = container.scrollHeight;
-            }
-        });
-
-        // Observe the internal wrapper that holds the messages
-        const innerContent = container.firstElementChild;
-        if (innerContent) {
-            observer.observe(innerContent);
-        }
-
-        // Briefly pause auto-scroll if the user intentionally scrolls up
         const handleScroll = () => {
-            const { scrollTop, scrollHeight, clientHeight } = container;
-            const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
-            isUserScrolling = !isNearBottom;
+            shouldStickToBottomRef.current = isNearBottom();
         };
 
         container.addEventListener('scroll', handleScroll);
 
         return () => {
-            observer.disconnect();
             container.removeEventListener('scroll', handleScroll);
+        };
+    }, [isNearBottom]);
+
+    useEffect(() => {
+        const isNewChat = chatId !== previousChatIdRef.current;
+
+        if (isNewChat) {
+            previousChatIdRef.current = chatId;
+            shouldStickToBottomRef.current = true;
+            scheduleScrollToBottom(true, true);
+            return;
+        }
+
+        if (isNearBottom()) {
+            shouldStickToBottomRef.current = true;
+        }
+        scheduleScrollToBottom();
+    }, [chatId, messages, isLoading, isStreaming, isNearBottom, scheduleScrollToBottom]);
+
+    useEffect(() => {
+        return () => {
+            if (scrollFrameRef.current !== null) {
+                window.cancelAnimationFrame(scrollFrameRef.current);
+            }
         };
     }, []);
 
@@ -96,40 +182,7 @@ export default function ChatMessages({ messages, isStreaming, isLoading }: ChatM
                             exit={{ opacity: 0 }}
                         >
                             {messages.map((msg) => (
-                                <motion.div
-                                    key={msg.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className={`flex items-start ${msg.sender === "user" ? "flex-row-reverse" : "flex-row"}`}
-                                >
-                                    <div className={`max-w-[85%] md:max-w-[80%] leading-relaxed text-[1.1rem] ${msg.sender === "user"
-                                        ? "bg-blue-500 text-white px-4 py-3 rounded-2xl mb-2 mt-2"
-                                        : msg.isStopped
-                                            ? "bg-red-500/20 border border-red-500/30 text-red-100 font-medium rounded-2xl p-4"
-                                            : msg.isError
-                                                ? "bg-red-500/10 border border-red-500/20 text-red-200 rounded-2xl p-4"
-                                                : ""
-                                        }`}>
-                                        {msg.sender === "ai" ? (
-                                            <>
-                                                {msg.content ? (
-                                                    <MarkdownRenderer content={msg.content} />
-                                                ) : msg.isStreaming ? (
-                                                    <TypingIndicator />
-                                                ) : null}
-                                                {msg.content && msg.isStreaming && (
-                                                    <motion.span
-                                                        className="inline-block w-0.5 h-4 bg-blue-400 ms-0.5 align-middle"
-                                                        animate={{ opacity: [1, 0] }}
-                                                        transition={{ duration: 0.7, repeat: Infinity }}
-                                                    />
-                                                )}
-                                            </>
-                                        ) : (
-                                            msg.content
-                                        )}
-                                    </div>
-                                </motion.div>
+                                <MessageRow key={msg.id} msg={msg} />
                             ))}
                         </motion.div>
                     )}

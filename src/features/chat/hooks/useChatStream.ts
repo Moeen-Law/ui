@@ -11,6 +11,7 @@ import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+const STREAM_FLUSH_INTERVAL_MS = 80;
 
 interface UseChatStreamOptions {
     chatId: string | undefined;
@@ -62,6 +63,46 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     const abortControllerRef = useRef<AbortController | null>(null);
     // Tracks which chatId is currently streaming so we can notify the backend from any context
     const activeStreamChatIdRef = useRef<string | null>(null);
+    const streamBufferRef = useRef("");
+    const activeAiMessageIdRef = useRef<string | null>(null);
+    const flushTimerRef = useRef<number | null>(null);
+
+    const clearFlushTimer = useCallback(() => {
+        if (flushTimerRef.current === null) return;
+        window.clearTimeout(flushTimerRef.current);
+        flushTimerRef.current = null;
+    }, []);
+
+    const flushStreamBuffer = useCallback(() => {
+        const aiMessageId = activeAiMessageIdRef.current;
+        const nextContent = streamBufferRef.current;
+
+        clearFlushTimer();
+
+        if (!aiMessageId || !nextContent) return;
+
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.id === aiMessageId
+                    ? { ...msg, content: nextContent }
+                    : msg
+            )
+        );
+    }, [clearFlushTimer]);
+
+    const scheduleStreamFlush = useCallback(() => {
+        if (flushTimerRef.current !== null) return;
+
+        flushTimerRef.current = window.setTimeout(() => {
+            flushStreamBuffer();
+        }, STREAM_FLUSH_INTERVAL_MS);
+    }, [flushStreamBuffer]);
+
+    const resetStreamBuffer = useCallback((aiMessageId: string | null = null, initialContent = "") => {
+        clearFlushTimer();
+        activeAiMessageIdRef.current = aiMessageId;
+        streamBufferRef.current = initialContent;
+    }, [clearFlushTimer]);
 
     // ─── Sync history into local state ────────
     useEffect(() => {
@@ -81,10 +122,11 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     // Reset local state when chatId is cleared (new-chat page)
     useEffect(() => {
         if (!chatId) {
+            resetStreamBuffer();
             setMessages([]);
             setStatus("idle");
         }
-    }, [chatId]);
+    }, [chatId, resetStreamBuffer]);
 
     // ─── Shared helper: notify backend to stop the active stream ─────────
     const notifyBackendStop = useCallback(async (chatIdToStop: string) => {
@@ -119,6 +161,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
         activeStreamChatIdRef.current = null;
+        flushStreamBuffer();
+        resetStreamBuffer();
         setStatus("done");
         // Mark the last AI message as no longer streaming and add the stop message
         setMessages((prev) => [
@@ -134,7 +178,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         if (stoppingChatId) {
             notifyBackendStop(stoppingChatId);
         }
-    }, [notifyBackendStop]);
+    }, [flushStreamBuffer, notifyBackendStop, resetStreamBuffer]);
 
     // ─── Component unmount — stop any active stream ─────────────────────
     useEffect(() => {
@@ -144,11 +188,11 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 abortControllerRef.current.abort();
                 abortControllerRef.current = null;
                 activeStreamChatIdRef.current = null;
+                resetStreamBuffer();
                 notifyBackendStop(chatIdToStop);
             }
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [notifyBackendStop, resetStreamBuffer]);
 
     // ─── Tab refresh / close — keepalive fetch ──────────────────────────
     useEffect(() => {
@@ -158,11 +202,12 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 abortControllerRef.current.abort();
                 abortControllerRef.current = null;
                 activeStreamChatIdRef.current = null;
+                resetStreamBuffer();
             }
         };
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, [notifyBackendStopKeepalive]);
+    }, [notifyBackendStopKeepalive, resetStreamBuffer]);
 
     // ─── Stop stream when switching chats ────────────────────────────────
     const prevChatIdRef = useRef<string | undefined>(chatId);
@@ -173,12 +218,13 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 abortControllerRef.current.abort();
                 abortControllerRef.current = null;
                 activeStreamChatIdRef.current = null;
+                resetStreamBuffer();
                 notifyBackendStop(chatIdToStop);
             }
             setStatus("idle");
             prevChatIdRef.current = chatId;
         }
-    }, [chatId, notifyBackendStop]);
+    }, [chatId, notifyBackendStop, resetStreamBuffer]);
 
     const sendMessage = useCallback(
         async (content: string, overrideChatId?: string, fileIds?: string[], retryCount = 1) => {
@@ -206,6 +252,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             };
 
             setMessages((prev) => [...prev, userMessage, aiMessage]);
+            resetStreamBuffer(aiMessageId);
             setStatus("streaming");
 
             // 3. Build the SSE URL
@@ -259,6 +306,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
                         setError(errorPayload);
                         setStatus("error");
+                        resetStreamBuffer();
                         toast.error(errorPayload);
                         console.error("[SSE] Connection failed on open:", errorPayload);
 
@@ -279,14 +327,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         const data = ev.data;
 
                         if (eventType === "message") {
-                            // Append text chunk to the AI message
-                            setMessages((prev) =>
-                                prev.map((msg) =>
-                                    msg.id === aiMessageId
-                                        ? { ...msg, content: msg.content + data }
-                                        : msg
-                                )
-                            );
+                            streamBufferRef.current += data;
+                            scheduleStreamFlush();
                         } else if (eventType === "sources") {
                             try {
                                 const parsedSources: LawSource[] = JSON.parse(data);
@@ -298,6 +340,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             console.error("[SSE] Received error event from server:", data);
                             setError(data);
                             setStatus("error");
+                            flushStreamBuffer();
+                            resetStreamBuffer();
                             toast.error(data);
                             setMessages((prev) =>
                                 prev.map((msg) =>
@@ -323,6 +367,9 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
                         setError(errorMessage);
                         setStatus("error");
+                        flushStreamBuffer();
+                        const bufferedContent = streamBufferRef.current;
+                        resetStreamBuffer();
                         toast.error(errorMessage);
 
                         setMessages((prev) =>
@@ -330,7 +377,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                                 msg.id === aiMessageId
                                     ? {
                                         ...msg,
-                                        content: msg.content || errorMessage,
+                                        content: bufferedContent || msg.content || errorMessage,
                                         isStreaming: false,
                                         isError: true
                                     }
@@ -344,6 +391,8 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     onclose() {
                         // Stream ended normally — mark as done
                         setStatus("done");
+                        flushStreamBuffer();
+                        resetStreamBuffer();
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
@@ -367,12 +416,14 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     try {
                         await fetchMe();
                         // Clean up duplicate optimistic messages before retrying
+                        resetStreamBuffer();
                         setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
                         await sendMessage(content, overrideChatId, fileIds, retryCount - 1);
                         return;
                     } catch {
                         setError(i18n.t("toast.sessionExpired"));
                         setStatus("error");
+                        resetStreamBuffer();
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
@@ -398,7 +449,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 }
             }
         },
-        [chatId, queryClient]
+        [chatId, flushStreamBuffer, queryClient, resetStreamBuffer, scheduleStreamFlush]
     );
 
     return {
