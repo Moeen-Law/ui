@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState, useEffect } from "react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
 import useAuthStore from "@/features/auth/store/auth";
-import type { LawSource, StreamMessage, StreamStatus } from "../types";
+import type { ChatMessageFile, FilesStreamEvent, LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
 import { stopStream as stopStreamService } from "../services";
 import { toast } from "sonner";
@@ -9,9 +9,10 @@ import { fetchMe } from "@/features/auth/services";
 import { useQueryClient } from "@tanstack/react-query";
 import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
+import { extractTextFromStreamData } from "../helpers/stream";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-const STREAM_FLUSH_INTERVAL_MS = 80;
+const STREAM_FLUSH_INTERVAL_MS = 40;
 
 interface UseChatStreamOptions {
     chatId: string | undefined;
@@ -24,7 +25,13 @@ interface UseChatStreamReturn {
     status: StreamStatus;
     isLoading: boolean;
     error: string | null;
-    sendMessage: (content: string, overrideChatId?: string, fileIds?: string[], retryCount?: number) => Promise<void>;
+    sendMessage: (
+        content: string,
+        overrideChatId?: string,
+        fileIds?: string[],
+        optimisticFiles?: ChatMessageFile[],
+        retryCount?: number
+    ) => Promise<void>;
     stopStreaming: () => void;
 }
 
@@ -158,22 +165,25 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     const stopStreaming = useCallback(() => {
         if (!abortControllerRef.current) return;
         const stoppingChatId = activeStreamChatIdRef.current;
+        const stoppedContent = streamBufferRef.current;
         abortControllerRef.current.abort();
         abortControllerRef.current = null;
         activeStreamChatIdRef.current = null;
         flushStreamBuffer();
         resetStreamBuffer();
         setStatus("done");
-        // Mark the last AI message as no longer streaming and add the stop message
-        setMessages((prev) => [
-            ...prev.map((msg) => (msg.isStreaming ? { ...msg, isStreaming: false } : msg)),
-            {
-                id: crypto.randomUUID(),
-                content: i18n.t("toast.streamStopped"),
-                sender: "ai",
-                isStopped: true,
-            },
-        ]);
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.isStreaming
+                    ? {
+                        ...msg,
+                        content: stoppedContent || msg.content || i18n.t("toast.streamStopped"),
+                        isStreaming: false,
+                        isStopped: true,
+                    }
+                    : msg
+            )
+        );
 
         if (stoppingChatId) {
             notifyBackendStop(stoppingChatId);
@@ -227,7 +237,13 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     }, [chatId, notifyBackendStop, resetStreamBuffer]);
 
     const sendMessage = useCallback(
-        async (content: string, overrideChatId?: string, fileIds?: string[], retryCount = 1) => {
+        async (
+            content: string,
+            overrideChatId?: string,
+            fileIds?: string[],
+            optimisticFiles?: ChatMessageFile[],
+            retryCount = 1
+        ) => {
             const currentChatId = overrideChatId || chatId;
             if (!currentChatId || !content.trim()) return;
 
@@ -240,6 +256,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 id: crypto.randomUUID(),
                 content: content.trim(),
                 sender: "user",
+                files: optimisticFiles,
             };
 
             // 2. Create a placeholder for the AI response
@@ -325,7 +342,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                     onmessage(ev) {
                         const eventType = ev.event || "message";
                         const data = ev.data;
-
+                        console.log("[SSE] Received message event:", eventType, data); 
                         if (eventType === "message") {
                             streamBufferRef.current += data;
                             scheduleStreamFlush();
@@ -335,6 +352,25 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                                 setSources(parsedSources);
                             } catch {
                                 console.error("Failed to parse sources event:", data);
+                            }
+                        } else if (eventType === "files") {
+                            try {
+                                const parsedFilesEvent: FilesStreamEvent = JSON.parse(data);
+                                setMessages((prev) =>
+                                    prev.map((msg) => {
+                                        if (parsedFilesEvent.messageId && msg.id === parsedFilesEvent.messageId) {
+                                            return { ...msg, files: parsedFilesEvent.files };
+                                        }
+
+                                        if (!parsedFilesEvent.messageId && msg.id === userMessage.id) {
+                                            return { ...msg, files: parsedFilesEvent.files };
+                                        }
+
+                                        return msg;
+                                    })
+                                );
+                            } catch {
+                                console.error("Failed to parse files event:", data);
                             }
                         } else if (eventType === "error") {
                             console.error("[SSE] Received error event from server:", data);
@@ -418,7 +454,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         // Clean up duplicate optimistic messages before retrying
                         resetStreamBuffer();
                         setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
-                        await sendMessage(content, overrideChatId, fileIds, retryCount - 1);
+                        await sendMessage(content, overrideChatId, fileIds, optimisticFiles, retryCount - 1);
                         return;
                     } catch {
                         setError(i18n.t("toast.sessionExpired"));

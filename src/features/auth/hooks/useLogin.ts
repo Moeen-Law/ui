@@ -13,7 +13,7 @@ import i18n from "@/lib/i18n";
 export const useLogin = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
-    const { setAccessToken  } = useAuthStore();
+    const { setAccessToken } = useAuthStore();
 
     const handleLogin = async (data: LoginValues) => {
         setLoading(true);

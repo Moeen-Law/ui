@@ -76,3 +76,5 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 *.pem
 
 see-guide
+
+/file-manager-guide

@@ -1,16 +1,22 @@
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { memo } from "react";
+import { cn } from "@/lib/utils";
+import { normalizeAssistantMarkdown } from "../helpers/markdown";
 
 interface MarkdownRendererProps {
     content: string;
+    isStreaming?: boolean;
 }
 
 const remarkPlugins = [remarkGfm];
 
-function MarkdownRenderer({ content }: MarkdownRendererProps) {
+function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps) {
+    const normalizedContent = normalizeAssistantMarkdown(content);
+
     return (
-        <div className="prose prose-lg max-w-none
+        <div className={cn(
+            `prose prose-lg max-w-none
             dark:prose-invert
             prose-p:my-2 prose-p:leading-relaxed
             prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-2
@@ -25,7 +31,9 @@ function MarkdownRenderer({ content }: MarkdownRendererProps) {
             prose-table:border-collapse
             prose-th:border prose-th:border-border prose-th:px-3 prose-th:py-2
             prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2
-            text-right"
+            text-right`,
+            isStreaming && "prose-p:my-1.5 prose-headings:mt-3 prose-headings:mb-1.5 prose-ul:my-1.5 prose-ol:my-1.5"
+        )}
             dir="rtl"
         >
             <ReactMarkdown remarkPlugins={remarkPlugins}>

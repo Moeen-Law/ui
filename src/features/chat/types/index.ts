@@ -21,6 +21,7 @@ export interface Message {
     sender: Sender;
     createdAt: Date;
     chatId: string;
+    files?: ChatMessageFile[];
 }
 
 export type Sender = "ai" | "user" | "system";
@@ -69,6 +70,7 @@ export interface StreamMessage {
     id: string;
     content: string;
     sender: Sender;
+    files?: ChatMessageFile[];
     isStreaming?: boolean;
     isError?: boolean;
     isStopped?: boolean;
@@ -105,12 +107,69 @@ export interface MessageDatum {
     createdAt:      Date;
     chatId:         string;
     responseSource: ResponseSource | null;
-    files:          any[];
+    files:          ChatMessageFile[];
 }
 
 export interface ResponseSource {
     id:        string;
-    data:      any[];
+    data:      LawSource[] | Record<string, unknown>;
     messageId: string;
 }
 
+
+
+// ─── File Manager Types ────────────────────────────────────────
+
+
+// endpoint -> /messages/files/upload-url
+export interface RequestFileUpload {
+    fileName: string;
+    mimeType: string;
+}
+
+
+export interface RequestFileUploadResponse {
+    fileId: string;
+    uploadUrl: string;
+    formFields?: FormFields;
+    expiresInSeconds: number;
+    maxSizeBytes: number;
+    httpMethod: string;
+    contentType: string;
+}
+
+export type FormFields = Record<string, string>;
+
+export type ChatMessageFileStatus = "available" | "pending" | "processing" | "failed";
+
+export interface ChatMessageFile {
+    fileId: string;
+    status: ChatMessageFileStatus | string;
+    originalName: string;
+    contentType: string;
+    size: number;
+    downloadUrl?: string;
+    downloadUrlExpiresInSeconds?: number;
+}
+
+export interface FilesStreamEvent {
+    messageId?: string;
+    files: ChatMessageFile[];
+}
+
+
+// bucket
+export interface FileUploadUrl { 
+    fileName: string;
+    mimeType: string;
+    bucket: string;
+    uploaderId: string;
+    maxSizeBytes: number;
+ } 
+
+export interface FileUploadUrlResponse {
+    fileId: string;
+    uploadUrl: string;
+    expiresInSeconds: number;
+    httpMethod: string;
+}

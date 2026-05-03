@@ -1,12 +1,19 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
 
 export function VideoDemo() {
     const { t } = useTranslation();
     const sectionRef = useRef<HTMLElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
-    const [isPlaying, setIsPlaying] = useState(true); // Autoplay is on
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [isMuted, setIsMuted] = useState(true);
+    const [progress, setProgress] = useState(0);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
     const shouldReduceMotion = useReducedMotion();
 
     const { scrollYProgress } = useScroll({
@@ -34,7 +41,8 @@ export function VideoDemo() {
     );
     const progressScale = useTransform(scrollYProgress, [0, 1], [0.08, 1]);
 
-    const togglePlay = () => {
+    const togglePlay = (e?: React.MouseEvent) => {
+        if (e) e.stopPropagation();
         if (videoRef.current) {
             if (videoRef.current.paused) {
                 videoRef.current.play();
@@ -45,6 +53,49 @@ export function VideoDemo() {
             }
         }
     };
+
+    const toggleMute = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (videoRef.current) {
+            videoRef.current.muted = !videoRef.current.muted;
+            setIsMuted(videoRef.current.muted);
+        }
+    };
+
+    const handleTimeUpdate = () => {
+        if (videoRef.current) {
+            const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+            setProgress(currentProgress);
+        }
+    };
+
+    const toggleFullscreen = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (!containerRef.current) return;
+
+        if (!document.fullscreenElement) {
+            try {
+                await containerRef.current.requestFullscreen();
+                setIsFullscreen(true);
+            } catch (err) {
+                console.error("Error attempting to enable full-screen mode:", err);
+            }
+        } else {
+            if (document.exitFullscreen) {
+                await document.exitFullscreen();
+                setIsFullscreen(false);
+            }
+        }
+    };
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            setIsFullscreen(!!document.fullscreenElement);
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    }, []);
 
     return (
         <section
@@ -67,43 +118,84 @@ export function VideoDemo() {
 
                 <motion.div
                     style={{
-                        scale: videoScale,
-                        y: videoY,
-                        opacity: videoOpacity,
+                        scale: isFullscreen ? 1 : videoScale,
+                        y: isFullscreen ? 0 : videoY,
+                        opacity: isFullscreen ? 1 : videoOpacity,
                     }}
-                    className="relative w-full max-w-[1180px] aspect-video will-change-transform"
+                    className={`relative w-full aspect-video will-change-transform z-10 ${isFullscreen ? "max-w-none h-screen" : "max-w-[1180px]"
+                        }`}
                 >
-                    <div className="relative w-full h-full bg-linear-to-br from-card to-muted rounded-2xl overflow-hidden shadow-2xl border border-border">
+                    <div
+                        ref={containerRef}
+                        className={`group relative w-full h-full bg-linear-to-br from-card to-muted overflow-hidden shadow-2xl border border-border cursor-pointer ${isFullscreen ? "rounded-none" : "rounded-2xl"
+                            }`}
+                        onClick={togglePlay}
+                    >
                         <video
                             ref={videoRef}
                             className="absolute inset-0 w-full h-full object-cover bg-muted"
                             autoPlay
                             loop
-                            muted
+                            muted={isMuted}
                             playsInline
                             poster="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=675&fit=crop"
                             onPlay={() => setIsPlaying(true)}
                             onPause={() => setIsPlaying(false)}
+                            onTimeUpdate={handleTimeUpdate}
                         >
                             <source src="/Law firm Promo.mp4" type="video/mp4" />
                             Your browser does not support the video tag.
                         </video>
 
-                        {/* Play/Pause Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
                         <button
                             onClick={togglePlay}
-                            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/95 text-black rounded-full px-8 py-5 flex items-center gap-3 font-['Cairo'] text-[1.1rem] font-bold cursor-pointer transition-all duration-300 shadow-2xl hover:scale-105 ${isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
+                            className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-white/20 backdrop-blur-md text-white rounded-full p-6 flex items-center justify-center transition-all duration-300 shadow-2xl hover:scale-110 hover:bg-white/30 border border-white/20 ${isPlaying
+                                    ? "opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100"
+                                    : "opacity-100 scale-100"
                                 }`}
                         >
-                            <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
-                            <span>{t("videoDemo.playBtn")}</span>
+                            {isPlaying ? (
+                                <Pause className="w-8 h-8 fill-current" />
+                            ) : (
+                                <Play className="w-8 h-8 fill-current ml-1" />
+                            )}
                         </button>
+
+                        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-between z-20">
+                            <button
+                                onClick={toggleMute}
+                                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/60 transition-colors border border-white/10"
+                            >
+                                {isMuted ? (
+                                    <VolumeX className="w-5 h-5" />
+                                ) : (
+                                    <Volume2 className="w-5 h-5" />
+                                )}
+                            </button>
+
+                            <button
+                                onClick={toggleFullscreen}
+                                className="bg-black/40 backdrop-blur-md text-white p-3 rounded-full hover:bg-black/60 transition-colors border border-white/10"
+                            >
+                                {isFullscreen ? (
+                                    <Minimize className="w-5 h-5" />
+                                ) : (
+                                    <Maximize className="w-5 h-5" />
+                                )}
+                            </button>
+                        </div>
+
+                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20 z-20">
+                            <div
+                                className="h-full bg-blue-500 transition-all duration-100 ease-linear"
+                                style={{ width: `${progress}%` }}
+                            />
+                        </div>
                     </div>
                 </motion.div>
 
-                {/* Content that appears after video transitions */}
                 <motion.div
                     style={{ opacity: contentOpacity, y: contentY }}
                     className="absolute bottom-[8%] left-0 right-0 text-center px-6 md:px-8 pointer-events-none"

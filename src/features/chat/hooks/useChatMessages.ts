@@ -30,6 +30,7 @@ export const useChatMessages = (chatId: string | undefined) => {
                     id: msg.id,
                     content: msg.content,
                     sender: msg.sender,
+                    files: msg.files,
                     isStreaming: false,
                 });
 

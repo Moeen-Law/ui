@@ -30,7 +30,7 @@ export default function ChatCard({
             onClick={() => navigate(`/chat/${chat.id}`)}
             title={chat.title}
             className={cn(
-                "group relative flex items-center gap-3 w-full p-3 rounded-xl transition-all cursor-pointer border border-transparent",
+                "group relative flex items-center gap-3 w-full p-3 rounded-xl transition-all my-2 cursor-pointer border border-transparent",
                 isActive
                     ? "bg-blue-500/15 ring-1 ring-blue-500/30 shadow-[0_0_20px_rgba(59,130,246,0.1)]"
                     : "hover:bg-blue-500/10 text-muted-foreground hover:text-blue-400 dark:hover:text-blue-300"
