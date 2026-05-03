@@ -9,7 +9,6 @@ import { fetchMe } from "@/features/auth/services";
 import { useQueryClient } from "@tanstack/react-query";
 import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
-import { extractTextFromStreamData } from "../helpers/stream";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const STREAM_FLUSH_INTERVAL_MS = 40;

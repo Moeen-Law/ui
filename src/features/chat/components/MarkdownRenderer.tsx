@@ -12,7 +12,7 @@ interface MarkdownRendererProps {
 const remarkPlugins = [remarkGfm];
 
 function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps) {
-    const normalizedContent = normalizeAssistantMarkdown(content);
+   // const normalizedContent = normalizeAssistantMarkdown(content);
 
     return (
         <div className={cn(
