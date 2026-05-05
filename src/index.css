@@ -87,6 +87,60 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+.admin-dashboard {
+  --background: oklch(0.975 0.012 165);
+  --foreground: oklch(0.18 0.02 165);
+  --card: oklch(0.995 0.006 165);
+  --card-foreground: oklch(0.18 0.02 165);
+  --popover: oklch(0.995 0.006 165);
+  --popover-foreground: oklch(0.18 0.02 165);
+  --primary: oklch(0.58 0.14 162.48);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.93 0.02 165);
+  --secondary-foreground: oklch(0.2 0.02 165);
+  --muted: oklch(0.93 0.02 165);
+  --muted-foreground: oklch(0.46 0.02 165);
+  --accent: oklch(0.9 0.04 165);
+  --accent-foreground: oklch(0.18 0.02 165);
+  --border: oklch(0.55 0.08 163 / 22%);
+  --input: oklch(0.55 0.08 163 / 18%);
+  --ring: oklch(0.58 0.14 162.48);
+  --sidebar: oklch(0.955 0.018 165);
+  --sidebar-foreground: oklch(0.18 0.02 165);
+  --sidebar-accent: oklch(0.9 0.04 165);
+  --sidebar-accent-foreground: oklch(0.16 0.02 165);
+  --sidebar-border: oklch(0.55 0.08 163 / 22%);
+  --admin-chart-blue: oklch(0.623 0.214 259.815);
+  --admin-chart-amber: oklch(0.852 0.173 82.358);
+  --admin-glow: oklch(0.58 0.14 162.48 / 18%);
+}
+
+.dark .admin-dashboard {
+  --background: oklch(0.06 0.012 165);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.095 0.012 165);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.095 0.012 165);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.696 0.17 162.48);
+  --primary-foreground: oklch(0.06 0.012 165);
+  --secondary: oklch(0.17 0.016 165);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.17 0.016 165);
+  --muted-foreground: oklch(0.68 0 0);
+  --accent: oklch(0.19 0.028 165);
+  --accent-foreground: oklch(0.985 0 0);
+  --border: oklch(0.76 0.13 163 / 16%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.696 0.17 162.48);
+  --sidebar: oklch(0.08 0.014 165);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.18 0.028 165);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.76 0.13 163 / 16%);
+  --admin-glow: oklch(0.696 0.17 162.48 / 18%);
+}
+
 @theme inline {
   --font-sans: "Noto Sans Arabic Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);

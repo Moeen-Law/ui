@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { History } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import SidebarContent from "./SidebarContent";
+import { cn } from "@/lib/utils";
 
 export default function HistoryDrawer() {
   const [isOpen, setIsOpen] = useState(false);
+  const { i18n } = useTranslation();
+  const isRtl = i18n.dir() === "rtl";
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -51,11 +55,14 @@ export default function HistoryDrawer() {
 
             {/* Drawer Content */}
             <motion.div
-              initial={{ x: "100%" }}
+              initial={{ x: isRtl ? "100%" : "-100%" }}
               animate={{ x: 0 }}
-              exit={{ x: "100%" }}
+              exit={{ x: isRtl ? "100%" : "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 bottom-0 right-0 w-[300px] bg-background border-l border-border flex flex-col p-5 text-foreground font-['Cairo'] overflow-hidden"
+              className={cn(
+                "absolute bottom-0 top-0 flex w-[300px] flex-col overflow-hidden border-e border-border bg-background p-5 font-['Cairo'] text-foreground",
+                isRtl ? "right-0" : "left-0"
+              )}
             >
                 <SidebarContent onClose={() => setIsOpen(false)} />
             </motion.div>

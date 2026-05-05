@@ -4,7 +4,7 @@ export default function ChatSkeleton() {
     return (
         <div className="flex h-dvh bg-background text-foreground font-['Cairo'] overflow-hidden">
             {/* Sidebar Skeleton */}
-            <aside className="hidden md:flex flex-col w-[300px] bg-muted border-l border-border p-5">
+            <aside className="hidden md:flex flex-col w-[300px] bg-muted border-e border-border p-5">
                 <div className="h-6 w-32 bg-muted-foreground/20 rounded-md mb-8 animate-pulse" />
                 <div className="h-12 w-full bg-muted/50 border border-border rounded-lg mb-8 animate-pulse" />
 
@@ -47,7 +47,7 @@ export default function ChatSkeleton() {
                     </div>
 
                     {/* Input Skeleton */}
-                    <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
+                    <div className="absolute inset-x-0 bottom-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
                         <div className="max-w-4xl mx-auto">
                             <div className="h-[60px] w-full bg-card border border-border rounded-2xl animate-pulse" />
                         </div>

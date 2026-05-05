@@ -1,6 +1,7 @@
 import { type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { MoeenLogo } from "@/shared/components/MoeenLogo";
 
 interface AuthLayoutProps {
     children: ReactNode;
@@ -24,7 +25,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
             >
                 {/* Form Side */}
                 <div className="flex-1 p-8 md:p-14 flex flex-col justify-center">
-                    <div className="mb-10 text-center md:text-right">
+                    <div className="mb-10 text-center md:text-end">
                         <h1 className="text-3xl md:text-4xl font-black text-foreground mb-3">{title}</h1>
                         <p className="text-muted-foreground text-sm md:text-base leading-relaxed">{subtitle}</p>
                     </div>
@@ -49,13 +50,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
                                 animate={{ rotate: [0, -5, 0] }}
                                 transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
                             >
-                                <svg
-                                    className="w-24 h-24 text-amber-400 drop-shadow-[0_4px_12px_rgba(251,191,36,0.5)]"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                >
-                                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                                </svg>
+                                <MoeenLogo showText={false} size="lg" iconClassName="drop-shadow-[0_4px_12px_rgba(251,191,36,0.5)]" />
                             </motion.div>
                             <div className="absolute -inset-4 bg-amber-400/10 blur-2xl rounded-full -z-10" />
                         </div>

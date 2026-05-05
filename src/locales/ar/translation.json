@@ -257,6 +257,67 @@
       "titleMax": "عنوان المحادثة طويل جداً"
     }
   },
+  "admin": {
+    "title": "لوحة التحكم",
+    "placeholder": "سيتم تنفيذ هذا القسم من لوحة التحكم في المرحلة التالية.",
+    "profile": {
+      "name": "محمد خالد",
+      "role": "مدير النظام",
+      "initial": "م"
+    },
+    "actions": {
+      "toggleSidebar": "تبديل القائمة الجانبية",
+      "openSidebar": "فتح القائمة الجانبية",
+      "closeSidebar": "إغلاق القائمة الجانبية",
+      "notifications": "الإشعارات"
+    },
+    "nav": {
+      "home": "الرئيسية",
+      "users": "المستخدمين",
+      "contracts": "العقود والتحليلات",
+      "subscriptions": "الاشتراكات والمالية",
+      "aiFeeding": "تغذية الذكاء الاصطناعي",
+      "settings": "الإعدادات"
+    },
+    "overview": {
+      "title": "نظرة عامة",
+      "metrics": {
+        "activeUsers": "المستخدمين النشطين",
+        "activeUsersTrend": "12% عن الشهر الماضي",
+        "generatedContracts": "العقود المولدة",
+        "generatedContractsTrend": "8.5% هذا الأسبوع",
+        "aiConsultations": "استشارات AI",
+        "aiConsultationsTrend": "24% معدل الاستخدام",
+        "activeSubscriptions": "الاشتراكات الفعالة",
+        "activeSubscriptionsTrend": "1.2% إلغاء الطرح"
+      },
+      "activities": {
+        "title": "آخر النشاطات",
+        "newUser": "مستخدم جديد: أحمد مصطفى قام بالتسجيل",
+        "contractCreated": "تم توليد عقد إيجار جديد بنجاح",
+        "paymentFailed": "فشل في الدفع: اشتراك المستخدم #4029",
+        "accountUpgraded": "ترقية حساب: شركة القرار للمحاكاة",
+        "fiveMinutesAgo": "منذ 5 دقائق",
+        "fifteenMinutesAgo": "منذ 15 دقيقة",
+        "oneHourAgo": "منذ 1 ساعة",
+        "twoHoursAgo": "منذ ساعتين"
+      },
+      "chart": {
+        "title": "إحصائيات الاستخدام (أسبوعي)",
+        "aiConsultations": "استشارات AI",
+        "generatedContracts": "عقود مولدة"
+      },
+      "days": {
+        "saturday": "السبت",
+        "sunday": "الأحد",
+        "monday": "الإثنين",
+        "tuesday": "الثلاثاء",
+        "wednesday": "الأربعاء",
+        "thursday": "الخميس",
+        "friday": "الجمعة"
+      }
+    }
+  },
   "notfound": {
     "title_1": "الصفحة ",
     "titleHighlight": "مفقودة",

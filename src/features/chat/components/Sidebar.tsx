@@ -7,7 +7,7 @@ export default function Sidebar() {
 
     return (
         <aside className={cn(
-            "hidden md:flex flex-col w-[300px] bg-background border-l border-border relative overflow-hidden transition-all duration-300 ease-in-out",
+            "hidden md:flex flex-col w-[300px] bg-background border-e border-border relative overflow-hidden transition-all duration-300 ease-in-out",
             !isSidebarOpen && "md:w-0 md:border-none"
         )}>
             <div className={cn(

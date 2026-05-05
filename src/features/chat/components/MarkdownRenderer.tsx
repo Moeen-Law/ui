@@ -7,12 +7,13 @@ import { cn } from "@/lib/utils";
 interface MarkdownRendererProps {
     content: string;
     isStreaming?: boolean;
+    contentDir?: "rtl" | "ltr";
 }
 
 const remarkPlugins = [remarkGfm];
 
-function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps) {
-   // const normalizedContent = normalizeAssistantMarkdown(content);
+function MarkdownRenderer({ content, isStreaming, contentDir = "rtl" }: MarkdownRendererProps) {
+    const isRtl = contentDir === "rtl";
 
     return (
         <div className={cn(
@@ -21,20 +22,23 @@ function MarkdownRenderer({ content, isStreaming }: MarkdownRendererProps) {
             prose-p:my-2 prose-p:leading-relaxed
             prose-headings:text-foreground prose-headings:font-bold prose-headings:mt-4 prose-headings:mb-2
             prose-strong:text-foreground prose-strong:font-bold
-            prose-ul:my-2 prose-ul:pr-5
-            prose-ol:my-2 prose-ol:pr-5
+            prose-ul:my-2
+            prose-ol:my-2
             prose-li:my-0.5
-            prose-blockquote:border-r-blue-500 prose-blockquote:border-r-2 prose-blockquote:border-l-0 prose-blockquote:pr-4 prose-blockquote:pl-0 prose-blockquote:text-muted-foreground prose-blockquote:not-italic
+            prose-blockquote:text-muted-foreground prose-blockquote:not-italic
             prose-code:text-blue-500 dark:prose-code:text-blue-300 prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-xs prose-code:before:content-none prose-code:after:content-none
             prose-pre:bg-muted prose-pre:border prose-pre:border-border prose-pre:rounded-xl
             prose-a:text-blue-500 dark:prose-a:text-blue-400 prose-a:no-underline hover:prose-a:underline
             prose-table:border-collapse
             prose-th:border prose-th:border-border prose-th:px-3 prose-th:py-2
             prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2
-            text-right`,
+            text-start`,
+            isRtl
+                ? "prose-ul:pr-5 prose-ul:pl-0 prose-ol:pr-5 prose-ol:pl-0 prose-blockquote:border-r-2 prose-blockquote:border-r-blue-500 prose-blockquote:border-l-0 prose-blockquote:pr-4 prose-blockquote:pl-0"
+                : "prose-ul:pl-5 prose-ul:pr-0 prose-ol:pl-5 prose-ol:pr-0 prose-blockquote:border-l-2 prose-blockquote:border-l-blue-500 prose-blockquote:border-r-0 prose-blockquote:pl-4 prose-blockquote:pr-0",
             isStreaming && "prose-p:my-1.5 prose-headings:mt-3 prose-headings:mb-1.5 prose-ul:my-1.5 prose-ol:my-1.5"
         )}
-            dir="rtl"
+            dir={contentDir}
         >
             <ReactMarkdown remarkPlugins={remarkPlugins}>
                 {content}

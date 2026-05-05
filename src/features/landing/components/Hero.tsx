@@ -103,7 +103,7 @@ export function Hero() {
             <div className="max-w-[1280px] mx-auto px-8 w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
                     {/* Content */}
-                    <div className="max-w-[800px] lg:max-w-[600px] mt-10 lg:mt-0 text-center lg:text-right flex flex-col items-center lg:items-start mx-auto lg:mx-0">
+                    <div className="max-w-[800px] lg:max-w-[600px] mt-10 lg:mt-0 text-center lg:text-end flex flex-col items-center lg:items-start mx-auto lg:mx-0">
                         <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-foreground">
                             {t("hero.titleMain")}
                             <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-3 pt-1">

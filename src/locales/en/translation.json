@@ -257,6 +257,67 @@
       "titleMax": "Chat title is too long"
     }
   },
+  "admin": {
+    "title": "Control Panel",
+    "placeholder": "This admin section will be implemented in the next phase.",
+    "profile": {
+      "name": "Mohamed Khaled",
+      "role": "System Admin",
+      "initial": "M"
+    },
+    "actions": {
+      "toggleSidebar": "Toggle sidebar",
+      "openSidebar": "Open sidebar",
+      "closeSidebar": "Close sidebar",
+      "notifications": "Notifications"
+    },
+    "nav": {
+      "home": "Home",
+      "users": "Users",
+      "contracts": "Contracts and Analytics",
+      "subscriptions": "Subscriptions and Finance",
+      "aiFeeding": "AI Feeding",
+      "settings": "Settings"
+    },
+    "overview": {
+      "title": "Overview",
+      "metrics": {
+        "activeUsers": "Active Users",
+        "activeUsersTrend": "12% from last month",
+        "generatedContracts": "Generated Contracts",
+        "generatedContractsTrend": "8.5% this week",
+        "aiConsultations": "AI Consultations",
+        "aiConsultationsTrend": "24% usage rate",
+        "activeSubscriptions": "Active Subscriptions",
+        "activeSubscriptionsTrend": "1.2% cancellations"
+      },
+      "activities": {
+        "title": "Latest Activities",
+        "newUser": "New user: Ahmed Mostafa registered",
+        "contractCreated": "New lease contract generated successfully",
+        "paymentFailed": "Payment failed: user subscription #4029",
+        "accountUpgraded": "Account upgraded: Al-Qarar Simulation Company",
+        "fiveMinutesAgo": "5 minutes ago",
+        "fifteenMinutesAgo": "15 minutes ago",
+        "oneHourAgo": "1 hour ago",
+        "twoHoursAgo": "2 hours ago"
+      },
+      "chart": {
+        "title": "Usage Statistics (Weekly)",
+        "aiConsultations": "AI Consultations",
+        "generatedContracts": "Generated Contracts"
+      },
+      "days": {
+        "saturday": "Saturday",
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday"
+      }
+    }
+  },
   "notfound": {
     "title_1": "Page ",
     "titleHighlight": "Lost",

@@ -142,7 +142,7 @@ export function InteractiveDemo() {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8 }}
-                        className="flex flex-col items-center lg:items-start text-center lg:text-right"
+                        className="flex flex-col items-center lg:items-start text-center lg:text-end"
                     >
                         <span className="text-sm font-bold text-blue-500 uppercase tracking-widest mb-4">
                             {t("interactiveDemo.assistantLabel")}

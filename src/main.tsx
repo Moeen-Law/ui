@@ -1,4 +1,5 @@
 import { StrictMode, useEffect } from "react"
+import type { ReactNode } from "react"
 import { createRoot } from "react-dom/client"
 import { DirectionProvider } from "@/components/ui/direction"
 
@@ -22,13 +23,17 @@ function ThemeInitializer() {
     return null;
 }
 
-function DirectionWrapper({ children }: { children: React.ReactNode }) {
+function DirectionWrapper({ children }: { children: ReactNode }) {
   const { i18n } = useTranslation();
-  // `dir` will be "rtl" for "ar" and "ltr" for "en"
   const dir = i18n.dir() as "rtl" | "ltr";
+
+  useEffect(() => {
+    document.documentElement.dir = dir;
+    document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language ?? "ar";
+  }, [dir, i18n.language, i18n.resolvedLanguage]);
   
   return (
-    <DirectionProvider dir={dir} direction={dir}>
+    <DirectionProvider dir={dir}>
       {children}
     </DirectionProvider>
   );

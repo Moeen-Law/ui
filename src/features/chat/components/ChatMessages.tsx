@@ -86,7 +86,7 @@ const MessageRow = memo(function MessageRow({ msg }: MessageRowProps) {
                 {msg.sender === "ai" ? (
                     <>
                         {msg.content ? (
-                            <MarkdownRenderer content={msg.content} isStreaming={msg.isStreaming} />
+                            <MarkdownRenderer content={msg.content} isStreaming={msg.isStreaming} contentDir="rtl" />
                         ) : msg.isStreaming ? (
                             <TypingIndicator />
                         ) : null}

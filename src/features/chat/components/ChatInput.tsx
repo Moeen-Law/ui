@@ -64,7 +64,7 @@ export default function ChatInput({
 
 
     return (
-        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
+        <div className="absolute inset-x-0 bottom-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto relative">
                 <div className="relative bg-card border border-border rounded-2xl p-2 focus-within:border-blue-500/50 transition-all shadow-2xl backdrop-blur-sm">
                     {selectedFiles.length > 0 && (

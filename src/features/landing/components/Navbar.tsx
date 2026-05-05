@@ -8,6 +8,7 @@ import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import MobileMenu from "./MobileMenu";
 import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
+import { MoeenLogo } from "@/shared/components/MoeenLogo";
 
 export function Navbar() {
     const { t } = useTranslation();
@@ -46,16 +47,7 @@ export function Navbar() {
                         onClick={() => navigate("/")}
                         className="flex items-center gap-3.5 cursor-pointer transition-transform duration-250 hover:-translate-y-px"
                     >
-                        <svg
-                            className="w-9 h-9 text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)] transition-transform duration-250 hover:-rotate-6 hover:scale-105"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                        >
-                            <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
-                        </svg>
-                        <span className="text-[1.75rem] font-black text-foreground font-['Cairo'] tracking-tight">
-                            {t("nav.logo")}
-                        </span>
+                        <MoeenLogo size="md" />
                     </div>
 
                     {/* Desktop Links */}

@@ -26,14 +26,13 @@ i18n
     },
   });
 
-// Sync document dir and lang attribute when language changes
-i18n.on('languageChanged', (lng) => {
+const syncDocumentDirection = (lng = i18n.resolvedLanguage ?? i18n.language ?? "ar") => {
   document.documentElement.dir = i18n.dir();
   document.documentElement.lang = lng;
-});
+}
 
-// Run once on init
-document.documentElement.dir = i18n.dir();
-document.documentElement.lang = i18n.language || "ar";
+i18n.on("languageChanged", syncDocumentDirection);
+
+syncDocumentDirection();
 
 export default i18n;
