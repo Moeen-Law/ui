@@ -15,6 +15,7 @@ const Chat = lazy(() => import('./features/chat/pages/Chat'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
+const AdminUsersPage = lazy(() => import('./features/admin/users/pages/AdminUsersPage'));
 import { Toaster } from "@/components/ui/sonner"
 import useAuthStore from "./features/auth/store/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -77,7 +78,7 @@ export function App() {
                         }
                     >
                         <Route index element={<AdminOverview />} />
-                        <Route path="users" element={<AdminPlaceholder titleKey="admin.nav.users" />} />
+                        <Route path="users" element={<AdminUsersPage />} />
                         <Route path="contracts" element={<AdminPlaceholder titleKey="admin.nav.contracts" />} />
                         <Route path="subscriptions" element={<AdminPlaceholder titleKey="admin.nav.subscriptions" />} />
                         <Route path="ai-feeding" element={<AdminPlaceholder titleKey="admin.nav.aiFeeding" />} />

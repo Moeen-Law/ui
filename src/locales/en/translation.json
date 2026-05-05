@@ -316,6 +316,64 @@
         "thursday": "Thursday",
         "friday": "Friday"
       }
+    },
+    "users": {
+      "title": "User Management",
+      "searchPlaceholder": "Search by name, email, or phone...",
+      "empty": "No users match the current filters.",
+      "columns": {
+        "user": "User",
+        "plan": "Subscription Plan",
+        "usage": "Usage (messages)",
+        "joinedAt": "Join Date",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "filters": {
+        "all": "All statuses",
+        "active": "Active users",
+        "banned": "Banned users"
+      },
+      "status": {
+        "active": "Active",
+        "banned": "Banned"
+      },
+      "plans": {
+        "professional": "Professional",
+        "free": "Free",
+        "enterprise": "Enterprise"
+      },
+      "usage": {
+        "unlimited": "Unlimited"
+      },
+      "actions": {
+        "ban": "Ban user",
+        "unban": "Unban user",
+        "delete": "Delete user"
+      },
+      "dialog": {
+        "ban": {
+          "title": "Ban this user?",
+          "description": "{{name}} will lose access until an admin unbans the account."
+        },
+        "unban": {
+          "title": "Unban this user?",
+          "description": "{{name}} will regain access to the platform."
+        },
+        "delete": {
+          "title": "Delete this user?",
+          "description": "{{name}} will be removed from this admin list. This mock action cannot be undone."
+        }
+      },
+      "pagination": {
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "toast": {
+        "ban": "{{name}} has been banned.",
+        "unban": "{{name}} has been unbanned.",
+        "delete": "{{name}} has been deleted."
+      }
     }
   },
   "notfound": {
