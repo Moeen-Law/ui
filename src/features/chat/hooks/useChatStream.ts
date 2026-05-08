@@ -5,7 +5,7 @@ import type { ChatMessageFile, FilesStreamEvent, LawSource, StreamMessage, Strea
 import { chatService } from "../helpers";
 import { stopStream as stopStreamService } from "../services";
 import { toast } from "sonner";
-import { fetchMe } from "@/features/auth/services";
+import { refreshAccessToken } from "@/shared/api";
 import { useQueryClient } from "@tanstack/react-query";
 import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
@@ -447,9 +447,9 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 }
 
                 if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
-                    console.warn("[SSE] Token expired. Attempting refresh via dummy request...");
+                    console.warn("[SSE] Token expired. Attempting shared token refresh...");
                     try {
-                        await fetchMe();
+                        await refreshAccessToken();
                         // Clean up duplicate optimistic messages before retrying
                         resetStreamBuffer();
                         setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
