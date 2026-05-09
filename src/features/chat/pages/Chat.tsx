@@ -49,6 +49,9 @@ export default function Chat() {
         messages: streamMessages,
         status: streamStatus,
         isLoading,
+        hasOlderMessages,
+        isFetchingOlderMessages,
+        fetchOlderMessages,
         sendMessage,
         stopStreaming,
     } = useChatStream({ chatId });
@@ -232,6 +235,9 @@ export default function Chat() {
                         messages={displayMessages}
                         isStreaming={effectiveStatus === "streaming" || effectiveStatus === "creating"}
                         isLoading={isLoading}
+                        hasOlderMessages={hasOlderMessages}
+                        isFetchingOlderMessages={isFetchingOlderMessages}
+                        fetchOlderMessages={fetchOlderMessages}
                     />
                     <ChatInput
                         inputValue={inputValue}

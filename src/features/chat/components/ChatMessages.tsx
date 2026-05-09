@@ -1,6 +1,6 @@
-import { memo, useCallback, useEffect, useRef } from "react";
+import { memo, useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Download, FileText, MessageSquare } from "lucide-react";
+import { Download, FileText, Loader2, MessageSquare } from "lucide-react";
 import type { ChatMessageFile, StreamMessage } from "../types";
 import MarkdownRenderer from "./MarkdownRenderer";
 import TypingIndicator from "./TypingIndicator";
@@ -13,11 +13,16 @@ interface ChatMessagesProps {
     messages: StreamMessage[];
     isStreaming?: boolean;
     isLoading?: boolean;
+    hasOlderMessages?: boolean;
+    isFetchingOlderMessages?: boolean;
+    fetchOlderMessages?: () => Promise<unknown>;
 }
 
 interface MessageRowProps {
     msg: StreamMessage;
 }
+
+const TOP_FETCH_THRESHOLD_PX = 80;
 
 const formatFileSize = (bytes: number) => {
     if (!bytes) return "";
@@ -111,12 +116,26 @@ const MessageRow = memo(function MessageRow({ msg }: MessageRowProps) {
     prev.msg.sender === next.msg.sender
 );
 
-export default function ChatMessages({ chatId, messages, isStreaming, isLoading }: ChatMessagesProps) {
+export default function ChatMessages({
+    chatId,
+    messages,
+    isStreaming,
+    isLoading,
+    hasOlderMessages = false,
+    isFetchingOlderMessages = false,
+    fetchOlderMessages,
+}: ChatMessagesProps) {
     const { t } = useTranslation();
     const scrollRef = useRef<HTMLDivElement>(null);
+    const loadOlderRef = useRef<HTMLDivElement>(null);
     const shouldStickToBottomRef = useRef(true);
     const scrollFrameRef = useRef<number | null>(null);
     const previousChatIdRef = useRef<string | undefined>(chatId);
+    const pendingScrollRestoreRef = useRef<{ scrollHeight: number; scrollTop: number } | null>(null);
+    const skipNextScrollEffectRef = useRef(false);
+    const hasSettledInitialScrollRef = useRef(false);
+    const hasUserScrolledRef = useRef(false);
+    const isFetchOlderInFlightRef = useRef(false);
 
     const isNearBottom = useCallback(() => {
         const container = scrollRef.current;
@@ -124,7 +143,7 @@ export default function ChatMessages({ chatId, messages, isStreaming, isLoading 
         return container.scrollHeight - container.scrollTop - container.clientHeight < 120;
     }, []);
 
-    const scheduleScrollToBottom = useCallback((force = false, afterLayout = false) => {
+    const scheduleScrollToBottom = useCallback((force = false, afterLayout = false, onComplete?: () => void) => {
         if (force && scrollFrameRef.current !== null) {
             window.cancelAnimationFrame(scrollFrameRef.current);
             scrollFrameRef.current = null;
@@ -139,6 +158,7 @@ export default function ChatMessages({ chatId, messages, isStreaming, isLoading 
                 if (container && (force || shouldStickToBottomRef.current)) {
                     container.scrollTop = container.scrollHeight;
                 }
+                onComplete?.();
             };
 
             if (afterLayout) {
@@ -150,20 +170,108 @@ export default function ChatMessages({ chatId, messages, isStreaming, isLoading 
         });
     }, []);
 
+    const tryFetchOlderMessages = useCallback(async () => {
+        const container = scrollRef.current;
+        const shouldSkip =
+            !container ||
+            !fetchOlderMessages ||
+            !hasOlderMessages ||
+            isFetchingOlderMessages ||
+            isFetchOlderInFlightRef.current ||
+            !hasSettledInitialScrollRef.current ||
+            !hasUserScrolledRef.current ||
+            (container?.scrollTop ?? Number.POSITIVE_INFINITY) > TOP_FETCH_THRESHOLD_PX;
+
+        if (shouldSkip) return;
+
+        pendingScrollRestoreRef.current = {
+            scrollHeight: container.scrollHeight,
+            scrollTop: container.scrollTop,
+        };
+
+        isFetchOlderInFlightRef.current = true;
+
+        try {
+            await fetchOlderMessages();
+        } finally {
+            isFetchOlderInFlightRef.current = false;
+        }
+    }, [fetchOlderMessages, hasOlderMessages, isFetchingOlderMessages]);
+
     useEffect(() => {
         const container = scrollRef.current;
         if (!container) return;
 
         const handleScroll = () => {
+            if (!hasSettledInitialScrollRef.current) return;
             shouldStickToBottomRef.current = isNearBottom();
+            if (hasUserScrolledRef.current && container.scrollTop <= TOP_FETCH_THRESHOLD_PX) {
+                tryFetchOlderMessages();
+            }
+        };
+
+        const markUserScrollIntent = () => {
+            if (!hasSettledInitialScrollRef.current) return;
+            hasUserScrolledRef.current = true;
+            if (container.scrollTop <= TOP_FETCH_THRESHOLD_PX) {
+                tryFetchOlderMessages();
+            }
         };
 
         container.addEventListener('scroll', handleScroll);
+        const handleWheel = () => markUserScrollIntent();
+        const handleTouchStart = () => markUserScrollIntent();
+        const handlePointerDown = () => markUserScrollIntent();
+        const handleKeyDown = () => markUserScrollIntent();
+
+        container.addEventListener('wheel', handleWheel, { passive: true });
+        container.addEventListener('touchstart', handleTouchStart, { passive: true });
+        container.addEventListener('pointerdown', handlePointerDown);
+        container.addEventListener('keydown', handleKeyDown);
 
         return () => {
             container.removeEventListener('scroll', handleScroll);
+            container.removeEventListener('wheel', handleWheel);
+            container.removeEventListener('touchstart', handleTouchStart);
+            container.removeEventListener('pointerdown', handlePointerDown);
+            container.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isNearBottom]);
+    }, [isNearBottom, tryFetchOlderMessages]);
+
+    useEffect(() => {
+        const container = scrollRef.current;
+        const target = loadOlderRef.current;
+        if (!container || !target || !hasOlderMessages || isLoading) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0]?.isIntersecting) {
+                    tryFetchOlderMessages();
+                }
+            },
+            {
+                root: container,
+                rootMargin: "240px 0px 0px 0px",
+                threshold: 0,
+            }
+        );
+
+        observer.observe(target);
+
+        return () => observer.disconnect();
+    }, [tryFetchOlderMessages, hasOlderMessages, isLoading]);
+
+    useLayoutEffect(() => {
+        const restore = pendingScrollRestoreRef.current;
+        const container = scrollRef.current;
+        if (!restore || !container) return;
+
+        pendingScrollRestoreRef.current = null;
+        skipNextScrollEffectRef.current = true;
+        shouldStickToBottomRef.current = false;
+        container.scrollTop = container.scrollHeight - restore.scrollHeight + restore.scrollTop;
+
+    }, [messages]);
 
     useEffect(() => {
         const isNewChat = chatId !== previousChatIdRef.current;
@@ -171,14 +279,32 @@ export default function ChatMessages({ chatId, messages, isStreaming, isLoading 
         if (isNewChat) {
             previousChatIdRef.current = chatId;
             shouldStickToBottomRef.current = true;
-            scheduleScrollToBottom(true, true);
+            hasSettledInitialScrollRef.current = false;
+            hasUserScrolledRef.current = false;
+            scheduleScrollToBottom(true, true, () => {
+                hasSettledInitialScrollRef.current = true;
+            });
+            return;
+        }
+
+        if (skipNextScrollEffectRef.current) {
+            skipNextScrollEffectRef.current = false;
             return;
         }
 
         if (isNearBottom()) {
             shouldStickToBottomRef.current = true;
         }
-        scheduleScrollToBottom();
+        const shouldSettleInitialScroll =
+            !hasSettledInitialScrollRef.current &&
+            !isLoading &&
+            messages.length > 0;
+
+        scheduleScrollToBottom(shouldSettleInitialScroll, shouldSettleInitialScroll, shouldSettleInitialScroll
+            ? () => {
+                hasSettledInitialScrollRef.current = true;
+            }
+            : undefined);
     }, [chatId, messages, isLoading, isStreaming, isNearBottom, scheduleScrollToBottom]);
 
     useEffect(() => {
@@ -221,6 +347,13 @@ export default function ChatMessages({ chatId, messages, isStreaming, isLoading 
                     </motion.div>
                 ) : (
                     <div>
+                        <div ref={loadOlderRef} className="min-h-1">
+                            {isFetchingOlderMessages && (
+                                <div className="flex justify-center py-3">
+                                    <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                                </div>
+                            )}
+                        </div>
                         {messages.map((msg) => (
                             <MessageRow key={msg.id} msg={msg} />
                         ))}

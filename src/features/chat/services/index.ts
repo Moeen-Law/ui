@@ -3,6 +3,7 @@ import request from "@/shared/api/request";
 import type {
     ChatResponse,
     CreateChatResponse,
+    FetchMessagesParams,
     fetchAndUpdateTitleChatResponse,
     MessageResponse,
     RequestFileUploadResponse
@@ -20,7 +21,18 @@ export const updateChatTitle = ({ id, title }: { id: string, title: string }) =>
 
 export const deleteChat = (id: string) => request<Promise<void>>(api.delete(`${chatService}/chat/${id}`));
 
-export const fetchMessages = (chatId: string) => request<MessageResponse>(api.get(`${chatService}/messages/${chatId}?sortOrder=ASC`));
+export const fetchMessages = (
+    chatId: string,
+    { page = 1, size = 5, sortOrder = "DESC" }: FetchMessagesParams = {}
+) => {
+    const params = new URLSearchParams({
+        page: String(page),
+        size: String(size),
+        sortOrder,
+    });
+
+    return request<MessageResponse>(api.get(`${chatService}/messages/${chatId}?${params.toString()}`));
+};
 
 export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`)); 
 

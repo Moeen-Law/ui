@@ -74,6 +74,7 @@ export interface StreamMessage {
     isStreaming?: boolean;
     isError?: boolean;
     isStopped?: boolean;
+    isOptimistic?: boolean;
 }
 
 export interface SourceMetadata {
@@ -98,6 +99,12 @@ export interface LawSource {
 export interface MessageResponse {
     data: MessageDatum[];
     meta: Meta;
+}
+
+export interface FetchMessagesParams {
+    page?: number;
+    size?: number;
+    sortOrder?: "ASC" | "DESC";
 }
 
 export interface MessageDatum {

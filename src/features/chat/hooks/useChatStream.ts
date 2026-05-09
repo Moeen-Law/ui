@@ -9,6 +9,7 @@ import { refreshAccessToken } from "@/shared/api";
 import { useQueryClient } from "@tanstack/react-query";
 import i18n from "@/lib/i18n";
 import { useChatMessages } from "./useChatMessages";
+import { mergeStreamMessages } from "../helpers/messages";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const STREAM_FLUSH_INTERVAL_MS = 40;
@@ -23,7 +24,10 @@ interface UseChatStreamReturn {
     sources: LawSource[];
     status: StreamStatus;
     isLoading: boolean;
+    hasOlderMessages: boolean;
+    isFetchingOlderMessages: boolean;
     error: string | null;
+    fetchOlderMessages: () => Promise<unknown>;
     sendMessage: (
         content: string,
         overrideChatId?: string,
@@ -52,7 +56,13 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     const queryClient = useQueryClient();
 
     // ─── History from React Query ───────────────────────────────────────
-    const { data: historyMessages, isLoading: isHistoryLoading } = useChatMessages(chatId);
+    const {
+        data: historyMessages,
+        isLoading: isHistoryLoading,
+        fetchNextPage: fetchOlderMessages,
+        hasNextPage: hasOlderMessages,
+        isFetchingNextPage: isFetchingOlderMessages,
+    } = useChatMessages(chatId);
 
     // ─── Local streaming state ──────────────────────────────────────────
     const [messages, setMessages] = useState<StreamMessage[]>([]);
@@ -72,6 +82,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
     const streamBufferRef = useRef("");
     const activeAiMessageIdRef = useRef<string | null>(null);
     const flushTimerRef = useRef<number | null>(null);
+    const syncedHistoryChatIdRef = useRef<string | undefined>(undefined);
 
     const clearFlushTimer = useCallback(() => {
         if (flushTimerRef.current === null) return;
@@ -112,7 +123,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
 
     // ─── Sync history into local state ────────
     useEffect(() => {
-        if (!historyMessages) return;
+        if (!chatId || !historyMessages) return;
 
         // If we switch chats, we SHOULD sync the new history immediately.
         // We only want to block hydration if we are actively streaming the EXACT chat we are currently viewing.
@@ -120,14 +131,21 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             (statusRef.current === "streaming" || statusRef.current === "creating") &&
             activeStreamChatIdRef.current === chatId;
 
-        if (!isStreamingCurrentChat) {
+        if (isStreamingCurrentChat) return;
+
+        if (syncedHistoryChatIdRef.current !== chatId) {
+            syncedHistoryChatIdRef.current = chatId;
             setMessages(historyMessages);
+            return;
         }
+
+        setMessages((prev) => mergeStreamMessages(prev, historyMessages));
     }, [chatId, historyMessages]);
 
     // Reset local state when chatId is cleared (new-chat page)
     useEffect(() => {
         if (!chatId) {
+            syncedHistoryChatIdRef.current = undefined;
             resetStreamBuffer();
             setMessages([]);
             setStatus("idle");
@@ -256,6 +274,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 content: content.trim(),
                 sender: "user",
                 files: optimisticFiles,
+                isOptimistic: true,
             };
 
             // 2. Create a placeholder for the AI response
@@ -265,6 +284,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 content: "",
                 sender: "ai",
                 isStreaming: true,
+                isOptimistic: true,
             };
 
             setMessages((prev) => [...prev, userMessage, aiMessage]);
@@ -431,7 +451,7 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         setMessages((prev) =>
                             prev.map((msg) =>
                                 msg.id === aiMessageId
-                                    ? { ...msg, isStreaming: false }
+                                    ? { ...msg, isStreaming: false, isOptimistic: true }
                                     : msg
                             )
                         );
@@ -493,7 +513,10 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         sources,
         status,
         isLoading: isHistoryLoading,
+        hasOlderMessages: !!hasOlderMessages,
+        isFetchingOlderMessages,
         error,
+        fetchOlderMessages,
         sendMessage,
         stopStreaming,
     };
