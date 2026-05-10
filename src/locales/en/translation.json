@@ -252,6 +252,20 @@
       "deleteConfirmBtn": "Delete",
       "deleting": "Deleting..."
     },
+    "search": {
+      "open": "Search chats",
+      "hint": "Find previous conversations",
+      "scope": "Title & content",
+      "title": "Search chats",
+      "description": "Search by chat title or message content.",
+      "placeholder": "Search chat title or content...",
+      "emptyPrompt": "Search by chat title or message content.",
+      "noResults": "No chats found.",
+      "loading": "Searching chats...",
+      "error": "Could not search chats. Try again.",
+      "results": "Results",
+      "loadMore": "Load more"
+    },
     "validation": {
       "titleMin": "Chat title is required",
       "titleMax": "Chat title is too long"

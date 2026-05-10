@@ -3,6 +3,7 @@ import request from "@/shared/api/request";
 import type {
     ChatResponse,
     CreateChatResponse,
+    FetchChatsParams,
     FetchMessagesParams,
     fetchAndUpdateTitleChatResponse,
     MessageResponse,
@@ -10,8 +11,21 @@ import type {
 } from "../types";
 import { chatService } from "../helpers";
 
-export const fetchChats = ({ page = 1, size = 7 }: { page?: number; size?: number } = {}) => 
-    request<ChatResponse>(api.get(`${chatService}/chat?page=${page}&size=${size}&sortOrder=DESC&includeMessages=false`));
+export const fetchChats = ({ page = 1, size = 7, search }: FetchChatsParams = {}) => {
+    const params = new URLSearchParams({
+        page: String(page),
+        size: String(size),
+        sortOrder: "DESC",
+        includeMessages: "false",
+    });
+
+    const trimmedSearch = search?.trim();
+    if (trimmedSearch) {
+        params.set("search", trimmedSearch);
+    }
+
+    return request<ChatResponse>(api.get(`${chatService}/chat?${params.toString()}`));
+};
 
 export const createChat = (title: string) => request<CreateChatResponse>(api.post(`${chatService}/chat`, { title }));
 

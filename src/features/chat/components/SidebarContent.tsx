@@ -26,6 +26,7 @@ import {
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import useThemeStore from "@/shared/store/theme";
 import { useTranslation } from "react-i18next";
+import ChatSearchDialog from "./ChatSearchDialog";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -90,11 +91,15 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
 
             <button
                 onClick={() => navigate("/chat")}
-                className="flex items-center cursor-pointer justify-center gap-3 w-full bg-blue-500 text-white rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-blue-600 active:scale-[0.98] mb-10 shadow-xl shadow-blue-500/10 border border-transparent relative z-10"
+                className="flex items-center cursor-pointer justify-center gap-3 w-full bg-blue-500 text-white rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-blue-600 active:scale-[0.98] mb-3 shadow-xl shadow-blue-500/10 border border-transparent relative z-10"
             >
                 <Plus className="w-4 h-4" />
                 <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
             </button>
+
+            <div className="relative z-10">
+                <ChatSearchDialog />
+            </div>
 
             <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
                 <div className="flex items-center justify-between mb-6 px-1">

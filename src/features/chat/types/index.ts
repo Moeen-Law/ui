@@ -6,6 +6,12 @@ export interface ChatResponse {
     meta: Meta;
 }
 
+export interface FetchChatsParams {
+    page?: number;
+    size?: number;
+    search?: string;
+}
+
 export interface ChatResponseDatum {
     id: string;
     userId: string;
