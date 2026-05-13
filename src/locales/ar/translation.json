@@ -172,7 +172,22 @@
     },
     "popular": "الأكثر شعبية",
     "currency": "جنيه",
-    "monthly": "/شهرياً"
+    "monthly": "/شهرياً",
+    "recommended": "موصى بها",
+    "durationMonthly": "/شهرياً",
+    "durationDays": "/{{count}} يوم",
+    "subscribeNow": "اشترك الآن",
+    "startPlan": "ابدأ الخطة",
+    "retry": "حاول مرة أخرى",
+    "errorTitle": "تعذر تحميل الخطط",
+    "errorDescription": "لم نتمكن من تحميل أحدث خطط الاشتراك. يرجى المحاولة مرة أخرى.",
+    "emptyTitle": "لا توجد خطط متاحة",
+    "emptyDescription": "خطط الاشتراك غير متاحة حالياً. يرجى المحاولة بعد قليل.",
+    "limits": {
+      "textRequests": "{{count}} طلب نصي يومياً",
+      "documentAnalysis": "{{count}} تحليل مستند يومياً",
+      "documentGeneration": "{{count}} إنشاء مستند يومياً"
+    }
   },
   "about": {
     "title": "لماذا مُعين؟",

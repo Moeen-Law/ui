@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import type { LoginResponse, LoginValues } from "../types";
 import api from "@/shared/api";
 import { toast } from "sonner";
@@ -8,11 +8,13 @@ import { AxiosError } from "axios";
 import useAuthStore from "../store/auth";
 import { authService } from "../helpers";
 import i18n from "@/lib/i18n";
+import { getSafeRedirectTarget } from "../helpers/redirect";
 
 
 export const useLogin = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { setAccessToken } = useAuthStore();
 
     const handleLogin = async (data: LoginValues) => {
@@ -21,7 +23,7 @@ export const useLogin = () => {
             const response = await api.post<LoginResponse>(`${authService}/auth/login`, data);
             toast.success(i18n.t("toast.loginSuccess"), { style: successToastStyle });
             setAccessToken(response.data.accessToken);
-            navigate("/");
+            navigate(getSafeRedirectTarget(searchParams.get("redirect")), { replace: true });
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {

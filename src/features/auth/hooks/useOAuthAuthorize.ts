@@ -1,6 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import useAuthStore from "../store/auth";
 import { useEffect, useState } from "react";
+import { AUTH_REDIRECT_STORAGE_KEY, getSafeRedirectTarget } from "../helpers/redirect";
 
 
 export const useOAuthAuthorize = () => {
@@ -26,7 +27,11 @@ export const useOAuthAuthorize = () => {
                     setAccessToken(accessToken);
                 }
                 setStatus("success");
-                setTimeout(() => navigate("/"), 3000);
+                const redirectTarget = getSafeRedirectTarget(
+                    sessionStorage.getItem(AUTH_REDIRECT_STORAGE_KEY)
+                );
+                sessionStorage.removeItem(AUTH_REDIRECT_STORAGE_KEY);
+                setTimeout(() => navigate(redirectTarget), 3000);
             } else {
                 setStatus("error");
             }

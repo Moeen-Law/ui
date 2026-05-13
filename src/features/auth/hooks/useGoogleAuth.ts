@@ -6,15 +6,24 @@ import { toast } from "sonner";
 import type { GoogleResponse } from "../types";
 import { authService } from "../helpers";
 import i18n from "@/lib/i18n";
+import { useSearchParams } from "react-router-dom";
+import { AUTH_REDIRECT_STORAGE_KEY, getSafeRedirectTarget } from "../helpers/redirect";
 
 
 
 export const useGoogleAuth = () => {
     const [loading, setLoading] = useState<boolean>(false);
+    const [searchParams] = useSearchParams();
 
     const handleGoogleAuth = async () => {
         try { 
             setLoading(true);
+            const redirectTarget = getSafeRedirectTarget(searchParams.get("redirect"));
+            if (redirectTarget !== "/") {
+                sessionStorage.setItem(AUTH_REDIRECT_STORAGE_KEY, redirectTarget);
+            } else {
+                sessionStorage.removeItem(AUTH_REDIRECT_STORAGE_KEY);
+            }
             const response = await api.get<GoogleResponse>(`${authService}/auth/google`);
             const { url } = response.data;
             window.location.href = url;

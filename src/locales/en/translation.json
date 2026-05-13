@@ -172,7 +172,22 @@
     },
     "popular": "Most Popular",
     "currency": "EGP",
-    "monthly": "/mo"
+    "monthly": "/mo",
+    "recommended": "Recommended",
+    "durationMonthly": "/mo",
+    "durationDays": "/{{count}} days",
+    "subscribeNow": "Subscribe Now",
+    "startPlan": "Start Plan",
+    "retry": "Try Again",
+    "errorTitle": "Plans could not be loaded",
+    "errorDescription": "We could not load the latest subscription plans. Please try again.",
+    "emptyTitle": "No plans available",
+    "emptyDescription": "Subscription plans are not available right now. Please try again shortly.",
+    "limits": {
+      "textRequests": "{{count}} text requests per day",
+      "documentAnalysis": "{{count}} document analyses per day",
+      "documentGeneration": "{{count}} document generations per day"
+    }
   },
   "about": {
     "title": "Why Moeen?",

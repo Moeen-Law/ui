@@ -1,5 +1,5 @@
-import { lazy, Suspense } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense, type ReactNode } from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from './features/landing/pages/Landing';
 import SignUp from './features/auth/pages/SignUp';
 import Login from './features/auth/pages/Login';
@@ -17,27 +17,32 @@ const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOv
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
 const AdminUsersPage = lazy(() => import('./features/admin/users/pages/AdminUsersPage'));
 import { Toaster } from "@/components/ui/sonner"
-import useAuthStore from "./features/auth/store/auth";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import GuestOnlyRoute from "./routes/GuestOnlyRoute";
 
 const queryClient = new QueryClient();
 
+const guestOnly = (page: ReactNode) => (
+    <GuestOnlyRoute>
+        {page}
+    </GuestOnlyRoute>
+);
+
 export function App() {
-    const { accessToken } = useAuthStore();
     return (
         <QueryClientProvider client={queryClient}>
             <BrowserRouter>
                 <Toaster />
                 <Routes>
                     <Route path="/" element={<Landing />} />
-                    <Route path="/signup" element={accessToken ? <Navigate to="/" /> : <SignUp />} />
-                    <Route path="/login" element={accessToken ? <Navigate to="/" /> : <Login />} />
-                    <Route path="/forgot-password" element={accessToken ? <Navigate to="/" /> : <ForgotPassword />} />
-                    <Route path="/reset-password" element={accessToken ? <Navigate to="/" /> : <ResetPassword />} />
-                    <Route path="/verify-email" element={accessToken ? <Navigate to="/" /> : <VerifyEmail />} />
-                    <Route path="/login/oauth/authorize" element={accessToken ? <Navigate to="/" /> : <OAuthAuthorize />} />
+                    <Route path="/signup" element={guestOnly(<SignUp />)} />
+                    <Route path="/login" element={guestOnly(<Login />)} />
+                    <Route path="/forgot-password" element={guestOnly(<ForgotPassword />)} />
+                    <Route path="/reset-password" element={guestOnly(<ResetPassword />)} />
+                    <Route path="/verify-email" element={guestOnly(<VerifyEmail />)} />
+                    <Route path="/login/oauth/authorize" element={guestOnly(<OAuthAuthorize />)} />
 
 
                     <Route
