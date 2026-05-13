@@ -31,7 +31,7 @@ export const useOAuthAuthorize = () => {
                     sessionStorage.getItem(AUTH_REDIRECT_STORAGE_KEY)
                 );
                 sessionStorage.removeItem(AUTH_REDIRECT_STORAGE_KEY);
-                setTimeout(() => navigate(redirectTarget), 3000);
+                setTimeout(() => navigate(redirectTarget), 1000); 
             } else {
                 setStatus("error");
             }
