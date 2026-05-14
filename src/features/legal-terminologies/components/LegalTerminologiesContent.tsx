@@ -76,10 +76,10 @@ export default function LegalTerminologiesContent() {
     };
 
     return (
-        <div className="min-h-dvh bg-background text-foreground">
-            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
+        <div className="min-h-screen w-full overflow-x-hidden bg-background text-foreground">
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
 
-            <div className="relative mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 md:px-8 md:py-8">
+            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-5 md:px-8 md:py-8">
                 <header className="flex flex-col gap-5 overflow-hidden rounded-2xl border border-blue-500/20 bg-card/85 p-4 shadow-2xl shadow-blue-500/10 backdrop-blur md:p-6">
                     <div className="flex flex-wrap items-center justify-between gap-4">
                         <Button variant="ghost" size="sm" className="hover:bg-blue-500/10 hover:text-blue-500" asChild>
