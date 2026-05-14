@@ -10,8 +10,10 @@ import OAuthAuthorize from './features/auth/pages/OAuthAuthorize';
 import NotFound from './shared/pages/NotFound';
 import ChatSkeleton from "./features/chat/components/ChatSkeleton";
 import AdminSkeleton from './features/admin/components/AdminSkeleton';
+import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
 
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
+const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
@@ -68,6 +70,17 @@ export function App() {
                                 </ErrorBoundary>
                             </Suspense>
                         }
+                    />
+
+                    <Route
+                        path="/legal-terminologies"
+                        element={
+                            <Suspense fallback={<LegalTerminologySkeleton />}>
+                                <ProtectedRoute>
+                                    <LegalTerminologies />
+                                </ProtectedRoute>
+                            </Suspense>
+                        } 
                     />
 
                     <Route

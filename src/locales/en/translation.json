@@ -405,6 +405,71 @@
       }
     }
   },
+  "legalTerminologies": {
+    "nav": {
+      "title": "Legal Terminologies"
+    },
+    "header": {
+      "backToChat": "Back to chat",
+      "badge": "Egyptian law",
+      "title": "Legal Terminologies Explained",
+      "description": "A focused workspace for understanding Egyptian legal terms quickly, with clear explanations, examples, and sources when available."
+    },
+    "stats": {
+      "history": "Saved term",
+      "sources": "Sources available"
+    },
+    "search": {
+      "title": "Explain a legal term",
+      "description": "Enter a term from Egyptian law and Moeen will organize a concise explanation with examples and sources.",
+      "label": "Legal term",
+      "placeholder": "Example: plea of inadmissibility",
+      "hint": "Use a specific term for a more accurate result",
+      "loading": "Explaining",
+      "submit": "Explain term",
+      "disclaimer": "Moeen provides helpful legal information and is not a substitute for advice from a licensed lawyer."
+    },
+    "empty": {
+      "title": "Start with an Egyptian legal term",
+      "description": "Write a legal term to get a simplified explanation, practical examples, and related references from the available legal context.",
+      "examples": [
+        "Plea of unconstitutionality",
+        "Extinction of action",
+        "Temporary possession"
+      ]
+    },
+    "result": {
+      "subtitle": "A simplified explanation in the context of Egyptian law",
+      "ragUsed": "Source-backed",
+      "brief": "Brief explanation",
+      "examples": "Practical examples",
+      "examplesDescription": "Phrases that help clarify how the term is used.",
+      "noExamples": "No examples are available for this term."
+    },
+    "sources": {
+      "title": "Sources",
+      "description": "References that helped form the explanation.",
+      "empty": "No sources are linked to this explanation."
+    },
+    "history": {
+      "title": "Recent history",
+      "description": "Quickly return to legal terms you asked Moeen to explain before.",
+      "empty": "No saved terms yet.",
+      "loadMore": "Load more"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed"
+    },
+    "error": {
+      "title": "Could not explain the term",
+      "description": "An error occurred while processing the request. Please try again.",
+      "retry": "Try again",
+      "boundary": "An error occurred while loading the legal terminologies page. Please try again."
+    }
+  },
   "notfound": {
     "title_1": "Page ",
     "titleHighlight": "Lost",

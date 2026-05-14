@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, SettingsIcon, SunIcon, X } from "lucide-react";
+import { ChevronLeft, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, SunIcon, X } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
@@ -95,6 +95,16 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
             >
                 <Plus className="w-4 h-4" />
                 <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
+            </button>
+
+            <button
+                onClick={() => navigate("/legal-terminologies")}
+                className="mb-3 flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm font-black text-blue-500 shadow-lg shadow-blue-500/5 transition-all hover:border-blue-500/40 hover:bg-blue-500/15 active:scale-[0.98]"
+            >
+                <Scale className="w-4 h-4 text-amber-400" />
+                <span className="font-['Cairo']">
+                    {t("legalTerminologies.nav.title")}
+                </span>
             </button>
 
             <div className="relative z-10">
