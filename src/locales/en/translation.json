@@ -449,7 +449,11 @@
     "sources": {
       "title": "Sources",
       "description": "References that helped form the explanation.",
-      "empty": "No sources are linked to this explanation."
+      "empty": "No sources are linked to this explanation.",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page",
+      "of": "of"
     },
     "history": {
       "title": "Recent history",
