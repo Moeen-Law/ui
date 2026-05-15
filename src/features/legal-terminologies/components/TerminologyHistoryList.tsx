@@ -1,10 +1,9 @@
 import { Loader2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { formatTerminologyDate, getTerminologyStatusLabel } from "../helpers";
+import { formatTerminologyDate } from "../helpers";
 import type { TerminologiesDatum } from "../types";
 
 export interface TerminologyHistoryListProps {
