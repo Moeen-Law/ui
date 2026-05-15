@@ -65,17 +65,7 @@ export default function TerminologyHistoryList({
                                 <span className="line-clamp-2 min-w-0 break-words text-sm font-bold leading-6">
                                     {item.result?.term || item.input.terminology}
                                 </span>
-                                <Badge
-                                    variant={item.status === "completed" ? "secondary" : "outline"}
-                                    className={cn(
-                                        "shrink-0",
-                                        item.status === "completed"
-                                            ? "bg-blue-500/10 text-blue-500"
-                                            : undefined
-                                    )}
-                                >
-                                    {getTerminologyStatusLabel(item.status, t, i18n)}
-                                </Badge>
+                               
                             </div>
                             <span className="text-xs text-muted-foreground">
                                 {formatTerminologyDate(item.createdAt)}
