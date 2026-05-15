@@ -11,9 +11,11 @@ import NotFound from './shared/pages/NotFound';
 import ChatSkeleton from "./features/chat/components/ChatSkeleton";
 import AdminSkeleton from './features/admin/components/AdminSkeleton';
 import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
+import GovernmentProcessSkeleton from './features/government-processes/components/GovernmentProcessSkeleton';
 
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
+const GovernmentProcesses = lazy(() => import('./features/government-processes/pages/GovernmentProcesses'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
@@ -81,6 +83,17 @@ export function App() {
                                 </ProtectedRoute>
                             </Suspense>
                         } 
+                    />
+
+                    <Route
+                        path="/government-processes"
+                        element={
+                            <Suspense fallback={<GovernmentProcessSkeleton />}>
+                                <ProtectedRoute>
+                                    <GovernmentProcesses />
+                                </ProtectedRoute>
+                            </Suspense>
+                        }
                     />
 
                     <Route

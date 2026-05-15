@@ -1,23 +1,23 @@
-import { Loader2, Search } from "lucide-react";
+import { Building2, Loader2, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { formatTerminologyDate } from "../helpers";
-import type { TerminologiesDatum } from "../types";
+import { formatGovernmentProcessDate} from "../helpers";
+import type { GovernmentProcessesRes } from "../types";
 
-export interface TerminologyHistoryListProps {
-    items: TerminologiesDatum[];
+export interface GovernmentProcessHistoryListProps {
+    items: GovernmentProcessesRes[];
     selectedId?: string;
     hasNextPage: boolean;
     isFetchingNextPage: boolean;
     onLoadMore: () => void;
-    onSelect: (terminology: TerminologiesDatum) => void;
+    onSelect: (process: GovernmentProcessesRes) => void;
     onItemSelected?: () => void;
     listClassName?: string;
 }
 
-export default function TerminologyHistoryList({
+export default function GovernmentProcessHistoryList({
     items,
     selectedId,
     hasNextPage,
@@ -26,7 +26,7 @@ export default function TerminologyHistoryList({
     onSelect,
     onItemSelected,
     listClassName,
-}: TerminologyHistoryListProps) {
+}: GovernmentProcessHistoryListProps) {
     const { t } = useTranslation();
 
     return (
@@ -35,7 +35,7 @@ export default function TerminologyHistoryList({
                 <div className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-blue-500/20 bg-blue-500/5 p-6 text-center">
                     <Search className="text-blue-500" />
                     <p className="text-sm text-muted-foreground">
-                        {t("legalTerminologies.history.empty")}
+                        {t("governmentProcesses.history.empty")}
                     </p>
                 </div>
             ) : (
@@ -62,12 +62,12 @@ export default function TerminologyHistoryList({
                         >
                             <div className="flex items-start justify-between gap-3">
                                 <span className="line-clamp-2 min-w-0 break-words text-sm font-bold leading-6">
-                                    {item.result?.term || item.input.terminology}
+                                    {item.input.query}
                                 </span>
-                               
                             </div>
-                            <span className="text-xs text-muted-foreground">
-                                {formatTerminologyDate(item.createdAt)}
+                            <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                                <Building2 className="size-3.5" />
+                                {formatGovernmentProcessDate(item.createdAt)}
                             </span>
                         </button>
                     ))}
@@ -87,7 +87,7 @@ export default function TerminologyHistoryList({
                         {isFetchingNextPage && (
                             <Loader2 data-icon="inline-start" className="animate-spin" />
                         )}
-                        {t("legalTerminologies.history.loadMore")}
+                        {t("governmentProcesses.history.loadMore")}
                     </Button>
                 </>
             )}

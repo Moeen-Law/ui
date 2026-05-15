@@ -127,9 +127,9 @@
         "title": "Legal Consultations",
         "description": "Get specialized legal consultation in various fields from Egyptian law experts"
       },
-      "case-tracking": {
-        "title": "Case Tracking",
-        "description": "Track the status of your legal cases and get instant updates on session dates"
+      "government-processes": {
+        "title": "Government Process Guide",
+        "description": "Understand government service steps, required documents, fees, authorities, and sources in one organized guide"
       }
     }
   },
@@ -242,6 +242,7 @@
       "saveChanges": "Save Changes",
       "backToHome": "Back to Home",
       "newChat": "New Chat",
+      "legalTools": "Legal tools",
       "pastChats": "Past Chats",
       "theme": "Theme",
       "system": "System",
@@ -407,7 +408,8 @@
   },
   "legalTerminologies": {
     "nav": {
-      "title": "Legal Terminologies"
+      "title": "Legal Terminologies",
+      "shortTitle": "Terms"
     },
     "header": {
       "backToChat": "Back to chat",
@@ -472,6 +474,85 @@
       "description": "An error occurred while processing the request. Please try again.",
       "retry": "Try again",
       "boundary": "An error occurred while loading the legal terminologies page. Please try again."
+    }
+  },
+  "governmentProcesses": {
+    "nav": {
+      "title": "Government Processes",
+      "shortTitle": "Processes"
+    },
+    "header": {
+      "backToChat": "Back to chat",
+      "badge": "Egyptian government services",
+      "title": "Government Process Guide",
+      "description": "A focused workspace for understanding government service steps, required documents, fees, authorities, and sources."
+    },
+    "stats": {
+      "history": "Saved process",
+      "sources": "Sources available"
+    },
+    "search": {
+      "title": "Ask about a government process",
+      "description": "Enter the service you need and Moeen will organize the steps, documents, fees, authority, and sources.",
+      "label": "Government service",
+      "placeholder": "Example: renewing an Egyptian passport",
+      "hint": "Use a specific service name for a clearer answer",
+      "loading": "Organizing",
+      "submit": "Show process",
+      "disclaimer": "Information may change; confirm final requirements with the official authority."
+    },
+    "empty": {
+      "title": "Start with a government service",
+      "description": "Write the service name to get steps, required documents, expected fees, and the responsible authority.",
+      "examples": {
+        "passport": "Renewing an Egyptian passport",
+        "birth": "Extracting a birth certificate",
+        "license": "Renewing a driving license"
+      }
+    },
+    "result": {
+      "subtitle": "A practical guide for the requested government process",
+      "organized": "Organized result",
+      "summary": "Summary"
+    },
+    "steps": {
+      "title": "Steps",
+      "description": "Follow these steps in order. Confirm final details with the official authority.",
+      "empty": "No steps are available."
+    },
+    "fees": {
+      "title": "Estimated fees",
+      "empty": "Not available"
+    },
+    "docs": {
+      "title": "Required documents",
+      "empty": "No documents listed."
+    },
+    "authority": {
+      "title": "Responsible authority",
+      "empty": "Not available"
+    },
+    "sources": {
+      "title": "Sources",
+      "description": "References that helped form the process guide."
+    },
+    "history": {
+      "title": "Recent processes",
+      "description": "Return to government services you asked about before.",
+      "empty": "No saved processes yet.",
+      "loadMore": "Load more"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "failed": "Failed"
+    },
+    "error": {
+      "title": "Could not load the process",
+      "description": "An error occurred while processing the request. Please try again.",
+      "retry": "Try again",
+      "boundary": "An error occurred while loading the government processes page. Please try again."
     }
   },
   "notfound": {
