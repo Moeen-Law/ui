@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Landmark, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, SunIcon, X } from "lucide-react";
+import { ChevronLeft, Landmark, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, ShieldCheck, SunIcon, X } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
 import ChatsList from "./ChatsList";
 import UserCard from "./UserCard";
 import { useMe } from "@/features/auth/hooks/useMe";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -27,6 +27,7 @@ import { useLogout } from "@/features/auth/hooks/useLogout";
 import useThemeStore from "@/shared/store/theme";
 import { useTranslation } from "react-i18next";
 import ChatSearchDialog from "./ChatSearchDialog";
+import UserSessionsDialog from "./UserSessionsDialog";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -38,6 +39,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
     const { profile } = useMe();
     const { handleLogout, loading } = useLogout();
     const { mode, setMode } = useThemeStore();
+    const [sessionsDialogOpen, setSessionsDialogOpen] = useState(false);
     
     const navigate = useNavigate();
     const hasChats = chats && chats.length > 0;
@@ -204,6 +206,11 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                             </DropdownMenuSub>
 
                             {/* ── الإعدادات (Settings) ── */}
+                            <DropdownMenuItem onClick={() => setSessionsDialogOpen(true)}>
+                                <ShieldCheck className="size-4 shrink-0" />
+                                {t("auth.sessions.menuLabel")}
+                            </DropdownMenuItem>
+
                             <DropdownMenuItem onClick={() => navigate("/settings")}>
                                 <SettingsIcon className="size-4 shrink-0" />
                                 {t("chat.ui.settings")}
@@ -222,6 +229,10 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                         </DropdownMenuGroup>
                     </DropdownMenuContent>
                 </DropdownMenu>
+                <UserSessionsDialog
+                    open={sessionsDialogOpen}
+                    onOpenChange={setSessionsDialogOpen}
+                />
             </div>
         </div>
     );

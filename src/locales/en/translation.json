@@ -73,7 +73,32 @@
     "authError": "Authentication Error",
     "authErrorSub": "Failed to connect to authentication servers",
     "verifyTokenMissing": "Verification token is missing",
-    "verifyError": "An error occurred while verifying your email"
+    "verifyError": "An error occurred while verifying your email",
+    "sessions": {
+      "menuLabel": "Sessions",
+      "title": "Active sessions",
+      "description": "Review where your account is signed in and log out from devices you no longer use.",
+      "current": "Current session",
+      "loading": "Loading sessions...",
+      "empty": "No active sessions were found.",
+      "error": "Could not load your sessions.",
+      "retry": "Try again",
+      "unknownBrowser": "Unknown browser",
+      "unknownOs": "Unknown OS",
+      "unknownLocation": "Unknown location",
+      "unknownIp": "Unknown IP",
+      "ipAddress": "IP: {{ip}}",
+      "loginAt": "Signed in: {{date}}",
+      "logoutSession": "Log out",
+      "logoutAll": "Log out all sessions",
+      "confirmLogoutAll": "Confirm log out all",
+      "footerHint": "Logging out all sessions will end access on every device, including this one.",
+      "logoutAllConfirmHint": "Click confirm to log out every session connected to your account.",
+      "logoutSessionSuccess": "Session logged out successfully",
+      "logoutSessionFailed": "Failed to log out from this session",
+      "logoutAllSuccess": "Logged out from all sessions",
+      "logoutAllFailed": "Failed to log out from all sessions"
+    }
   },
   "common": {
     "loading": "Loading...",

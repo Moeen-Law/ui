@@ -55,3 +55,17 @@ export interface ProfileResponse {
     role: string;
     updatedAt: Date;
 }
+
+
+
+export interface userSessionRes {
+    sessionId: string;
+    ipAddress: string;
+    browser: string;
+    os: string;
+    location: string;
+    loginAt: Date;
+    current: boolean;
+}
+
+
