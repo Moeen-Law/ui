@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import useAuthStore from "@/features/auth/store/auth";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
@@ -27,12 +26,8 @@ function MobileMenu({ setIsMobileMenuOpen }: MobileMenuProps) {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, x: "100%" }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-40 bg-background border-l border-border px-6 pt-28 pb-8 flex flex-col items-center overflow-y-auto md:hidden"
+        <div
+            className="fixed inset-0 z-40 flex animate-in slide-in-from-right-full duration-300 flex-col items-center overflow-y-auto border-l border-border bg-background px-6 pt-28 pb-8 md:hidden"
         >
             <div className="flex flex-col items-center gap-7 w-full max-w-sm">
                 <div className="flex flex-col items-center gap-6">
@@ -79,7 +74,7 @@ function MobileMenu({ setIsMobileMenuOpen }: MobileMenuProps) {
                     )}
                 </div>
             </div>
-        </motion.div>
+        </div>
     )
 }
 

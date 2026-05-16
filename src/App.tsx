@@ -1,18 +1,18 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Landing from './features/landing/pages/Landing';
-import SignUp from './features/auth/pages/SignUp';
-import Login from './features/auth/pages/Login';
-import ForgotPassword from './features/auth/pages/ForgotPassword';
-import ResetPassword from './features/auth/pages/ResetPassword';
-import VerifyEmail from './features/auth/pages/VerifyEmail';
-import OAuthAuthorize from './features/auth/pages/OAuthAuthorize';
-import NotFound from './shared/pages/NotFound';
 import ChatSkeleton from "./features/chat/components/ChatSkeleton";
 import AdminSkeleton from './features/admin/components/AdminSkeleton';
 import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
 import GovernmentProcessSkeleton from './features/government-processes/components/GovernmentProcessSkeleton';
 
+const SignUp = lazy(() => import('./features/auth/pages/SignUp'));
+const Login = lazy(() => import('./features/auth/pages/Login'));
+const ForgotPassword = lazy(() => import('./features/auth/pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./features/auth/pages/ResetPassword'));
+const VerifyEmail = lazy(() => import('./features/auth/pages/VerifyEmail'));
+const OAuthAuthorize = lazy(() => import('./features/auth/pages/OAuthAuthorize'));
+const NotFound = lazy(() => import('./shared/pages/NotFound'));
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
 const GovernmentProcesses = lazy(() => import('./features/government-processes/pages/GovernmentProcesses'));
@@ -25,12 +25,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import GuestOnlyRoute from "./routes/GuestOnlyRoute";
+import AuthRouteFallback from "./features/auth/components/AuthRouteFallback";
 
 const queryClient = new QueryClient();
 
+
+
 const guestOnly = (page: ReactNode) => (
     <GuestOnlyRoute>
-        {page}
+        <Suspense fallback={<AuthRouteFallback />}>
+            {page}
+        </Suspense>
     </GuestOnlyRoute>
 );
 
@@ -116,7 +121,14 @@ export function App() {
                         <Route path="settings" element={<AdminPlaceholder titleKey="admin.nav.settings" />} />
                     </Route>
 
-                    <Route path="*" element={<NotFound />} />
+                    <Route
+                        path="*"
+                        element={
+                            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+                                <NotFound />
+                            </Suspense>
+                        }
+                    />
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>

@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
 import { BookOpenText, Building2, LogOut, MessageCircle } from "lucide-react";
@@ -178,15 +177,15 @@ export function Navbar() {
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         >
                             <div className="relative w-5 h-4 flex flex-col justify-between items-center">
-                                <motion.span
-                                    animate={isMobileMenuOpen ? { rotate: 45, y: 7.5 } : { rotate: 0, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="w-full h-[2px] bg-foreground rounded-full origin-center"
+                                <span
+                                    className={`w-full h-[2px] bg-foreground rounded-full origin-center transition-transform duration-300 ${
+                                        isMobileMenuOpen ? "translate-y-[7.5px] rotate-45" : ""
+                                    }`}
                                 />
-                                <motion.span
-                                    animate={isMobileMenuOpen ? { rotate: -45, y: -7.5 } : { rotate: 0, y: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="w-full h-[2px] bg-foreground rounded-full origin-center"
+                                <span
+                                    className={`w-full h-[2px] bg-foreground rounded-full origin-center transition-transform duration-300 ${
+                                        isMobileMenuOpen ? "-translate-y-[7.5px] -rotate-45" : ""
+                                    }`}
                                 />
                             </div>
                         </button>
@@ -201,11 +200,9 @@ export function Navbar() {
             </nav>
 
             {/* Mobile Side Menu */}
-            <AnimatePresence>
-                {isMobileMenuOpen && (
-                    <MobileMenu setIsMobileMenuOpen={setIsMobileMenuOpen} />
-                )}
-            </AnimatePresence>
+            {isMobileMenuOpen && (
+                <MobileMenu setIsMobileMenuOpen={setIsMobileMenuOpen} />
+            )}
         </>
     );
 }

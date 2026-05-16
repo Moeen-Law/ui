@@ -1,5 +1,4 @@
 import { AlertCircle, RefreshCw, ChevronLeft, Terminal } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 interface ErrorFallbackProps {
@@ -27,20 +26,13 @@ export default function ErrorFallback({
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(220,38,38,0.05),transparent_70%)] pointer-events-none" />
             <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-red-500/20 to-transparent" />
             
-            <motion.div 
-                initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                animate={{ scale: 1, opacity: 1, y: 0 }}
-                transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                className="relative z-10 w-full max-w-2xl px-4"
+            <div
+                className="relative z-10 w-full max-w-2xl animate-in fade-in-0 slide-in-from-bottom-5 zoom-in-95 px-4 duration-300"
             >
                 {/* Icon Container */}
                 <div className="relative mb-8 mx-auto w-24 h-24">
-                    <motion.div 
-                        animate={{ 
-                            boxShadow: ["0 0 0px rgba(239, 68, 68, 0)", "0 0 40px rgba(239, 68, 68, 0.2)", "0 0 0px rgba(239, 68, 68, 0)"] 
-                        }}
-                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                        className="absolute inset-0 bg-red-500/5 rounded-[2.5rem] blur-xl"
+                    <div
+                        className="absolute inset-0 animate-pulse rounded-[2.5rem] bg-red-500/5 blur-xl"
                     />
                     <div className="relative w-full h-full bg-linear-to-b from-[#1a1a1a] to-[#0d0d0d] border border-red-500/20 rounded-[2.5rem] flex items-center justify-center text-red-500 shadow-2xl">
                         <AlertCircle className="w-10 h-10" />
@@ -91,30 +83,23 @@ export default function ErrorFallback({
                             </span>
                         </button>
                         
-                        <AnimatePresence>
-                            {showDetails && (
-                                <motion.div 
-                                    initial={{ height: 0, opacity: 0, y: -10 }}
-                                    animate={{ height: "auto", opacity: 1, y: 0 }}
-                                    exit={{ height: 0, opacity: 0, y: -10 }}
-                                    className="overflow-hidden"
-                                >
-                                    <div className="mt-6 relative">
-                                        <div className="absolute inset-0 bg-red-500/5 blur-3xl pointer-events-none" />
-                                        <pre className="relative p-6 bg-[#0d0d0d] border border-white/5 rounded-3xl text-left text-red-400/80 font-mono text-[10px] md:text-xs max-w-full overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed shadow-inner custom-scrollbar">
-                                            <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/5 text-white/20 uppercase tracking-widest text-[9px] font-sans">
-                                                <div className="w-2 h-2 rounded-full bg-red-500/40" />
-                                                Error Stack Trace
-                                            </div>
-                                            {error.stack || error.message}
-                                        </pre>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        {showDetails && (
+                            <div className="overflow-hidden animate-in fade-in-0 slide-in-from-top-2 duration-200">
+                                <div className="mt-6 relative">
+                                    <div className="absolute inset-0 bg-red-500/5 blur-3xl pointer-events-none" />
+                                    <pre className="relative p-6 bg-[#0d0d0d] border border-white/5 rounded-3xl text-left text-red-400/80 font-mono text-[10px] md:text-xs max-w-full overflow-auto max-h-64 whitespace-pre-wrap leading-relaxed shadow-inner custom-scrollbar">
+                                        <div className="flex items-center gap-2 mb-3 pb-3 border-b border-white/5 text-white/20 uppercase tracking-widest text-[9px] font-sans">
+                                            <div className="w-2 h-2 rounded-full bg-red-500/40" />
+                                            Error Stack Trace
+                                        </div>
+                                        {error.stack || error.message}
+                                    </pre>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
-            </motion.div>
+            </div>
 
             {/* Decorative element */}
             <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[10px] text-[#222] font-mono tracking-widest uppercase pointer-events-none">

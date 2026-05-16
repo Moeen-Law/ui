@@ -1,5 +1,4 @@
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
 
@@ -145,29 +144,11 @@ export function Hero() {
                     {/* Visual Elements */}
                     <div className="relative h-[400px] md:h-[500px] hidden lg:block">
                         {cards.map((card) => (
-                            <motion.div
+                            <div
                                 key={card.id}
-                                className={`absolute bg-card border border-border rounded-[14px] p-5 flex flex-row-reverse items-center gap-4 shadow-2xl w-fit ${card.position}`}
-                                animate={{
-                                    y: [0, -20, 0],
-                                    z: 0
-                                }}
-                                whileHover={{
-                                    scale: 1.05,
-                                    translateY: -10,
-                                    zIndex: 50
-                                }}
-                                transition={{
-                                    y: {
-                                        duration: 6,
-                                        repeat: Infinity,
-                                        ease: "easeInOut",
-                                        delay: card.delay,
-                                    },
-                                    scale: { duration: 0.3 },
-                                    translateY: { duration: 0.3 }
-                                }}
+                                className={`absolute flex w-fit animate-float flex-row-reverse items-center gap-4 rounded-[14px] border border-border bg-card p-5 shadow-2xl transition-transform duration-300 hover:z-50 hover:scale-105 ${card.position}`}
                                 style={{
+                                    animationDelay: `${card.delay}s`,
                                     willChange: "transform",
                                     backfaceVisibility: "hidden"
                                 }}
@@ -178,7 +159,7 @@ export function Hero() {
                                 <span className="font-semibold text-[0.95rem] whitespace-nowrap text-foreground">
                                     {t(`hero.${card.titleKey}`)}
                                 </span>
-                            </motion.div>
+                            </div>
                         ))}
                     </div>
                 </div>

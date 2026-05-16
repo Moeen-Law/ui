@@ -1,13 +1,18 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Navbar } from "../components/Navbar";
 import { Hero } from "../components/Hero";
-import { VideoDemo } from "../components/VideoDemo";
-import { InteractiveDemo } from "../components/InteractiveDemo";
 import { Features } from "../components/Features";
 import { Pricing } from "../components/Pricing";
-import { About } from "../components/About";
 import { Footer } from "../components/Footer";
 import { useLocation } from "react-router-dom";
+
+const VideoDemo = lazy(() => import("../components/VideoDemo").then((module) => ({ default: module.VideoDemo })));
+const InteractiveDemo = lazy(() => import("../components/InteractiveDemo").then((module) => ({ default: module.InteractiveDemo })));
+const About = lazy(() => import("../components/About").then((module) => ({ default: module.About })));
+
+function LandingSectionFallback({ className = "min-h-[420px]" }: { className?: string }) {
+  return <div className={className} aria-hidden="true" />;
+}
 
 function Landing() {
   const location = useLocation();
@@ -26,11 +31,17 @@ function Landing() {
     <div className="w-full bg-background min-h-screen">
       <Navbar />
       <Hero />
-      <VideoDemo />
-      <InteractiveDemo />
+      <Suspense fallback={<LandingSectionFallback className="min-h-[100vh]" />}>
+        <VideoDemo />
+      </Suspense>
+      <Suspense fallback={<LandingSectionFallback />}>
+        <InteractiveDemo />
+      </Suspense>
       <Features />
       <Pricing />
-      <About />
+      <Suspense fallback={<LandingSectionFallback />}>
+        <About />
+      </Suspense>
       <Footer />
     </div>
   )
