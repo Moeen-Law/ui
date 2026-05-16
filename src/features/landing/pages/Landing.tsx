@@ -3,6 +3,7 @@ import { Navbar } from "../components/Navbar";
 import { Hero } from "../components/Hero";
 import { Features } from "../components/Features";
 import { Pricing } from "../components/Pricing";
+import { FAQ } from "../components/FAQ";
 import { Footer } from "../components/Footer";
 import { useLocation } from "react-router-dom";
 
@@ -17,13 +18,15 @@ function LandingSectionFallback({ className = "min-h-[420px]" }: { className?: s
 function Landing() {
   const location = useLocation();
 
-  useEffect(() => {
-    if (location.hash !== "#pricing") {
+  useEffect(() => { 
+    const targetId = location.hash.replace("#", "");
+
+    if (!targetId) {
       return;
     }
 
     requestAnimationFrame(() => {
-      document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" });
     });
   }, [location.hash]);
 
@@ -39,6 +42,7 @@ function Landing() {
       </Suspense>
       <Features />
       <Pricing />
+      <FAQ />
       <Suspense fallback={<LandingSectionFallback />}>
         <About />
       </Suspense>

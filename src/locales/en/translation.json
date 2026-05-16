@@ -99,6 +99,7 @@
     "logo": "Moeen",
     "services": "Services",
     "pricing": "Pricing",
+    "faq": "FAQ",
     "about": "About Us",
     "tools": "Tools",
     "openChat": "Open Chat",
@@ -219,6 +220,40 @@
     "playBtn": "Watch Video",
     "title": "Designed for Professionals",
     "subtitle": "Smart AI-powered legal assistant for lawyers and businesses"
+  },
+  "faq": {
+    "label": "FAQ",
+    "title": "Frequently Asked Questions",
+    "subtitle": "Clear answers to the questions people usually ask before using Moeen.",
+    "supportTitle": "Still have questions?",
+    "supportText": "Start a chat and ask Moeen about your situation in plain language.",
+    "supportButton": "Start a chat",
+    "items": [
+      {
+        "question": "Is Moeen a replacement for a lawyer?",
+        "answer": "No. Moeen helps you understand legal information, organize questions, and explore possible next steps. For formal legal advice, court matters, or binding decisions, you should consult a licensed lawyer."
+      },
+      {
+        "question": "Is Moeen specialized in Egyptian law?",
+        "answer": "Yes. Moeen is designed around Egyptian legal context, including legal terminology, common procedures, and government process guidance."
+      },
+      {
+        "question": "What can I ask the assistant?",
+        "answer": "You can ask legal questions, request explanations of terms, summarize legal topics, prepare questions for a lawyer, or understand the steps and documents needed for common procedures."
+      },
+      {
+        "question": "Can I use legal terminology and government process tools?",
+        "answer": "Yes. Logged-in users can access the legal terminology tool and the government process guide from the header tools menu."
+      },
+      {
+        "question": "Are answers based on sources?",
+        "answer": "When sources are available, Moeen shows them so you can review the original reference. You should still verify critical information before taking official action."
+      },
+      {
+        "question": "Do I need an account to start?",
+        "answer": "You can explore the landing page without an account. To use the assistant and saved tools, you need to sign in or create an account."
+      }
+    ]
   },
   "footer": {
     "disclaimer": "This service provides legal information and assistance, not formal legal advice. Please consult a licensed attorney for formal matters."
