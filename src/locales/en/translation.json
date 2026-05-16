@@ -515,6 +515,12 @@
       "organized": "Organized result",
       "summary": "Summary"
     },
+    "tabs": {
+      "summary": "Summary",
+      "steps": "Steps",
+      "details": "Documents & fees",
+      "sources": "Sources ({{count}})"
+    },
     "steps": {
       "title": "Steps",
       "description": "Follow these steps in order. Confirm final details with the official authority.",
@@ -534,7 +540,13 @@
     },
     "sources": {
       "title": "Sources",
-      "description": "References that helped form the process guide."
+      "description": "References that helped form the process guide.",
+      "visit": "Visit source",
+      "sourceLink": "Open source: {{title}}",
+      "noLink": "No link available",
+      "fallbackTitle": "Source {{count}}",
+      "count": "{{count}} sources",
+      "empty": "No sources are linked to this process guide."
     },
     "history": {
       "title": "Recent processes",
