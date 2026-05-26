@@ -372,6 +372,7 @@
     "nav": {
       "home": "Home",
       "users": "Users",
+      "chats": "Chats Analytics",
       "contracts": "Contracts and Analytics",
       "subscriptions": "Subscriptions and Finance",
       "aiFeeding": "AI Feeding",
@@ -471,6 +472,108 @@
         "ban": "{{name}} has been banned.",
         "unban": "{{name}} has been unbanned.",
         "delete": "{{name}} has been deleted."
+      }
+    },
+    "chats": {
+      "title": "Chats Analytics",
+      "subtitle": "Monitor conversation volume, engagement, documents, and chat health.",
+      "actions": {
+        "refresh": "Refresh"
+      },
+      "identity": {
+        "user": "User",
+        "uploader": "Uploader",
+        "chat": "Chat",
+        "selectedUser": "Selected user",
+        "copy": "Copy full ID",
+        "copied": "ID copied",
+        "copyFailed": "Unable to copy ID"
+      },
+      "metrics": {
+        "totalChats": "Total Chats",
+        "totalMessages": "Total Messages",
+        "totalDocuments": "Total Documents",
+        "uniqueUsers": "Unique Users",
+        "uniqueUsersDescription": "Users who started at least one chat",
+        "avgChatsPerUser": "Avg. Chats / User",
+        "avgMessagesPerChat": "Avg. Messages / Chat",
+        "avgDocsPerChat": "Avg. Docs / Chat",
+        "abandonment": "Abandonment Rate",
+        "avgLifespan": "Avg. Chat Lifespan",
+        "dau": "DAU",
+        "wau": "WAU",
+        "mau": "MAU",
+        "documents7d": "Docs 7d",
+        "documents30d": "Docs 30d",
+        "userUploadedDocs": "User-uploaded documents"
+      },
+      "periods": {
+        "today": "{{count}} today",
+        "last7d": "{{count}} in the last 7 days",
+        "last30d": "{{count}} in the last 30 days"
+      },
+      "sender": {
+        "user": "User",
+        "ai": "AI",
+        "system": "System"
+      },
+      "charts": {
+        "activity": {
+          "title": "Activity Over Time",
+          "description": "Chats, messages, and documents by reported interval.",
+          "rangeDescription": "{{interval}} activity from {{range}}.",
+          "updating": "Updating activity",
+          "loading": "Loading activity...",
+          "errorTitle": "Activity stats failed",
+          "errorDescription": "The selected activity range could not be loaded. The rest of the dashboard is still available.",
+          "chats": "Chats",
+          "messages": "Messages",
+          "documents": "Documents"
+        },
+        "sender": {
+          "title": "Messages by Sender",
+          "description": "Distribution of user, AI, and system messages."
+        }
+      },
+      "filters": {
+        "from": "From date",
+        "to": "To date",
+        "reset": "Reset activity filters",
+        "interval": {
+          "day": "Day",
+          "week": "Week",
+          "month": "Month"
+        }
+      },
+      "panels": {
+        "users": {
+          "title": "User Engagement",
+          "description": "Active users and the highest-volume chat users.",
+          "messages": "{{count}} messages"
+        },
+        "documents": {
+          "title": "Documents",
+          "description": "Upload volume and top document uploaders."
+        },
+        "health": {
+          "title": "Chat Health",
+          "description": "Abandonment, lifespan, and the most active chats.",
+          "abandoned": "{{count}} of {{total}} chats",
+          "sample": "{{count}} chats sampled",
+          "range": "{{first}} to {{last}}"
+        }
+      },
+      "empty": {
+        "page": "No chat analytics have been reported yet.",
+        "chart": "No chart data available.",
+        "users": "No top users available.",
+        "documents": "No uploaders available.",
+        "activeChats": "No active chats available."
+      },
+      "error": {
+        "title": "Unable to load chat analytics",
+        "description": "The dashboard could not retrieve the chat statistics. Try refreshing the data.",
+        "retry": "Try again"
       }
     }
   },

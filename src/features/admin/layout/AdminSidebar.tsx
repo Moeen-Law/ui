@@ -4,7 +4,6 @@ import {
   FileText,
   Home,
   LogOut,
-  Settings,
   UsersRound,
 } from "lucide-react"
 import { NavLink } from "react-router-dom"
@@ -20,10 +19,9 @@ import AdminUserCard from "./AdminUserCard"
 const navItems: AdminNavItem[] = [
   { label: "admin.nav.home", href: "/admin", icon: Home },
   { label: "admin.nav.users", href: "/admin/users", icon: UsersRound },
+  { label: "admin.nav.chats", href: "/admin/chats", icon: Bot },
   { label: "admin.nav.contracts", href: "/admin/contracts", icon: FileText },
   { label: "admin.nav.subscriptions", href: "/admin/subscriptions", icon: Banknote },
-  { label: "admin.nav.aiFeeding", href: "/admin/ai-feeding", icon: Bot },
-  { label: "admin.nav.settings", href: "/admin/settings", icon: Settings },
 ]
 
 interface AdminSidebarProps {

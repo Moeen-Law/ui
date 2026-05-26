@@ -20,6 +20,7 @@ const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
 const AdminUsersPage = lazy(() => import('./features/admin/users/pages/AdminUsersPage'));
+const AdminChatsPage = lazy(() => import('./features/admin/chats/pages/AdminChatsPage'));
 import { Toaster } from "@/components/ui/sonner"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
@@ -115,6 +116,7 @@ export function App() {
                     >
                         <Route index element={<AdminOverview />} />
                         <Route path="users" element={<AdminUsersPage />} />
+                        <Route path="chats" element={<AdminChatsPage />} />
                         <Route path="contracts" element={<AdminPlaceholder titleKey="admin.nav.contracts" />} />
                         <Route path="subscriptions" element={<AdminPlaceholder titleKey="admin.nav.subscriptions" />} />
                         <Route path="ai-feeding" element={<AdminPlaceholder titleKey="admin.nav.aiFeeding" />} />

@@ -14,6 +14,7 @@ interface AdminHeaderProps {
 const adminTitleKeys: Record<string, string> = {
   "/admin": "admin.overview.title",
   "/admin/users": "admin.users.title",
+  "/admin/chats": "admin.chats.title",
   "/admin/contracts": "admin.nav.contracts",
   "/admin/subscriptions": "admin.nav.subscriptions",
   "/admin/ai-feeding": "admin.nav.aiFeeding",
