@@ -11,8 +11,15 @@
   --animate-float: float 6s ease-in-out infinite;
 
   @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-15px);
+    }
   }
 }
 
@@ -37,11 +44,11 @@
   --border: oklch(0.895 0 0);
   --input: oklch(0.895 0 0);
   --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
+  --chart-1: oklch(0.75 0.18 45);
+  --chart-2: oklch(0.65 0.22 200);
+  --chart-3: oklch(0.55 0.25 280);
+  --chart-4: oklch(0.70 0.20 110);
+  --chart-5: oklch(0.60 0.23 350);
   --radius: 0.625rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
@@ -72,11 +79,11 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.809 0.105 251.813);
-  --chart-2: oklch(0.623 0.214 259.815);
-  --chart-3: oklch(0.546 0.245 262.881);
-  --chart-4: oklch(0.488 0.243 264.376);
-  --chart-5: oklch(0.424 0.199 265.638);
+  --chart-1: oklch(0.75 0.18 45);
+  --chart-2: oklch(0.65 0.22 200);
+  --chart-3: oklch(0.55 0.25 280);
+  --chart-4: oklch(0.70 0.20 110);
+  --chart-5: oklch(0.60 0.23 350);
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -196,77 +203,77 @@
     @apply font-sans;
   }
 
-@layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-  }
+  @layer utilities {
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #2a2a2a;
-    border-radius: 10px;
-  }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #2a2a2a;
+      border-radius: 10px;
+    }
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #3a3a3a;
-  }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #3a3a3a;
+    }
 
-  /* Firefox */
-  .custom-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #2a2a2a transparent;
-    
-  }
+    /* Firefox */
+    .custom-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #2a2a2a transparent;
 
-  .admin-table-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklch, var(--muted-foreground) 42%, transparent) transparent;
-  }
+    }
 
-  .admin-table-scrollbar::-webkit-scrollbar {
-    height: 8px;
-  }
+    .admin-table-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in oklch, var(--muted-foreground) 42%, transparent) transparent;
+    }
 
-  .admin-table-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .admin-table-scrollbar::-webkit-scrollbar {
+      height: 8px;
+    }
 
-  .admin-table-scrollbar::-webkit-scrollbar-thumb {
-    border: 2px solid transparent;
-    border-radius: 999px;
-    background-clip: content-box;
-    background-color: color-mix(in oklch, var(--muted-foreground) 38%, transparent);
-  }
+    .admin-table-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  .admin-table-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in oklch, var(--primary) 72%, transparent);
-  }
+    .admin-table-scrollbar::-webkit-scrollbar-thumb {
+      border: 2px solid transparent;
+      border-radius: 999px;
+      background-clip: content-box;
+      background-color: color-mix(in oklch, var(--muted-foreground) 38%, transparent);
+    }
 
-  .session-dialog-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in oklch, var(--muted-foreground) 48%, transparent) transparent;
-  }
+    .admin-table-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: color-mix(in oklch, var(--primary) 72%, transparent);
+    }
 
-  .session-dialog-scrollbar::-webkit-scrollbar {
-    width: 10px;
-  }
+    .session-dialog-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in oklch, var(--muted-foreground) 48%, transparent) transparent;
+    }
 
-  .session-dialog-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    .session-dialog-scrollbar::-webkit-scrollbar {
+      width: 10px;
+    }
 
-  .session-dialog-scrollbar::-webkit-scrollbar-thumb {
-    border: 3px solid transparent;
-    border-radius: 999px;
-    background-clip: content-box;
-    background-color: color-mix(in oklch, var(--muted-foreground) 42%, transparent);
-  }
+    .session-dialog-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  .session-dialog-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: color-mix(in oklch, var(--chart-2) 78%, transparent);
+    .session-dialog-scrollbar::-webkit-scrollbar-thumb {
+      border: 3px solid transparent;
+      border-radius: 999px;
+      background-clip: content-box;
+      background-color: color-mix(in oklch, var(--muted-foreground) 42%, transparent);
+    }
+
+    .session-dialog-scrollbar::-webkit-scrollbar-thumb:hover {
+      background-color: color-mix(in oklch, var(--chart-2) 78%, transparent);
+    }
   }
-}
 }
