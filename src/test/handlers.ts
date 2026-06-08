@@ -108,4 +108,99 @@ export const handlers = [
       },
     });
   }),
+
+  http.get("*/chats/api/v1/tasks/document-generation/templates", () => {
+    return HttpResponse.json({
+      items: [
+        {
+          id: "template-lease",
+          name: "Lease agreement",
+          description: "A basic lease agreement template",
+          created_at: "2026-06-08T04:08:17.795Z",
+          updated_at: "2026-06-08T04:08:17.795Z",
+        },
+      ],
+    });
+  }),
+
+  http.get("*/chats/api/v1/tasks/document-generation/templates/:id", ({ params }) => {
+    const id = String(params.id);
+
+    return HttpResponse.json({
+      id,
+      name: "Lease agreement",
+      description: "A basic lease agreement template",
+      markdown_content: "Lease between {{lessor}} and {{lessee}}",
+      created_at: "2026-06-08T04:08:17.795Z",
+      updated_at: "2026-06-08T04:08:17.795Z",
+      fields: [
+        {
+          id: "field-lessor",
+          template_id: id,
+          name: "lessor",
+          type: "string",
+          required: true,
+          description: "Lessor name",
+          example: "Ahmed",
+        },
+        {
+          id: "field-clauses",
+          template_id: id,
+          name: "clauses",
+          type: "array",
+          required: false,
+          description: "Additional clauses",
+          example: "Payment is due monthly",
+        },
+      ],
+    });
+  }),
+
+  http.post("*/chats/api/v1/tasks/document-generation", async ({ request }) => {
+    const body = await request.json() as {
+      templateId: string;
+      data: Record<string, string | string[]>;
+    };
+
+    return HttpResponse.json({
+      id: "document-generation-1",
+      userId: "user-1",
+      taskType: "DOCUMENT_GENERATION",
+      status: "completed",
+      aiTaskId: "ai-task-document-1",
+      createdAt: "2026-06-08T04:08:17.795Z",
+      updatedAt: "2026-06-08T04:08:41.741Z",
+      input: {
+        template_id: body.templateId,
+        data: body.data,
+      },
+      result: {
+        file_id: "file-generated-document",
+      },
+      generatedFile: {
+        fileId: "file-generated-document",
+        status: "available",
+        originalName: "lease-agreement.pdf",
+        contentType: "application/pdf",
+        size: 1024,
+        downloadUrl: "https://storage.test/generated/lease-agreement.pdf",
+        downloadUrlExpiresInSeconds: 900,
+      },
+    });
+  }),
+
+  http.get("*/chats/api/v1/tasks/document-generation", () => {
+    return HttpResponse.json({
+      data: [],
+      meta: {
+        page: 1,
+        size: 5,
+        results: 0,
+        total: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    });
+  }),
 ];

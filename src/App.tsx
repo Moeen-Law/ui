@@ -6,6 +6,7 @@ import AdminSkeleton from './features/admin/components/AdminSkeleton';
 import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
 import GovernmentProcessSkeleton from './features/government-processes/components/GovernmentProcessSkeleton';
 import ContractAnalysisSkeleton from './features/contract-analysis/components/ContractAnalysisSkeleton';
+import DocumentGenerationSkeleton from './features/document-generation/components/DocumentGenerationSkeleton';
 
 const SignUp = lazy(() => import('./features/auth/pages/SignUp'));
 const Login = lazy(() => import('./features/auth/pages/Login'));
@@ -18,6 +19,7 @@ const Chat = lazy(() => import('./features/chat/pages/Chat'));
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
 const GovernmentProcesses = lazy(() => import('./features/government-processes/pages/GovernmentProcesses'));
 const ContractAnalysis = lazy(() => import('./features/contract-analysis/pages/ContractAnalysis'));
+const DocumentGeneration = lazy(() => import('./features/document-generation/pages/DocumentGeneration'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
@@ -120,6 +122,17 @@ export function App() {
                             <Suspense fallback={<ContractAnalysisSkeleton />}>
                                 <ProtectedRoute>
                                     <ContractAnalysis />
+                                </ProtectedRoute>
+                            </Suspense>
+                        }
+                    />
+
+                    <Route
+                        path="/document-generation"
+                        element={
+                            <Suspense fallback={<DocumentGenerationSkeleton />}>
+                                <ProtectedRoute>
+                                    <DocumentGeneration />
                                 </ProtectedRoute>
                             </Suspense>
                         }

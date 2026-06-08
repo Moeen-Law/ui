@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
-import { BookOpenText, Building2, FileText, LogOut, MessageCircle } from "lucide-react";
+import { BookOpenText, Building2, FilePlus2, FileText, LogOut, MessageCircle } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import MobileMenu from "./MobileMenu";
@@ -41,6 +41,12 @@ const authenticatedNavItems = [
         icon: FileText,
         titleKey: "nav.contractAnalysis",
         descriptionKey: "nav.contractAnalysisDescription",
+    },
+    {
+        href: "/document-generation",
+        icon: FilePlus2,
+        titleKey: "nav.documentGeneration",
+        descriptionKey: "nav.documentGenerationDescription",
     },
 ];
 

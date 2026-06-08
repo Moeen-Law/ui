@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Landmark, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, ShieldCheck, SunIcon, X } from "lucide-react";
+import { ChevronLeft, FilePlus2, Landmark, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, ShieldCheck, SunIcon, X } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
@@ -102,7 +102,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
             </button>
 
-            <div className="mb-3 grid grid-cols-2 gap-2">
+            <div className="mb-3 grid grid-cols-3 gap-2">
                 <button
                     onClick={() => {
                         onClose?.();
@@ -129,6 +129,20 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                     <Landmark className="size-4 shrink-0 text-amber-400" />
                     <span className="min-w-0 truncate font-['Cairo']">
                         {t("governmentProcesses.nav.shortTitle")}
+                    </span>
+                </button>
+                <button
+                    onClick={() => {
+                        onClose?.();
+                        navigate("/document-generation");
+                    }}
+                    className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-500/15 bg-blue-500/5 px-2 text-xs font-black text-blue-500 shadow-md shadow-blue-500/5 transition-all hover:border-blue-500/35 hover:bg-blue-500/10 active:scale-[0.98]"
+                    aria-label={t("documentGeneration.nav.title")}
+                    title={t("documentGeneration.nav.title")}
+                >
+                    <FilePlus2 className="size-4 shrink-0 text-amber-400" />
+                    <span className="min-w-0 truncate font-['Cairo']">
+                        {t("documentGeneration.nav.shortTitle")}
                     </span>
                 </button>
             </div>

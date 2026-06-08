@@ -136,6 +136,8 @@
     "governmentProcessesDescription": "Find steps, documents, fees, authorities, and official sources.",
     "contractAnalysis": "Contract Analysis",
     "contractAnalysisDescription": "Find contract risks, obligations, recommendations, and supporting legal references.",
+    "documentGeneration": "Document Generation",
+    "documentGenerationDescription": "Choose a template, fill required fields, and download a generated legal document.",
     "logoutFull": "Log Out",
     "logout": "Exit"
   },
@@ -811,6 +813,73 @@
       "history": "Could not load recent contract reviews.",
       "retry": "Try again",
       "boundary": "An error occurred while loading the contract analysis page. Please try again."
+    }
+  },
+  "documentGeneration": {
+    "nav": {
+      "title": "Document Generation",
+      "shortTitle": "Generate"
+    },
+    "header": {
+      "backToChat": "Back to chat",
+      "badge": "Smart templates",
+      "title": "Document Generation",
+      "description": "Choose a legal template, fill in the required data, and generate a downloadable document from your saved templates."
+    },
+    "stats": {
+      "templates": "Templates",
+      "documents": "Documents",
+      "fields": "Fields"
+    },
+    "templates": {
+      "title": "Choose a template",
+      "description": "Templates define the required fields and final document structure.",
+      "loading": "Loading templates...",
+      "empty": "No document templates are available yet.",
+      "error": "Could not load document templates."
+    },
+    "form": {
+      "title": "Document details",
+      "description": "Select a template to show its required fields.",
+      "selectTemplate": "Choose a template first to start generating a document.",
+      "loading": "Loading template fields...",
+      "error": "Could not load this template.",
+      "submit": "Generate document",
+      "required": "This field is required.",
+      "invalidDate": "Enter a valid date.",
+      "arrayPlaceholder": "Enter one item per line, for example: {{placeholder}}"
+    },
+    "status": {
+      "generating": "Generating your document..."
+    },
+    "empty": {
+      "title": "Your generated document will appear here",
+      "description": "After generation, you can download the file and return to it from your document history."
+    },
+    "result": {
+      "title": "Generated document",
+      "createdAt": "Created",
+      "file": "File",
+      "fileUnavailable": "File unavailable",
+      "download": "Download document",
+      "refresh": "Refresh",
+      "downloadUnavailable": "The download link is unavailable or expired. Refresh the history and try again."
+    },
+    "history": {
+      "title": "Generated documents",
+      "description": "Open documents you generated before.",
+      "loading": "Loading generated documents...",
+      "error": "Could not load generated documents.",
+      "empty": "No generated documents yet.",
+      "loadMore": "Load more"
+    },
+    "toast": {
+      "generated": "Document generated successfully"
+    },
+    "error": {
+      "description": "An error occurred while generating the document. Please try again.",
+      "retry": "Try again",
+      "boundary": "An error occurred while loading the document generation page. Please try again."
     }
   },
   "notfound": {

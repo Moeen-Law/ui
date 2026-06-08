@@ -1,8 +1,9 @@
 import useAuthStore from "@/features/auth/store/auth";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
-import { LogOut } from "lucide-react";
+import { FilePlus2, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface MobileMenuProps {
     setIsMobileMenuOpen: (open: boolean) => void;
@@ -13,6 +14,7 @@ function MobileMenu({ setIsMobileMenuOpen }: MobileMenuProps) {
     const { accessToken } = useAuthStore();
     const { handleLogout, loading } = useLogout();
     const { handleStart } = useHandleStart();
+    const navigate = useNavigate();
     const isAuthenticated = Boolean(accessToken);
 
     const handleStartClick = () => {
@@ -61,6 +63,19 @@ function MobileMenu({ setIsMobileMenuOpen }: MobileMenuProps) {
                     >
                         {isAuthenticated ? t("nav.openChat") : t("hero.startNow")}
                     </button>
+
+                    {isAuthenticated && (
+                        <button
+                            onClick={() => {
+                                navigate("/document-generation");
+                                setIsMobileMenuOpen(false);
+                            }}
+                            className="flex w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-blue-500/25 bg-blue-500/5 py-4 text-xl font-bold text-blue-500 transition-all hover:bg-blue-500 hover:text-white active:scale-[0.98] font-['Cairo']"
+                        >
+                            <FilePlus2 className="size-6 shrink-0" />
+                            <span>{t("nav.documentGeneration")}</span>
+                        </button>
+                    )}
 
                     {isAuthenticated && (
                         <button
