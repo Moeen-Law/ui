@@ -21,6 +21,13 @@ export const formatFileSize = (size?: number) => {
     return `${(size / (1024 * 1024)).toFixed(1)} MB`;
 };
 
+export const getDateLabel = (date: string, locale: string) =>
+    new Intl.DateTimeFormat(locale, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    }).format(new Date(date));
+
 export const normalizeFieldValue = (
     field: DocumentTemplateField,
     value: string
