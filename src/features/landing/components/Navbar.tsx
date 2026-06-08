@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
-import { BookOpenText, Building2, FilePlus2, FileText, LogOut, MessageCircle } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import MobileMenu from "./MobileMenu";
 import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { MoeenLogo } from "@/shared/components/MoeenLogo";
+import { authenticatedToolItems } from "@/shared/constants/tools";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -16,39 +17,6 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-
-const authenticatedNavItems = [
-    {
-        href: "/chat",
-        icon: MessageCircle,
-        titleKey: "nav.chat",
-        descriptionKey: "nav.chatDescription",
-    },
-    {
-        href: "/legal-terminologies",
-        icon: BookOpenText,
-        titleKey: "nav.legalTerminologies",
-        descriptionKey: "nav.legalTerminologiesDescription",
-    },
-    {
-        href: "/government-processes",
-        icon: Building2,
-        titleKey: "nav.governmentProcesses",
-        descriptionKey: "nav.governmentProcessesDescription",
-    },
-    {
-        href: "/contract-analysis",
-        icon: FileText,
-        titleKey: "nav.contractAnalysis",
-        descriptionKey: "nav.contractAnalysisDescription",
-    },
-    {
-        href: "/document-generation",
-        icon: FilePlus2,
-        titleKey: "nav.documentGeneration",
-        descriptionKey: "nav.documentGenerationDescription",
-    },
-];
 
 export function Navbar() {
     const { t } = useTranslation();
@@ -124,7 +92,7 @@ export function Navbar() {
                                         </NavigationMenuTrigger>
                                         <NavigationMenuContent className="z-50 min-w-80 p-2">
                                             <div className="grid gap-1">
-                                                {authenticatedNavItems.map((item) => {
+                                                {authenticatedToolItems.map((item) => {
                                                     const Icon = item.icon;
 
                                                     return (

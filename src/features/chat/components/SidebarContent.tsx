@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, FilePlus2, Landmark, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, Scale, SettingsIcon, ShieldCheck, SunIcon, X } from "lucide-react";
+import { ChevronLeft, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, SettingsIcon, ShieldCheck, SunIcon, Wrench, X } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
@@ -28,6 +28,7 @@ import useThemeStore from "@/shared/store/theme";
 import { useTranslation } from "react-i18next";
 import ChatSearchDialog from "./ChatSearchDialog";
 import UserSessionsDialog from "./UserSessionsDialog";
+import ToolsDialog from "@/shared/components/ToolsDialog";
 
 interface SidebarContentProps {
     onClose?: () => void;
@@ -102,49 +103,20 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
             </button>
 
-            <div className="mb-3 grid grid-cols-3 gap-2">
-                <button
-                    onClick={() => {
-                        onClose?.();
-                        navigate("/legal-terminologies");
-                    }}
-                    className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-500/15 bg-blue-500/5 px-2 text-xs font-black text-blue-500 shadow-md shadow-blue-500/5 transition-all hover:border-blue-500/35 hover:bg-blue-500/10 active:scale-[0.98]"
-                    aria-label={t("legalTerminologies.nav.title")}
-                    title={t("legalTerminologies.nav.title")}
-                >
-                    <Scale className="size-4 shrink-0 text-amber-400" />
-                    <span className="min-w-0 truncate font-['Cairo']">
-                        {t("legalTerminologies.nav.shortTitle")}
-                    </span>
-                </button>
-                <button
-                    onClick={() => {
-                        onClose?.();
-                        navigate("/government-processes");
-                    }}
-                    className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-500/15 bg-blue-500/5 px-2 text-xs font-black text-blue-500 shadow-md shadow-blue-500/5 transition-all hover:border-blue-500/35 hover:bg-blue-500/10 active:scale-[0.98]"
-                    aria-label={t("governmentProcesses.nav.title")}
-                    title={t("governmentProcesses.nav.title")}
-                >
-                    <Landmark className="size-4 shrink-0 text-amber-400" />
-                    <span className="min-w-0 truncate font-['Cairo']">
-                        {t("governmentProcesses.nav.shortTitle")}
-                    </span>
-                </button>
-                <button
-                    onClick={() => {
-                        onClose?.();
-                        navigate("/document-generation");
-                    }}
-                    className="flex h-10 min-w-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-blue-500/15 bg-blue-500/5 px-2 text-xs font-black text-blue-500 shadow-md shadow-blue-500/5 transition-all hover:border-blue-500/35 hover:bg-blue-500/10 active:scale-[0.98]"
-                    aria-label={t("documentGeneration.nav.title")}
-                    title={t("documentGeneration.nav.title")}
-                >
-                    <FilePlus2 className="size-4 shrink-0 text-amber-400" />
-                    <span className="min-w-0 truncate font-['Cairo']">
-                        {t("documentGeneration.nav.shortTitle")}
-                    </span>
-                </button>
+            <div className="relative z-10 mb-3">
+                <ToolsDialog
+                    onToolSelect={onClose}
+                    trigger={
+                        <button
+                            type="button"
+                            className="flex h-11 w-full cursor-pointer items-center justify-center gap-3 rounded-xl border border-blue-500/15 bg-blue-500/5 px-4 text-sm font-black text-blue-500 shadow-md shadow-blue-500/5 transition-all hover:border-blue-500/35 hover:bg-blue-500/10 active:scale-[0.98]"
+                            aria-label={t("nav.openTools")}
+                        >
+                            <Wrench className="size-4 shrink-0 text-amber-400" />
+                            <span className="min-w-0 truncate font-['Cairo']">{t("nav.tools")}</span>
+                        </button>
+                    }
+                />
             </div>
 
             <div className="relative z-10">
