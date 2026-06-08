@@ -5,6 +5,7 @@ import ChatSkeleton from "./features/chat/components/ChatSkeleton";
 import AdminSkeleton from './features/admin/components/AdminSkeleton';
 import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
 import GovernmentProcessSkeleton from './features/government-processes/components/GovernmentProcessSkeleton';
+import ContractAnalysisSkeleton from './features/contract-analysis/components/ContractAnalysisSkeleton';
 
 const SignUp = lazy(() => import('./features/auth/pages/SignUp'));
 const Login = lazy(() => import('./features/auth/pages/Login'));
@@ -16,6 +17,7 @@ const NotFound = lazy(() => import('./shared/pages/NotFound'));
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
 const GovernmentProcesses = lazy(() => import('./features/government-processes/pages/GovernmentProcesses'));
+const ContractAnalysis = lazy(() => import('./features/contract-analysis/pages/ContractAnalysis'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
@@ -97,6 +99,27 @@ export function App() {
                             <Suspense fallback={<GovernmentProcessSkeleton />}>
                                 <ProtectedRoute>
                                     <GovernmentProcesses />
+                                </ProtectedRoute>
+                            </Suspense>
+                        }
+                    />
+
+                    <Route
+                        path="/contract-analysis"
+                        element={
+                            <Suspense fallback={<ContractAnalysisSkeleton />}>
+                                <ProtectedRoute>
+                                    <ContractAnalysis />
+                                </ProtectedRoute>
+                            </Suspense>
+                        }
+                    />
+                    <Route
+                        path="/contract-analysis/:analysisId"
+                        element={
+                            <Suspense fallback={<ContractAnalysisSkeleton />}>
+                                <ProtectedRoute>
+                                    <ContractAnalysis />
                                 </ProtectedRoute>
                             </Suspense>
                         }

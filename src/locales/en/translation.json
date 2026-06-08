@@ -134,6 +134,8 @@
     "legalTerminologiesDescription": "Explain Egyptian legal terms with examples and sources.",
     "governmentProcesses": "Government Processes",
     "governmentProcessesDescription": "Find steps, documents, fees, authorities, and official sources.",
+    "contractAnalysis": "Contract Analysis",
+    "contractAnalysisDescription": "Find contract risks, obligations, recommendations, and supporting legal references.",
     "logoutFull": "Log Out",
     "logout": "Exit"
   },
@@ -736,6 +738,79 @@
       "description": "An error occurred while processing the request. Please try again.",
       "retry": "Try again",
       "boundary": "An error occurred while loading the government processes page. Please try again."
+    }
+  },
+  "contractAnalysis": {
+    "header": {
+      "backToChat": "Back to chat",
+      "badge": "Legal review",
+      "title": "Contract Analysis",
+      "description": "Upload a contract and Moeen will highlight risks, obligations, practical recommendations, and relevant legal references."
+    },
+    "status": {
+      "waiting": "Waiting",
+      "ready": "Review ready",
+      "description": "The result panel shows the latest completed review.",
+      "completed": "Completed",
+      "loading": "Loading analysis..."
+    },
+    "stats": {
+      "history": "Saved analysis",
+      "files": "Files",
+      "sources": "Sources"
+    },
+    "upload": {
+      "title": "Upload contract",
+      "description": "Add the contract files you want reviewed. Moeen will prepare them and start the analysis.",
+      "choose": "Choose contract files",
+      "hint": "PDF, DOC, DOCX, or TXT. Attach multiple files when they belong to the same review.",
+      "remove": "Remove file",
+      "clear": "Clear",
+      "selectedCount": "{{count}} selected",
+      "uploading": "Uploading files",
+      "analyzing": "Reviewing contract",
+      "submit": "Review contract"
+    },
+    "empty": {
+      "title": "Upload a contract to start",
+      "description": "Choose the files, then run the review to see risks, recommendations, and cited sources."
+    },
+    "result": {
+      "title": "Contract review result",
+      "subtitle": "Risks, recommendations, and sources from the uploaded files",
+      "emptyMessage": "No analysis message was returned for this task."
+    },
+    "tabs": {
+      "analysis": "Analysis",
+      "sources": "Sources ({{count}})"
+    },
+    "sources": {
+      "title": "Legal sources",
+      "description": "Articles and legal references used in this review.",
+      "count": "{{count}} sources",
+      "article": "Article {{article}}",
+      "empty": "No legal sources are linked to this analysis.",
+      "showMore": "Show full article",
+      "showLess": "Show less",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "files": {
+      "count": "{{count}} files"
+    },
+    "history": {
+      "title": "Recent analyses",
+      "description": "Return to contract reviews you ran before.",
+      "empty": "No saved contract analyses yet.",
+      "loadMore": "Load more",
+      "itemTitle": "{{count}} file analysis"
+    },
+    "error": {
+      "title": "Could not load the contract review",
+      "description": "An error occurred while analyzing the contract. Please try again.",
+      "history": "Could not load recent contract reviews.",
+      "retry": "Try again",
+      "boundary": "An error occurred while loading the contract analysis page. Please try again."
     }
   },
   "notfound": {

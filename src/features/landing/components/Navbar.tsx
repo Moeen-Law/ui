@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "@/features/auth/store/auth";
-import { BookOpenText, Building2, LogOut, MessageCircle } from "lucide-react";
+import { BookOpenText, Building2, FileText, LogOut, MessageCircle } from "lucide-react";
 import { useLogout } from "@/features/auth/hooks/useLogout";
 import { useHandleStart } from "@/shared/hooks/useHandleStart";
 import MobileMenu from "./MobileMenu";
@@ -35,6 +35,12 @@ const authenticatedNavItems = [
         icon: Building2,
         titleKey: "nav.governmentProcesses",
         descriptionKey: "nav.governmentProcessesDescription",
+    },
+    {
+        href: "/contract-analysis",
+        icon: FileText,
+        titleKey: "nav.contractAnalysis",
+        descriptionKey: "nav.contractAnalysisDescription",
     },
 ];
 
