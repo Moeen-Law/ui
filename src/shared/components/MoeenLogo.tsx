@@ -47,7 +47,7 @@ export function MoeenLogo({
       {showText && (
         <span
           className={cn(
-            "truncate font-['Cairo'] font-black tracking-tight text-foreground",
+            "truncate font-sans font-black tracking-tight text-foreground",
             textSizes[size],
             textClassName
           )}

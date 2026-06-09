@@ -18,7 +18,7 @@ export function LanguageToggle() {
             title={t("common.language")}
         >
             <Globe className="w-5 h-5" />
-            <span className="font-['Cairo'] font-bold text-[0.9rem] uppercase">
+            <span className="font-sans font-bold text-[0.9rem] uppercase">
                 {currentLang === "ar" ? "EN" : "AR"}
             </span>
         </button>

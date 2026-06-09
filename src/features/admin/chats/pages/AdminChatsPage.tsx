@@ -8,16 +8,14 @@ import {
   UserCheck,
   UsersRound,
 } from "lucide-react"
-import { useMemo, useState } from "react"
+import { lazy, Suspense, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import AdminChatsErrorState from "../components/AdminChatsErrorState"
 import AdminChatsPageSkeleton from "../components/AdminChatsPageSkeleton"
-import ChatActivityChart from "../components/ChatActivityChart"
 import ChatHealthPanel from "../components/ChatHealthPanel"
 import ChatsMetricCard from "../components/ChatsMetricCard"
 import DocumentsStatsPanel from "../components/DocumentsStatsPanel"
-import MessagesBySenderChart from "../components/MessagesBySenderChart"
 import UserEngagementPanel from "../components/UserEngagementPanel"
 import {
   useAdminChatsActivity,
@@ -37,6 +35,15 @@ import {
   formatPercent,
   hasAnyStats,
 } from "../helpers"
+
+const ChatActivityChart = lazy(() => import("../components/ChatActivityChart"))
+const MessagesBySenderChart = lazy(() => import("../components/MessagesBySenderChart"))
+
+function ChartPanelFallback({ className = "min-h-[430px]" }: { className?: string }) {
+  return (
+    <div className={`${className} rounded-2xl border border-border/80 bg-card/80`} aria-hidden="true" />
+  )
+}
 
 export default function AdminChatsPage() {
   const { i18n, t } = useTranslation()
@@ -173,21 +180,25 @@ export default function AdminChatsPage() {
       </section>
 
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.65fr)]">
-        <ChatActivityChart
-          data={activityData}
-          totals={activityTotals}
-          params={activityParams}
-          locale={locale}
-          loading={activityQuery.isLoading}
-          fetching={activityQuery.isFetching}
-          error={activityQuery.isError}
-          onRetry={() => {
-            void activityQuery.refetch()
-          }}
-          onParamsChange={setActivityParams}
-          onReset={() => setActivityParams(getDefaultActivityParams())}
-        />
-        <MessagesBySenderChart data={senderData} />
+        <Suspense fallback={<ChartPanelFallback className="min-h-[500px]" />}>
+          <ChatActivityChart
+            data={activityData}
+            totals={activityTotals}
+            params={activityParams}
+            locale={locale}
+            loading={activityQuery.isLoading}
+            fetching={activityQuery.isFetching}
+            error={activityQuery.isError}
+            onRetry={() => {
+              void activityQuery.refetch()
+            }}
+            onParamsChange={setActivityParams}
+            onReset={() => setActivityParams(getDefaultActivityParams())}
+          />
+        </Suspense>
+        <Suspense fallback={<ChartPanelFallback />}>
+          <MessagesBySenderChart data={senderData} />
+        </Suspense>
       </section>
 
       <section className="grid grid-cols-1 gap-6 xl:grid-cols-3">

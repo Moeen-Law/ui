@@ -50,8 +50,8 @@ function ChatAlertModal({ openAlertModal, setOpenAlertModal, chatIdToDelete }: C
                             <Trash2Icon className="size-7" />
                         </AlertDialogMedia>
                         <div className="space-y-2">
-                            <AlertDialogTitle className="text-2xl font-black font-['Cairo']">{t("chat.ui.deleteWarningTitle")}</AlertDialogTitle>
-                            <AlertDialogDescription className="font-['Cairo'] text-sm leading-relaxed max-w-[260px]">
+                            <AlertDialogTitle className="text-2xl font-black font-sans">{t("chat.ui.deleteWarningTitle")}</AlertDialogTitle>
+                            <AlertDialogDescription className="font-sans text-sm leading-relaxed max-w-[260px]">
                                 {t("chat.ui.deleteWarningDesc")}
                             </AlertDialogDescription>
                         </div>
@@ -61,14 +61,14 @@ function ChatAlertModal({ openAlertModal, setOpenAlertModal, chatIdToDelete }: C
                 <AlertDialogFooter className="bg-muted/50 border-t border-border p-6 flex-row gap-3 sm:justify-stretch sm:space-x-0 group-data-[size=sm]/alert-dialog-content:grid group-data-[size=sm]/alert-dialog-content:grid-cols-2 mx-0 mb-0 rounded-none">
                     <AlertDialogCancel
                         disabled={isPending}
-                        className="cursor-pointer font-['Cairo'] rounded-xl transition-all h-12 text-sm font-bold"
+                        className="cursor-pointer font-sans rounded-xl transition-all h-12 text-sm font-bold"
                     >
                         {t("chat.ui.cancel")}
                     </AlertDialogCancel>
                     <Button
                         disabled={isPending}
                         onClick={handleDeleteChat}
-                        className="cursor-pointer disabled:cursor-not-allowed font-['Cairo'] bg-red-500 hover:bg-red-600 text-white border-none rounded-xl shadow-[0_0_25px_rgba(239,68,68,0.25)] transition-all h-12 text-sm font-bold active:scale-[0.98]"
+                        className="cursor-pointer disabled:cursor-not-allowed font-sans bg-red-500 hover:bg-red-600 text-white border-none rounded-xl shadow-[0_0_25px_rgba(239,68,68,0.25)] transition-all h-12 text-sm font-bold active:scale-[0.98]"
                     >
                         {isPending ? t("chat.ui.deleting") : t("chat.ui.deleteConfirmBtn")}
                     </Button>

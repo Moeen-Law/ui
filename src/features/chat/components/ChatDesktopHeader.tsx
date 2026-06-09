@@ -29,7 +29,7 @@ function ChatDesktopHeader() {
                       >
                           <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z" />
                       </svg>
-                      <h1 className="text-xl font-black text-foreground font-['Cairo'] tracking-tight">{t("chat.ui.appTitle")}</h1>
+                      <h1 className="text-xl font-black text-foreground font-sans tracking-tight">{t("chat.ui.appTitle")}</h1>
                   </div>
                   <div className="w-px h-4 bg-border/50" />
                   <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">AI Legal Assistant</p>

@@ -21,7 +21,7 @@ const UserCard = forwardRef<HTMLDivElement, UserCardProps>(({ name, className, .
                     <div className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-background" />
                 </div>
                 <div className="flex flex-col">
-                    <span className="font-black text-sm text-foreground font-['Cairo'] group-hover:translate-x-1 transition-transform">{name}</span>
+                    <span className="font-black text-sm text-foreground font-sans group-hover:translate-x-1 transition-transform">{name}</span>
                     <span className="text-[10px] text-muted-foreground font-medium tracking-tight uppercase">Premium Account</span>
                 </div>
             </div>

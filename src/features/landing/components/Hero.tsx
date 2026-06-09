@@ -103,7 +103,7 @@ export function Hero() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
                     {/* Content */}
                     <div className="max-w-[800px] lg:max-w-[600px] mt-10 lg:mt-0 text-center lg:text-end flex flex-col items-center lg:items-start mx-auto lg:mx-0">
-                        <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-['Cairo'] text-foreground">
+                        <h1 className="text-[2.5rem] md:text-5xl lg:text-[4rem] font-black leading-[1.3] mb-6 pt-2 font-sans text-foreground">
                             {t("hero.titleMain")}
                             <span className="block bg-linear-to-br from-blue-500 to-amber-400 bg-clip-text text-transparent pb-3 pt-1">
                                 {t("hero.titleSub")}
@@ -117,7 +117,7 @@ export function Hero() {
                         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                             <button
                                 onClick={handleStart}
-                                className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
+                                className="flex items-center cursor-pointer justify-center gap-2 bg-blue-500 hover:bg-blue-400 hover:-translate-y-0.5 text-white border-0 py-4 px-8 rounded-xl font-bold text-lg font-sans transition-all shadow-[0_10px_30px_rgba(59,130,246,0.4)]"
                             >
                                 {t("hero.startNow")}
                                 <svg
@@ -135,7 +135,7 @@ export function Hero() {
                                 </svg>
                             </button>
 
-                            <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-['Cairo'] transition-all flex items-center justify-center">
+                            <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-sans transition-all flex items-center justify-center">
                                 {t("hero.discoverMore")}
                             </button>
                         </div>

@@ -9,6 +9,7 @@ import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { MoeenLogo } from "@/shared/components/MoeenLogo";
 import { authenticatedToolItems } from "@/shared/constants/tools";
+import { preloadRoute, preloadToolRoutes } from "@/shared/utils/preloadRoutes";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -50,44 +51,53 @@ export function Navbar() {
                     : "bg-transparent"
                     }`}
             >
-                <div className="max-w-[1280px] mx-auto px-8 py-6 flex justify-between items-center relative group">
+                <div className="max-w-[1280px] mx-auto px-4 py-5 sm:px-6 lg:px-8 lg:py-6 flex justify-between items-center relative group">
                     {/* Brand */}
                     <div
                         onClick={() => navigate("/")}
-                        className="relative z-10 flex items-center gap-3.5 cursor-pointer transition-transform duration-250 hover:-translate-y-px"
+                        className="relative z-10 flex min-w-0 items-center gap-3.5 cursor-pointer transition-transform duration-250 hover:-translate-y-px"
                     >
-                        <MoeenLogo size="md" />
+                        <MoeenLogo
+                            size="md"
+                            className="min-w-0"
+                            textClassName="max-w-28 lg:max-w-32 xl:max-w-none"
+                        />
                     </div>
 
                     {/* Desktop Links */}
-                    <div className="relative z-10 hidden md:flex items-center gap-8">
+                    <div className="relative z-10 hidden lg:flex items-center gap-4 xl:gap-8">
                         <a
                             href="#features"
-                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
+                            className="relative whitespace-nowrap text-muted-foreground no-underline font-semibold text-sm xl:text-base py-2 font-sans transition-colors duration-250 hover:text-foreground"
                         >
                             {t("nav.services")}
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
                         <a
                             href="#pricing"
-                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
+                            className="relative whitespace-nowrap text-muted-foreground no-underline font-semibold text-sm xl:text-base py-2 font-sans transition-colors duration-250 hover:text-foreground"
                         >
                             {t("nav.pricing")}
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
                         <a
                             href="#about"
-                            className="relative text-muted-foreground no-underline font-semibold text-base py-2 font-['Cairo'] transition-colors duration-250 hover:text-foreground"
+                            className="relative whitespace-nowrap text-muted-foreground no-underline font-semibold text-sm xl:text-base py-2 font-sans transition-colors duration-250 hover:text-foreground"
                         >
                             {t("nav.about")}
                             <span className="absolute bottom-0 right-0 w-0 h-[2px] bg-linear-to-r from-blue-500 to-amber-400 rounded-sm transition-all duration-250 group-hover:w-full"></span>
                         </a>
 
                         {isAuthenticated && (
-                            <NavigationMenu viewport={false} className="z-20 font-['Cairo']">
+                            <NavigationMenu
+                                viewport={false}
+                                className="z-20 font-sans"
+                                onMouseEnter={preloadToolRoutes}
+                                onFocus={preloadToolRoutes}
+                            >
                                 <NavigationMenuList>
                                     <NavigationMenuItem>
-                                        <NavigationMenuTrigger className="h-10 px-3 text-sm font-bold text-muted-foreground hover:text-foreground">
+                                        <NavigationMenuTrigger className="h-10 px-2 text-sm font-bold text-muted-foreground hover:text-foreground xl:px-3">
                                             {t("nav.tools")}
                                         </NavigationMenuTrigger>
                                         <NavigationMenuContent className="z-50 min-w-80 p-2">
@@ -99,6 +109,8 @@ export function Navbar() {
                                                         <NavigationMenuLink asChild key={item.href}>
                                                             <Link
                                                                 to={item.href}
+                                                                onMouseEnter={() => preloadRoute(item.href)}
+                                                                onFocus={() => preloadRoute(item.href)}
                                                                 className="flex items-start gap-3 rounded-lg p-3 text-start"
                                                             >
                                                                 <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
@@ -123,11 +135,13 @@ export function Navbar() {
                             </NavigationMenu>
                         )}
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex shrink-0 items-center gap-2 xl:gap-4">
                             <LanguageToggle />
                             <button
                                 onClick={handleStart}
-                                className="relative cursor-pointer overflow-hidden bg-card text-foreground border border-border px-7 py-3 rounded-md font-bold text-[0.95rem] font-['Cairo'] tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-blue-500"
+                                onMouseEnter={() => preloadRoute(isAuthenticated ? "/chat" : "/login")}
+                                onFocus={() => preloadRoute(isAuthenticated ? "/chat" : "/login")}
+                                className="relative cursor-pointer overflow-hidden whitespace-nowrap bg-card text-foreground border border-border px-4 py-2.5 rounded-md font-bold text-sm font-sans tracking-tight transition-all duration-250 shadow-[0_0_20px_rgba(59,130,246,0.15)] group hover:-translate-y-0.5 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:border-blue-500 xl:px-7 xl:py-3 xl:text-[0.95rem]"
                             >
                                 <span className="relative z-10 group-hover:text-background transition-colors duration-250">
                                     {isAuthenticated ? t("nav.openChat") : t("hero.startNow")}
@@ -139,17 +153,18 @@ export function Navbar() {
                                 <button
                                     onClick={handleLogout}
                                     disabled={loading}
-                                    className="group flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed gap-2 px-4 py-2.5 rounded-lg border border-red-500/20 bg-red-500/5 text-red-500 font-['Cairo'] font-bold text-[0.9rem] transition-all duration-300 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] active:scale-95"
+                                    aria-label={t("nav.logoutFull")}
+                                    className="group flex items-center cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed gap-2 px-3 py-2.5 rounded-lg border border-red-500/20 bg-red-500/5 text-red-500 font-sans font-bold text-[0.9rem] transition-all duration-300 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-[0_0_20px_rgba(239,68,68,0.3)] active:scale-95 xl:px-4"
                                     title={t("nav.logoutFull")}
                                 >
                                     <LogOut className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-                                    <span>{t("nav.logout")}</span>
+                                    <span className="hidden xl:inline">{t("nav.logout")}</span>
                                 </button>
                             )}
                         </div>
                     </div>
 
-                    <div className="relative z-10 flex md:hidden items-center gap-3">
+                    <div className="relative z-10 flex lg:hidden items-center gap-3">
                         <LanguageToggle />
                         {/* Mobile Burger Menu Button */}
                         <button

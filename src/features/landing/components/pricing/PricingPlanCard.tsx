@@ -54,16 +54,16 @@ export function PricingPlanCard({ plan }: { plan: PlanResponse }) {
                         <div className="flex max-w-[78%] flex-col gap-3 text-start">
                             {plan.isDefault && (
                                 <Badge
-                                    className="w-fit rounded-full bg-blue-500 px-4 py-1 font-['Cairo'] text-xs font-extrabold tracking-wide text-white shadow-[0_10px_24px_rgba(59,130,246,0.28)]"
+                                    className="w-fit rounded-full bg-blue-500 px-4 py-1 font-sans text-xs font-extrabold tracking-wide text-white shadow-[0_10px_24px_rgba(59,130,246,0.28)]"
                                     variant="default"
                                 >
                                     {t("pricing.recommended")}
                                 </Badge>
                             )}
-                            <CardTitle className="font-['Cairo'] text-2xl font-extrabold text-foreground">
+                            <CardTitle className="font-sans text-2xl font-extrabold text-foreground">
                                 {plan.name}
                             </CardTitle>
-                            <CardDescription className="font-['Cairo'] text-[0.95rem] leading-relaxed">
+                            <CardDescription className="font-sans text-[0.95rem] leading-relaxed">
                                 {plan.description}
                             </CardDescription>
                         </div>
@@ -77,10 +77,10 @@ export function PricingPlanCard({ plan }: { plan: PlanResponse }) {
                             {formatPrice(plan.price, locale)}
                         </span>
                         <div className="flex flex-col justify-end pb-1.5">
-                            <span className="font-['Cairo'] text-sm font-bold text-muted-foreground">
+                            <span className="font-sans text-sm font-bold text-muted-foreground">
                                 {t("pricing.currency")}
                             </span>
-                            <span className="font-['Cairo'] text-xs font-medium text-muted-foreground">
+                            <span className="font-sans text-xs font-medium text-muted-foreground">
                                 {durationLabel}
                             </span>
                         </div>
@@ -112,7 +112,7 @@ export function PricingPlanCard({ plan }: { plan: PlanResponse }) {
                     <Button
                         type="button"
                         className={cn(
-                            "h-12 w-full rounded-xl font-['Cairo'] text-base font-bold cursor-pointer transition-all duration-300",
+                            "h-12 w-full rounded-xl font-sans text-base font-bold cursor-pointer transition-all duration-300",
                             plan.isDefault
                                 ? "bg-blue-500 text-white shadow-[0_10px_30px_rgba(59,130,246,0.35)] hover:-translate-y-0.5 hover:bg-blue-400"
                                 : "border-2 border-border bg-transparent text-foreground hover:border-blue-500 hover:bg-blue-500/10"

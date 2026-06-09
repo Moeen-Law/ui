@@ -13,7 +13,7 @@ function NotFoundChats() {
             <div className="w-12 h-12 rounded-2xl bg-muted border border-border flex items-center justify-center mb-4">
                 <Plus className="w-6 h-6 opacity-30" />
             </div>
-            <p className="text-muted-foreground text-xs font-['Cairo'] leading-relaxed whitespace-pre-wrap">
+            <p className="text-muted-foreground text-xs font-sans leading-relaxed whitespace-pre-wrap">
                 {t("chat.ui.startNewChatInfo")}
             </p>
         </motion.div>

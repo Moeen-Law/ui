@@ -27,17 +27,17 @@ export function SessionCard({ session, onLogout, isLoggingOut }: SessionCardProp
                     </div>
                     <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
-                            <h3 className="truncate font-['Cairo'] text-sm font-black text-foreground">
+                            <h3 className="truncate font-sans text-sm font-black text-foreground">
                                 {device}
                             </h3>
                             {session.current && (
-                                <Badge className="border-blue-500/20 bg-blue-500/10 font-['Cairo'] text-blue-500">
+                                <Badge className="border-blue-500/20 bg-blue-500/10 font-sans text-blue-500">
                                     <ShieldCheck data-icon="inline-start" />
                                     {t("auth.sessions.current")}
                                 </Badge>
                             )}
                         </div>
-                        <div className="mt-3 grid gap-2 font-['Cairo'] text-xs leading-5 text-muted-foreground">
+                        <div className="mt-3 grid gap-2 font-sans text-xs leading-5 text-muted-foreground">
                             <span className="inline-flex min-w-0 items-center gap-2">
                                 <Globe2 className="size-3.5 shrink-0 text-amber-400" />
                                 <span className="truncate">
@@ -62,7 +62,7 @@ export function SessionCard({ session, onLogout, isLoggingOut }: SessionCardProp
                     <Button
                         type="button"
                         variant="destructive"
-                        className="w-full cursor-pointer rounded-xl font-['Cairo'] font-bold sm:w-auto"
+                        className="w-full cursor-pointer rounded-xl font-sans font-bold sm:w-auto"
                         disabled={isLoggingOut}
                         onClick={() => onLogout(session.sessionId)}
                     >

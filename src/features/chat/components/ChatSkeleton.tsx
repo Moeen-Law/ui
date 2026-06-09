@@ -2,7 +2,7 @@ import { MessageSquare } from "lucide-react";
 
 export default function ChatSkeleton() {
     return (
-        <div className="flex h-dvh bg-background text-foreground font-['Cairo'] overflow-hidden">
+        <div className="flex h-dvh bg-background text-foreground font-sans overflow-hidden">
             {/* Sidebar Skeleton */}
             <aside className="hidden md:flex flex-col w-[300px] bg-muted border-e border-border p-5">
                 <div className="h-6 w-32 bg-muted-foreground/20 rounded-md mb-8 animate-pulse" />

@@ -13,10 +13,10 @@ export function PricingError({ onRetry }: { onRetry: () => void }) {
                     <AlertCircle className="size-6" />
                 </div>
                 <div className="flex flex-col gap-2">
-                    <CardTitle className="font-['Cairo'] text-xl font-bold text-foreground">
+                    <CardTitle className="font-sans text-xl font-bold text-foreground">
                         {t("pricing.errorTitle")}
                     </CardTitle>
-                    <CardDescription className="font-['Cairo'] text-base leading-relaxed">
+                    <CardDescription className="font-sans text-base leading-relaxed">
                         {t("pricing.errorDescription")}
                     </CardDescription>
                 </div>
@@ -26,7 +26,7 @@ export function PricingError({ onRetry }: { onRetry: () => void }) {
                     type="button" 
                     variant="outline" 
                     onClick={onRetry}
-                    className="border-destructive/20 font-['Cairo'] hover:bg-destructive/10 hover:text-destructive"
+                    className="border-destructive/20 font-sans hover:bg-destructive/10 hover:text-destructive"
                 >
                     <RefreshCcw data-icon="inline-start" />
                     {t("pricing.retry")}

@@ -84,10 +84,10 @@ export default function UpdateChatTitleModal({
                 <Edit3 className="size-7 text-muted-foreground" />
               </div>
               <div className="space-y-2">
-                <DialogTitle className="text-2xl font-black font-['Cairo']">
+                <DialogTitle className="text-2xl font-black font-sans">
                   {t("chat.ui.editTitle")}
                 </DialogTitle>
-                <DialogDescription className="font-['Cairo'] text-sm leading-relaxed max-w-[260px]">
+                <DialogDescription className="font-sans text-sm leading-relaxed max-w-[260px]">
                   {t("chat.ui.editTitleDesc")}
                 </DialogDescription>
               </div>
@@ -96,7 +96,7 @@ export default function UpdateChatTitleModal({
 
           <div className="px-8 pb-8">
             <Field>
-              <FieldLabel htmlFor="title" className="font-['Cairo'] mb-2 block text-sm">
+              <FieldLabel htmlFor="title" className="font-sans mb-2 block text-sm">
                 {t("chat.ui.newTitle")}
               </FieldLabel>
               <Input
@@ -106,7 +106,7 @@ export default function UpdateChatTitleModal({
                 placeholder={t("chat.ui.titlePlaceholder")}
                 autoComplete="off"
               />
-              <FieldError errors={[errors.title]} className="font-['Cairo'] text-xs mt-1 text-red-400" />
+              <FieldError errors={[errors.title]} className="font-sans text-xs mt-1 text-red-400" />
             </Field>
           </div>
 
@@ -116,7 +116,7 @@ export default function UpdateChatTitleModal({
                 type="button"
                 disabled={isPending}
                 variant="outline"
-                className="flex-1 cursor-pointer font-['Cairo'] rounded-xl transition-all h-12 text-sm font-bold"
+                className="flex-1 cursor-pointer font-sans rounded-xl transition-all h-12 text-sm font-bold"
               >
                 {t("chat.ui.cancel")}
               </Button>
@@ -124,7 +124,7 @@ export default function UpdateChatTitleModal({
             <Button
               type="submit"
               disabled={isPending}
-              className="flex-1 cursor-pointer disabled:cursor-not-allowed font-['Cairo'] bg-primary hover:bg-primary/90 text-primary-foreground border-none rounded-xl shadow-[0_0_25px_rgba(var(--primary),0.25)] transition-all h-12 text-sm font-bold active:scale-[0.98]"
+              className="flex-1 cursor-pointer disabled:cursor-not-allowed font-sans bg-primary hover:bg-primary/90 text-primary-foreground border-none rounded-xl shadow-[0_0_25px_rgba(var(--primary),0.25)] transition-all h-12 text-sm font-bold active:scale-[0.98]"
             >
               {isPending ? t("chat.ui.saving") : t("chat.ui.saveChanges")}
             </Button>

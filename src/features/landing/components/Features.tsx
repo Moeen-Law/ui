@@ -22,13 +22,13 @@ export function Features() {
     };
 
     return (
-        <section id="features" className="py-24 bg-background">
+        <section id="features" className="content-visibility-auto py-24 bg-background">
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4 font-['Cairo']">
+                    <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4 font-sans">
                         {t("features.header")}
                     </h2>
-                    <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
+                    <p className="text-muted-foreground text-lg md:text-xl font-sans">
                         {t("features.subheader")}
                     </p>
                 </div>
@@ -67,10 +67,10 @@ export function Features() {
                                             <path d={feature.icon} />
                                         </svg>
                                     </div>
-                                    <h3 className="text-2xl font-extrabold text-foreground mb-4 font-['Cairo']">
+                                    <h3 className="text-2xl font-extrabold text-foreground mb-4 font-sans">
                                         {t(`features.items.${feature.id}.title`)}
                                     </h3>
-                                    <p className="text-muted-foreground leading-relaxed text-[1.05rem] font-['Cairo']">
+                                    <p className="text-muted-foreground leading-relaxed text-[1.05rem] font-sans">
                                         {t(`features.items.${feature.id}.description`)}
                                     </p>
                                 </button>

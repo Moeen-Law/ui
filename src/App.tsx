@@ -1,6 +1,5 @@
 import { lazy, Suspense, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Landing from './features/landing/pages/Landing';
 import ChatSkeleton from "./features/chat/components/ChatSkeleton";
 import AdminSkeleton from './features/admin/components/AdminSkeleton';
 import LegalTerminologySkeleton from './features/legal-terminologies/components/LegalTerminologySkeleton';
@@ -8,6 +7,7 @@ import GovernmentProcessSkeleton from './features/government-processes/component
 import ContractAnalysisSkeleton from './features/contract-analysis/components/ContractAnalysisSkeleton';
 import DocumentGenerationSkeleton from './features/document-generation/components/DocumentGenerationSkeleton';
 
+const Landing = lazy(() => import('./features/landing/pages/Landing'));
 const SignUp = lazy(() => import('./features/auth/pages/SignUp'));
 const Login = lazy(() => import('./features/auth/pages/Login'));
 const ForgotPassword = lazy(() => import('./features/auth/pages/ForgotPassword'));
@@ -50,7 +50,14 @@ export function App() {
             <BrowserRouter>
                 <Toaster />
                 <Routes>
-                    <Route path="/" element={<Landing />} />
+                    <Route
+                        path="/"
+                        element={
+                            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+                                <Landing />
+                            </Suspense>
+                        }
+                    />
                     <Route path="/signup" element={guestOnly(<SignUp />)} />
                     <Route path="/login" element={guestOnly(<Login />)} />
                     <Route path="/forgot-password" element={guestOnly(<ForgotPassword />)} />

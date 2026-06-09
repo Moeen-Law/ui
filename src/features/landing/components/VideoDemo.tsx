@@ -13,6 +13,7 @@ export function VideoDemo() {
     const [isMuted, setIsMuted] = useState(true);
     const [progress, setProgress] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
 
     const shouldReduceMotion = useReducedMotion();
 
@@ -89,6 +90,26 @@ export function VideoDemo() {
     };
 
     useEffect(() => {
+        const section = sectionRef.current;
+        if (!section || shouldLoadVideo) {
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    setShouldLoadVideo(true);
+                    observer.disconnect();
+                }
+            },
+            { rootMargin: "360px 0px" }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, [shouldLoadVideo]);
+
+    useEffect(() => {
         const handleFullscreenChange = () => {
             setIsFullscreen(!!document.fullscreenElement);
         };
@@ -101,7 +122,7 @@ export function VideoDemo() {
         <section
             id="video-demo"
             ref={sectionRef}
-            className="relative min-h-[155vh] bg-background scroll-mt-20 snap-start"
+            className="content-visibility-auto relative min-h-[155vh] bg-background scroll-mt-20 snap-start"
         >
             <div className="sticky top-20 h-[calc(100vh-80px)] flex flex-col items-center justify-center px-4 md:px-8 overflow-hidden">
                 <div className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 hidden sm:flex flex-col items-center gap-3">
@@ -134,16 +155,17 @@ export function VideoDemo() {
                         <video
                             ref={videoRef}
                             className="absolute inset-0 w-full h-full object-cover bg-muted"
-                            autoPlay
+                            autoPlay={shouldLoadVideo}
                             loop
                             muted={isMuted}
                             playsInline
+                            preload={shouldLoadVideo ? "metadata" : "none"}
                             poster="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=675&fit=crop"
                             onPlay={() => setIsPlaying(true)}
                             onPause={() => setIsPlaying(false)}
                             onTimeUpdate={handleTimeUpdate}
                         >
-                            <source src="/Law firm Promo.mp4" type="video/mp4" />
+                            {shouldLoadVideo ? <source src="/Law firm Promo.mp4" type="video/mp4" /> : null}
                             Your browser does not support the video tag.
                         </video>
 
@@ -200,10 +222,10 @@ export function VideoDemo() {
                     style={{ opacity: contentOpacity, y: contentY }}
                     className="absolute bottom-[8%] left-0 right-0 text-center px-6 md:px-8 pointer-events-none"
                 >
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-['Cairo'] text-foreground">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 font-sans text-foreground">
                         {t("videoDemo.title")}
                     </h2>
-                    <p className="text-muted-foreground text-lg md:text-xl font-['Cairo']">
+                    <p className="text-muted-foreground text-lg md:text-xl font-sans">
                         {t("videoDemo.subtitle")}
                     </p>
                 </motion.div>

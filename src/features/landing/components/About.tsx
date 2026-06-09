@@ -10,14 +10,14 @@ export function About() {
     ];
 
     return (
-        <section id="about" className="py-24 bg-muted/50 overflow-hidden">
+        <section id="about" className="content-visibility-auto py-24 bg-muted/50 overflow-hidden">
             <div className="max-w-[1280px] mx-auto px-8">
                 <div className="max-w-[900px] mx-auto text-center mb-16">
                     <motion.h2
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-4xl md:text-5xl font-black text-foreground mb-8 font-['Cairo']"
+                        className="text-4xl md:text-5xl font-black text-foreground mb-8 font-sans"
                     >
                         {t("about.title")}
                     </motion.h2>
@@ -26,7 +26,7 @@ export function About() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: 0.1 }}
-                        className="text-muted-foreground text-lg md:text-xl leading-relaxed font-['Cairo']"
+                        className="text-muted-foreground text-lg md:text-xl leading-relaxed font-sans"
                     >
                         {t("about.subtitle")}
                     </motion.p>
@@ -42,10 +42,10 @@ export function About() {
                             transition={{ delay: index * 0.1 + 0.2, type: "spring", stiffness: 100 }}
                             className="text-center group"
                         >
-                            <div className="text-5xl md:text-6xl font-black text-blue-500 mb-4 font-['Cairo'] group-hover:scale-110 transition-transform duration-300">
+                            <div className="text-5xl md:text-6xl font-black text-blue-500 mb-4 font-sans group-hover:scale-110 transition-transform duration-300">
                                 {stat.number}
                             </div>
-                            <div className="text-muted-foreground text-xl font-bold font-['Cairo']">
+                            <div className="text-muted-foreground text-xl font-bold font-sans">
                                 {stat.label}
                             </div>
                         </motion.div>

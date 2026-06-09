@@ -79,7 +79,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                     className="flex items-center gap-2 cursor-pointer text-muted-foreground hover:text-foreground transition-all group self-start"
                 >
                     <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-bold text-xs font-['Cairo'] uppercase tracking-wider">{t("chat.ui.backToHome")}</span>
+                    <span className="font-bold text-xs font-sans uppercase tracking-wider">{t("chat.ui.backToHome")}</span>
                 </button>
 
                 {onClose && (
@@ -100,7 +100,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                 className="flex items-center cursor-pointer justify-center gap-3 w-full bg-blue-500 text-white rounded-xl py-3.5 px-4 font-black text-sm transition-all hover:bg-blue-600 active:scale-[0.98] mb-3 shadow-xl shadow-blue-500/10 border border-transparent relative z-10"
             >
                 <Plus className="w-4 h-4" />
-                <span className="font-['Cairo']">{t("chat.ui.newChat")}</span>
+                <span className="font-sans">{t("chat.ui.newChat")}</span>
             </button>
 
             <div className="relative z-10 mb-3">
@@ -113,7 +113,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                             aria-label={t("nav.openTools")}
                         >
                             <Wrench className="size-4 shrink-0 text-amber-400" />
-                            <span className="min-w-0 truncate font-['Cairo']">{t("nav.tools")}</span>
+                            <span className="min-w-0 truncate font-sans">{t("nav.tools")}</span>
                         </button>
                     }
                 />
@@ -125,7 +125,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
 
             <div className="flex-1 overflow-y-auto no-scrollbar relative z-10">
                 <div className="flex items-center justify-between mb-6 px-1">
-                    <h3 className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] font-['Cairo']">{t("chat.ui.pastChats")}</h3>
+                    <h3 className="text-muted-foreground text-[10px] font-black uppercase tracking-[0.2em] font-sans">{t("chat.ui.pastChats")}</h3>
                     {hasChats && (
                         <div className="px-2 py-0.5 rounded-full bg-muted/50 border border-border text-[9px] text-muted-foreground font-mono">
                             {meta?.total}

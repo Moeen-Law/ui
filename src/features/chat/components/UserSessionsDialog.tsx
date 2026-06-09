@@ -55,10 +55,10 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
                             <ShieldCheck className="size-6" />
                         </div>
                         <div className="space-y-2 text-start">
-                            <DialogTitle className="font-['Cairo'] text-2xl font-black text-foreground">
+                            <DialogTitle className="font-sans text-2xl font-black text-foreground">
                                 {t("auth.sessions.title")}
                             </DialogTitle>
-                            <DialogDescription className="font-['Cairo'] leading-6">
+                            <DialogDescription className="font-sans leading-6">
                                 {t("auth.sessions.description")}
                             </DialogDescription>
                         </div>
@@ -69,7 +69,7 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
                     {isLoading && (
                         <div className="flex min-h-44 flex-col items-center justify-center gap-3 text-muted-foreground">
                             <Loader2 className="size-6 animate-spin" />
-                            <span className="font-['Cairo'] text-sm font-bold">
+                            <span className="font-sans text-sm font-bold">
                                 {t("auth.sessions.loading")}
                             </span>
                         </div>
@@ -78,13 +78,13 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
                     {isError && (
                         <div className="flex min-h-44 flex-col items-center justify-center gap-4 rounded-2xl border border-border bg-card p-6 text-center">
                             <AlertTriangle className="size-8 text-red-500" />
-                            <p className="font-['Cairo'] text-sm font-bold text-muted-foreground">
+                            <p className="font-sans text-sm font-bold text-muted-foreground">
                                 {t("auth.sessions.error")}
                             </p>
                             <Button
                                 type="button"
                                 variant="outline"
-                                className="cursor-pointer font-['Cairo'] font-bold"
+                                className="cursor-pointer font-sans font-bold"
                                 onClick={() => refetch()}
                             >
                                 {t("auth.sessions.retry")}
@@ -94,7 +94,7 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
 
                     {!isLoading && !isError && sessions.length === 0 && (
                         <div className="flex min-h-44 items-center justify-center rounded-2xl border border-border bg-card p-6 text-center">
-                            <p className="font-['Cairo'] text-sm font-bold text-muted-foreground">
+                            <p className="font-sans text-sm font-bold text-muted-foreground">
                                 {t("auth.sessions.empty")}
                             </p>
                         </div>
@@ -118,7 +118,7 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
                 </div>
 
                 <DialogFooter className="m-0 flex-col gap-3 rounded-none border-t border-border bg-muted/40 p-5 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="font-['Cairo'] text-xs leading-5 text-muted-foreground">
+                    <p className="font-sans text-xs leading-5 text-muted-foreground">
                         {confirmLogoutAll
                             ? t("auth.sessions.logoutAllConfirmHint")
                             : t("auth.sessions.footerHint")}
@@ -126,7 +126,7 @@ export default function UserSessionsDialog({ open, onOpenChange }: UserSessionsD
                     <Button
                         type="button"
                         variant="destructive"
-                        className="w-full cursor-pointer rounded-xl font-['Cairo'] font-bold sm:w-auto"
+                        className="w-full cursor-pointer rounded-xl font-sans font-bold sm:w-auto"
                         disabled={logoutAllSessions.isPending || sessions.length === 0}
                         onClick={handleLogoutAll}
                     >

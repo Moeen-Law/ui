@@ -12,7 +12,7 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
     const { t } = useTranslation();
     return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8 font-['Cairo'] relative overflow-hidden">
+        <div className="min-h-screen bg-background flex items-center justify-center p-4 md:p-8 font-sans relative overflow-hidden">
             {/* Hero-like background gradient */}
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_60%)] pointer-events-none" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_right,rgba(251,191,36,0.06),transparent_50%)] pointer-events-none" />

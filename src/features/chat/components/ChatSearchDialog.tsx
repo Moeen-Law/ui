@@ -69,7 +69,7 @@ export default function ChatSearchDialog() {
                 type="button"
                 onClick={() => setOpen(true)}
                 variant="outline"
-                className="mb-6 h-11 w-full cursor-pointer justify-start gap-3 rounded-xl bg-background/70 px-4 font-['Cairo'] font-semibold text-muted-foreground shadow-sm hover:-translate-y-px hover:text-foreground"
+                className="mb-6 h-11 w-full cursor-pointer justify-start gap-3 rounded-xl bg-background/70 px-4 font-sans font-semibold text-muted-foreground shadow-sm hover:-translate-y-px hover:text-foreground"
             >
                 <Search data-icon="inline-start" />
                 <span className="truncate">{t("chat.search.open")}</span>

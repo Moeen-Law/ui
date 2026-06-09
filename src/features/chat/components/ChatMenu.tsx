@@ -27,7 +27,7 @@ function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModa
                         setOpenUpdateChatTitleModal(true);
                         setSelectedChat(chat);
                     }}
-                    className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer hover:bg-muted"
+                    className="flex items-center gap-2 font-sans text-xs p-2 rounded-lg cursor-pointer hover:bg-muted"
                 >
                     <Edit3 className="w-3.5 h-3.5" />
                     <span>{t("chat.ui.editTitle")}</span>
@@ -39,7 +39,7 @@ function ChatMenu({ setOpenAlertModal, setSelectedId, setOpenUpdateChatTitleModa
                         setSelectedId(chat.id); 
                     }}
                     variant="destructive"
-                    className="flex items-center gap-2 font-['Cairo'] text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
+                    className="flex items-center gap-2 font-sans text-xs p-2 rounded-lg cursor-pointer text-red-400 hover:text-red-400 hover:bg-red-400/10"
                 >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>{t("chat.ui.deleteChat")}</span>

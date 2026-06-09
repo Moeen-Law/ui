@@ -8,7 +8,7 @@ const NotFound = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden font-[var(--font-family,Cairo)]">
+        <div className="relative min-h-screen w-full bg-background flex flex-col items-center justify-center overflow-hidden font-sans">
             {/* Background Decorative Elements */}
             <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.15),transparent_60%)]" />
             <div className="absolute inset-0 pointer-events-none opacity-20"

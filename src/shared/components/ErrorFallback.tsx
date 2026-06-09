@@ -40,10 +40,10 @@ export default function ErrorFallback({
                 </div>
 
                 {/* Text Content */}
-                <h2 className="text-2xl md:text-4xl font-black mb-4 font-['Cairo'] tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
+                <h2 className="text-2xl md:text-4xl font-black mb-4 font-sans tracking-tight bg-clip-text text-transparent bg-linear-to-b from-white to-white/60">
                     عذراً، حدث خطأ غير متوقع
                 </h2>
-                <p className="text-[#a0a0a0] max-w-md mx-auto mb-10 leading-relaxed text-base md:text-lg font-['Cairo'] font-medium">
+                <p className="text-[#a0a0a0] max-w-md mx-auto mb-10 leading-relaxed text-base md:text-lg font-sans font-medium">
                     {message}
                 </p>
 
@@ -55,7 +55,7 @@ export default function ErrorFallback({
                             className="flex items-center gap-3 bg-white text-black px-10 py-4 rounded-2xl font-bold text-sm hover:bg-[#f0f0f0] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group shadow-2xl shadow-white/5 border border-transparent"
                         >
                             <RefreshCw className="w-4 h-4 group-hover:rotate-180 transition-transform duration-700 ease-in-out" />
-                            <span className="font-['Cairo']">إعادة المحاولة</span>
+                            <span className="font-sans">إعادة المحاولة</span>
                         </button>
                     )}
 
@@ -65,7 +65,7 @@ export default function ErrorFallback({
                             className="flex items-center gap-3 bg-[#111] border border-white/5 text-white px-10 py-4 rounded-2xl font-bold text-sm hover:bg-[#1a1a1a] hover:border-white/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
                         >
                             <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                            <span className="font-['Cairo']">العودة للرئيسية</span>
+                            <span className="font-sans">العودة للرئيسية</span>
                         </button>
                     )}
                 </div>
@@ -75,7 +75,7 @@ export default function ErrorFallback({
                     <div className="mt-6 border-t border-white/5 pt-8">
                         <button 
                             onClick={() => setShowDetails(!showDetails)}
-                            className="text-[#555] cursor-pointer hover:text-[#888] transition-colors text-xs flex items-center gap-2 mx-auto font-['Cairo'] group"
+                            className="text-[#555] cursor-pointer hover:text-[#888] transition-colors text-xs flex items-center gap-2 mx-auto font-sans group"
                         >
                             <Terminal className="w-3.5 h-3.5 group-hover:text-red-500/50 transition-colors" />
                             <span className="border-b border-transparent group-hover:border-[#888] transition-colors">

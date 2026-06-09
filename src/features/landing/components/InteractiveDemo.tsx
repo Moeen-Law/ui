@@ -59,7 +59,7 @@ export function InteractiveDemo() {
     };
 
     return (
-        <section className="bg-muted/50 py-24 px-8 overflow-hidden">
+        <section className="content-visibility-auto bg-muted/50 py-24 px-8 overflow-hidden">
             <div className="max-w-[1280px] mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
@@ -147,13 +147,13 @@ export function InteractiveDemo() {
                         <span className="text-sm font-bold text-blue-500 uppercase tracking-widest mb-4">
                             {t("interactiveDemo.assistantLabel")}
                         </span>
-                        <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight mb-6 font-['Cairo']">
+                        <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight mb-6 font-sans">
                             {t("interactiveDemo.title")}
                         </h2>
-                        <p className="text-muted-foreground text-lg md:text-[1.15rem] leading-relaxed mb-8 max-w-xl font-['Cairo']">
+                        <p className="text-muted-foreground text-lg md:text-[1.15rem] leading-relaxed mb-8 max-w-xl font-sans">
                             {t("interactiveDemo.description")}
                         </p>
-                        <button className="group inline-flex items-center gap-2 text-blue-500 font-bold text-lg cursor-pointer transition-all hover:gap-3 hover:text-blue-400 font-['Cairo']">
+                        <button className="group inline-flex items-center gap-2 text-blue-500 font-bold text-lg cursor-pointer transition-all hover:gap-3 hover:text-blue-400 font-sans">
                             {t("interactiveDemo.exploreBtn")}
                             <svg className="w-5 h-5 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                                 <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

@@ -60,7 +60,7 @@ export default function HistoryDrawer() {
               exit={{ x: isRtl ? "100%" : "-100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               className={cn(
-                "absolute bottom-0 top-0 flex w-[300px] flex-col overflow-hidden border-e border-border bg-background p-5 font-['Cairo'] text-foreground",
+                "absolute bottom-0 top-0 flex w-[300px] flex-col overflow-hidden border-e border-border bg-background p-5 font-sans text-foreground",
                 isRtl ? "right-0" : "left-0"
               )}
             >
