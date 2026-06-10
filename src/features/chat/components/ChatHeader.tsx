@@ -2,8 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import HistoryDrawer from "./HistoryDrawer";
 import { useTranslation } from "react-i18next";
+import type { ReactNode } from "react";
 
-export default function ChatHeader() {
+interface ChatHeaderProps {
+    quotaStatus?: ReactNode;
+}
+
+export default function ChatHeader({ quotaStatus }: ChatHeaderProps) {
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -17,7 +22,10 @@ export default function ChatHeader() {
                 <span>{t("chat.ui.home")}</span>
             </button>
 
-            <HistoryDrawer />
+            <div className="flex min-w-0 items-center gap-2">
+                {quotaStatus ? <div className="max-w-[52vw]">{quotaStatus}</div> : null}
+                <HistoryDrawer />
+            </div>
         </div>
     );
 }

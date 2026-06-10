@@ -2,6 +2,7 @@ import { useEffect, useRef, type ChangeEvent } from "react";
 import { AlertCircle, FileText, LoaderCircle, Paperclip, Send, ShieldCheck, Square, X } from "lucide-react";
 import type { StreamStatus } from "../types";
 import { useTranslation } from "react-i18next";
+import type { ReactNode } from "react";
 
 export interface ChatInputFile {
     id: string;
@@ -21,6 +22,8 @@ interface ChatInputProps {
     onRemoveFile: (id: string) => void;
     isUploadingFiles?: boolean;
     isLoading?: boolean;
+    isQuotaExhausted?: boolean;
+    quotaNotice?: ReactNode;
 }
 
 const formatFileSize = (bytes: number) => {
@@ -40,10 +43,12 @@ export default function ChatInput({
     onRemoveFile,
     isUploadingFiles,
     isLoading,
+    isQuotaExhausted,
+    quotaNotice,
 }: ChatInputProps) {
     const { t } = useTranslation();
     const isProcessing = streamStatus === "streaming" || streamStatus === "creating" || isLoading || isUploadingFiles;
-    const canSend = inputValue.trim().length > 0 && !isProcessing;
+    const canSend = inputValue.trim().length > 0 && !isProcessing && !isQuotaExhausted;
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,6 +71,7 @@ export default function ChatInput({
     return (
         <div className="absolute inset-x-0 bottom-0 w-full bg-linear-to-t from-background via-background/90 to-transparent pt-10 pb-4 md:pb-8 px-4 md:px-8">
             <div className="max-w-4xl mx-auto relative">
+                {quotaNotice ? <div className="mb-3">{quotaNotice}</div> : null}
                 <div className="relative bg-card border border-border rounded-2xl p-2 focus-within:border-blue-500/50 transition-all shadow-2xl backdrop-blur-sm">
                     {selectedFiles.length > 0 && (
                         <div className="flex flex-wrap gap-2 border-b border-border/60 px-2 pb-2 mb-1">
@@ -116,7 +122,7 @@ export default function ChatInput({
                         <button
                             type="button"
                             onClick={() => fileInputRef.current?.click()}
-                            disabled={isProcessing}
+                            disabled={isProcessing || isQuotaExhausted}
                             className="p-2 text-muted-foreground hover:text-foreground transition-colors disabled:pointer-events-none disabled:opacity-40"
                             title={t("chat.ui.attachFiles", { defaultValue: "Attach files" })}
                         >
@@ -160,6 +166,7 @@ export default function ChatInput({
                                 type="button"
                                 onClick={handleSendMessage}
                                 disabled={!canSend}
+                                title={isQuotaExhausted ? t("quota.exhausted.chat") : undefined}
                                 className="p-3 bg-blue-500 text-white rounded-xl hover:bg-blue-400 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-lg shadow-blue-500/20"
                             >
                                 <Send className="w-5 h-5" />

@@ -2,6 +2,10 @@ import { useRef, type ChangeEvent } from "react";
 import { CheckCircle2, FileText, Loader2, Upload, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import QuotaNotice from "@/features/chat/components/QuotaNotice";
+import type { Quota } from "@/features/chat/types";
+import { isQuotaExhausted, isQuotaLow } from "@/features/chat/hooks/useDailyQuota";
 import {
     Card,
     CardContent,
@@ -19,6 +23,9 @@ interface ContractAnalysisUploadPanelProps {
     isUploading: boolean;
     isAnalyzing: boolean;
     requestError?: string;
+    quota?: Quota;
+    isQuotaLoading?: boolean;
+    isQuotaError?: boolean;
     onSelectFiles: (files: File[]) => void;
     onRemoveFile: (id: string) => void;
     onClearFiles: () => void;
@@ -31,6 +38,9 @@ export default function ContractAnalysisUploadPanel({
     isUploading,
     isAnalyzing,
     requestError,
+    quota,
+    isQuotaLoading,
+    isQuotaError,
     onSelectFiles,
     onRemoveFile,
     onClearFiles,
@@ -38,6 +48,8 @@ export default function ContractAnalysisUploadPanel({
 }: ContractAnalysisUploadPanelProps) {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const quotaExhausted = isQuotaExhausted(quota);
+    const showQuotaNotice = isQuotaLow(quota) || quotaExhausted;
 
     const handleSelectFiles = (event: ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files ?? []);
@@ -61,7 +73,7 @@ export default function ContractAnalysisUploadPanel({
             <CardContent className="flex flex-col gap-5">
                 <button
                     type="button"
-                    disabled={isBusy}
+                    disabled={isBusy || quotaExhausted}
                     onClick={() => fileInputRef.current?.click()}
                     className="flex min-h-52 w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-dashed border-blue-500/30 bg-blue-500/5 px-4 py-8 text-center transition hover:border-blue-500 hover:bg-blue-500/10 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -83,6 +95,7 @@ export default function ContractAnalysisUploadPanel({
                     className="hidden"
                     accept=".pdf,.doc,.docx,.txt,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                     onChange={handleSelectFiles}
+                    disabled={isBusy || quotaExhausted}
                 />
 
                 {selectedFiles.length > 0 && (
@@ -147,10 +160,21 @@ export default function ContractAnalysisUploadPanel({
                     </div>
                 )}
 
+                <DailyQuotaBadge
+                    quota={quota}
+                    isLoading={isQuotaLoading}
+                    isError={isQuotaError}
+                    className="w-fit"
+                />
+
+                {showQuotaNotice ? (
+                    <QuotaNotice quota={quota} kind="doc_analysis" />
+                ) : null}
+
                 <Button
                     type="button"
                     onClick={onAnalyze}
-                    disabled={selectedFiles.length === 0 || isBusy}
+                    disabled={selectedFiles.length === 0 || isBusy || quotaExhausted}
                     className="h-10 w-full cursor-pointer border-blue-600 bg-blue-600 font-bold text-white shadow-lg shadow-blue-500/25 hover:bg-blue-700 hover:shadow-blue-500/35 focus-visible:border-blue-400 focus-visible:ring-blue-500/30 disabled:cursor-not-allowed dark:border-blue-500 dark:bg-blue-500 dark:text-white dark:hover:bg-blue-400"
                 >
                     {isBusy ? (

@@ -5,6 +5,9 @@ import ChatHeader from "../components/ChatHeader";
 import ChatMessages from "../components/ChatMessages";
 import ChatInput, { type ChatInputFile } from "../components/ChatInput";
 import ChatDesktopHeader from "../components/ChatDesktopHeader";
+import DailyQuotaBadge from "../components/DailyQuotaBadge";
+import QuotaNotice from "../components/QuotaNotice";
+import { dailyQuotaKeys, getFeatureQuota, isQuotaExhausted, isQuotaLow, useDailyQuota } from "../hooks/useDailyQuota";
 import { useChatStream } from "../hooks/useChatStream";
 import { createChat, uploadMessageFiles } from "../services";
 import { toast } from "sonner";
@@ -43,6 +46,10 @@ export default function Chat() {
     const [isCreatingChat, setIsCreatingChat] = useState(false);
     const [pendingUserMessage, setPendingUserMessage] = useState<string | null>(null);
     const [pendingUserFiles, setPendingUserFiles] = useState<ChatInputFile[]>([]);
+    const { quota: dailyQuota, isLoading: isQuotaLoading, isError: isQuotaError } = useDailyQuota();
+    const chatQuota = getFeatureQuota(dailyQuota, "chat");
+    const chatQuotaExhausted = isQuotaExhausted(chatQuota);
+    const showChatQuotaNotice = isQuotaLow(chatQuota) || chatQuotaExhausted;
 
     // Stream hook — active only when we have a chatId
     const {
@@ -100,6 +107,10 @@ export default function Chat() {
     const handleSendMessage = useCallback(async () => {
         const trimmedInput = inputValue.trim();
         if (!trimmedInput) return;
+        if (chatQuotaExhausted) {
+            toast.error(t("quota.exhausted.chat"));
+            return;
+        }
 
         const attachmentsToSend = selectedFiles;
 
@@ -151,6 +162,7 @@ export default function Chat() {
                 setPendingUserFiles([]);
 
                 await sendMessage(trimmedInput, newChat.id, fileIds, optimisticFiles);
+                queryClient.invalidateQueries({ queryKey: dailyQuotaKeys.all });
 
                 // Navigate to the new chat URL
                 navigate(`/chat/${newChat.id}`, { replace: true });
@@ -179,6 +191,7 @@ export default function Chat() {
             const { fileIds, optimisticFiles } = await uploadSelectedFiles(attachmentsToSend);
             setSelectedFiles([]);
             await sendMessage(trimmedInput, undefined, fileIds, optimisticFiles);
+            queryClient.invalidateQueries({ queryKey: dailyQuotaKeys.all });
         } catch (error: unknown) {
             console.error("Failed to upload files:", error);
             const errorMsg =
@@ -191,10 +204,17 @@ export default function Chat() {
         } finally {
             setIsUploadingFiles(false);
         }
-    }, [inputValue, selectedFiles, chatId, navigate, sendMessage, queryClient, t, uploadSelectedFiles]);
+    }, [inputValue, selectedFiles, chatId, chatQuotaExhausted, navigate, sendMessage, queryClient, t, uploadSelectedFiles]);
 
     // ─── Compute overall status and messages ────────────────────────────────────────
     const effectiveStatus: StreamStatus = isCreatingChat ? "creating" : streamStatus;
+    const chatQuotaStatus = (
+        <DailyQuotaBadge
+            quota={chatQuota}
+            isLoading={isQuotaLoading}
+            isError={isQuotaError}
+        />
+    );
 
     // Combine actual stream messages with our optimistic message during creation
     const displayMessages = [...streamMessages];
@@ -225,10 +245,10 @@ export default function Chat() {
 
             <main className="flex-1 flex flex-col relative w-full h-full overflow-hidden">
                 {/* Desktop Header */}
-                <ChatDesktopHeader />
+                <ChatDesktopHeader quotaStatus={chatQuotaStatus} />
 
                 {/* Mobile Header */}
-                <ChatHeader />
+                <ChatHeader quotaStatus={chatQuotaStatus} />
                 <div className="flex-1 relative overflow-hidden flex flex-col">
                     <ChatMessages
                         chatId={chatId}
@@ -250,6 +270,12 @@ export default function Chat() {
                         onRemoveFile={handleRemoveFile}
                         isUploadingFiles={isUploadingFiles}
                         isLoading={isLoading}
+                        isQuotaExhausted={chatQuotaExhausted}
+                        quotaNotice={
+                            showChatQuotaNotice ? (
+                                <QuotaNotice quota={chatQuota} kind="chat" />
+                            ) : null
+                        }
                     />
                 </div>
             </main>

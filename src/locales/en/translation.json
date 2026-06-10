@@ -259,6 +259,22 @@
       "boundary": "An error occurred while loading the upgrade page. Please try again."
     }
   },
+  "quota": {
+    "badge": "{{remaining}} / {{limit}} left today",
+    "loading": "Loading daily limit...",
+    "unavailable": "Daily limit unavailable",
+    "upgrade": "Upgrade",
+    "low": {
+      "chat": "You have {{count}} chat requests left today. Upgrade for higher limits.",
+      "doc_analysis": "You have {{count}} contract reviews left today. Upgrade for higher limits.",
+      "doc_gen": "You have {{count}} document generations left today. Upgrade for higher limits."
+    },
+    "exhausted": {
+      "chat": "You have reached today's chat limit. Upgrade to continue.",
+      "doc_analysis": "You have reached today's contract review limit. Upgrade to analyze more documents.",
+      "doc_gen": "You have reached today's document generation limit. Upgrade to generate more documents."
+    }
+  },
   "about": {
     "title": "Why Moeen?",
     "subtitle": "Moeen is the first smart legal assistant specialized in Egyptian law. We use the latest AI technologies to provide accurate and fast legal consultations, saving you time, effort, and cost.",

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import { getFeatureQuota, isQuotaExhausted, useDailyQuota } from "@/features/chat/hooks/useDailyQuota";
 import {
     useDocumentTemplate,
     useDocumentTemplates,
@@ -31,6 +32,13 @@ export default function DocumentGenerationContent() {
     const [selectedDocument, setSelectedDocument] = useState<GeneratedDocument | null>(null);
     const [requestError, setRequestError] = useState<string | undefined>();
     const [hasSubmitted, setHasSubmitted] = useState(false);
+    const {
+        quota: dailyQuota,
+        isLoading: isQuotaLoading,
+        isError: isQuotaError,
+    } = useDailyQuota();
+    const docGenQuota = getFeatureQuota(dailyQuota, "doc_gen");
+    const docGenQuotaExhausted = isQuotaExhausted(docGenQuota);
 
     const {
         templates,
@@ -90,7 +98,7 @@ export default function DocumentGenerationContent() {
     const hasInvalidDateField = selectedTemplate?.fields.some(
         (field) => hasInvalidDateFieldValue(field, fieldValues[field.id] ?? "")
     );
-    const canSubmit = Boolean(selectedTemplate) && !isPending;
+    const canSubmit = Boolean(selectedTemplate) && !isPending && !docGenQuotaExhausted;
     const BackIcon = i18n.dir() === "rtl" ? ArrowRight : ArrowLeft;
 
     const handleSelectTemplate = (templateId: string) => {
@@ -153,7 +161,13 @@ export default function DocumentGenerationContent() {
             <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.10),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
 
             <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 py-4 sm:px-4 md:gap-6 md:px-8 md:py-8">
-                <DocumentGenerationHeader stats={stats} BackIcon={BackIcon} />
+                <DocumentGenerationHeader
+                    stats={stats}
+                    BackIcon={BackIcon}
+                    quota={docGenQuota}
+                    isQuotaLoading={isQuotaLoading}
+                    isQuotaError={isQuotaError}
+                />
 
                 <main className="grid min-w-0 grid-cols-1 gap-5 md:gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
                     <section className="flex min-w-0 flex-col gap-5">
@@ -192,6 +206,9 @@ export default function DocumentGenerationContent() {
                             isTemplateError={isTemplateError}
                             canSubmit={canSubmit}
                             isPending={isPending}
+                            quota={docGenQuota}
+                            isQuotaLoading={isQuotaLoading}
+                            isQuotaError={isQuotaError}
                             onRetryTemplate={() => void refetchTemplate()}
                             onFieldChange={handleFieldChange}
                             onSubmit={handleSubmit}

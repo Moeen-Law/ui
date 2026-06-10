@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { dailyQuotaKeys } from "@/features/chat/hooks/useDailyQuota";
 import { generateDocument } from "../services";
 import { documentGenerationKeys } from "./queryKeys";
 
@@ -9,6 +10,9 @@ export const useGenerateDocument = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: documentGenerationKeys.documents(),
+            });
+            queryClient.invalidateQueries({
+                queryKey: dailyQuotaKeys.all,
             });
         },
     });

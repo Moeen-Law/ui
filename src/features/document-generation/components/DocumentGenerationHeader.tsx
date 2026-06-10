@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { ThemeToggle } from "@/shared/components/ThemeToggle";
+import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import type { Quota } from "@/features/chat/types";
 
 interface DocumentGenerationStat {
     label: string;
@@ -15,11 +17,17 @@ interface DocumentGenerationStat {
 interface DocumentGenerationHeaderProps {
     stats: DocumentGenerationStat[];
     BackIcon: LucideIcon;
+    quota?: Quota;
+    isQuotaLoading?: boolean;
+    isQuotaError?: boolean;
 }
 
 export default function DocumentGenerationHeader({
     stats,
     BackIcon,
+    quota,
+    isQuotaLoading,
+    isQuotaError,
 }: DocumentGenerationHeaderProps) {
     const { t } = useTranslation();
 
@@ -54,6 +62,11 @@ export default function DocumentGenerationHeader({
                             <ScrollText data-icon="inline-start" />
                             {t("documentGeneration.header.badge")}
                         </Badge>
+                        <DailyQuotaBadge
+                            quota={quota}
+                            isLoading={isQuotaLoading}
+                            isError={isQuotaError}
+                        />
                     </div>
                     <div className="flex max-w-3xl flex-col gap-3">
                         <h1 className="break-words text-2xl font-black leading-tight sm:text-3xl md:text-5xl">

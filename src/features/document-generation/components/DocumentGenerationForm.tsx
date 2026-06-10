@@ -2,6 +2,10 @@ import { useTranslation } from "react-i18next";
 import { FilePlus2, Loader2, RefreshCw, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import QuotaNotice from "@/features/chat/components/QuotaNotice";
+import type { Quota } from "@/features/chat/types";
+import { isQuotaExhausted, isQuotaLow } from "@/features/chat/hooks/useDailyQuota";
 import {
     hasInvalidDateFieldValue,
     isFieldValueEmpty,
@@ -21,6 +25,9 @@ interface DocumentGenerationFormProps {
     isTemplateError: boolean;
     canSubmit: boolean;
     isPending: boolean;
+    quota?: Quota;
+    isQuotaLoading?: boolean;
+    isQuotaError?: boolean;
     onRetryTemplate: () => void;
     onFieldChange: (fieldId: string, value: string) => void;
     onSubmit: () => void;
@@ -36,11 +43,16 @@ export default function DocumentGenerationForm({
     isTemplateError,
     canSubmit,
     isPending,
+    quota,
+    isQuotaLoading,
+    isQuotaError,
     onRetryTemplate,
     onFieldChange,
     onSubmit,
 }: DocumentGenerationFormProps) {
     const { t } = useTranslation();
+    const quotaExhausted = isQuotaExhausted(quota);
+    const showQuotaNotice = isQuotaLow(quota) || quotaExhausted;
 
     return (
         <Card className="border-blue-500/15 shadow-xl shadow-blue-500/5">
@@ -106,10 +118,21 @@ export default function DocumentGenerationForm({
                             </p>
                         ) : null}
 
+                        <DailyQuotaBadge
+                            quota={quota}
+                            isLoading={isQuotaLoading}
+                            isError={isQuotaError}
+                            className="w-fit"
+                        />
+
+                        {showQuotaNotice ? (
+                            <QuotaNotice quota={quota} kind="doc_gen" />
+                        ) : null}
+
                         <Button
                             type="button"
                             onClick={onSubmit}
-                            disabled={!canSubmit}
+                            disabled={!canSubmit || quotaExhausted}
                             className="w-fit cursor-pointer bg-blue-500 hover:bg-blue-600"
                         >
                             {isPending ? <Loader2 className="animate-spin" /> : <FilePlus2 />}

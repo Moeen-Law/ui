@@ -1,8 +1,13 @@
 import { useChatUIStore } from '../store/ui';
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { useTranslation } from "react-i18next";
+import type { ReactNode } from "react";
 
-function ChatDesktopHeader() {
+interface ChatDesktopHeaderProps {
+  quotaStatus?: ReactNode;
+}
+
+function ChatDesktopHeader({ quotaStatus }: ChatDesktopHeaderProps) {
     const { t } = useTranslation();
     const { isSidebarOpen, toggleSidebar } = useChatUIStore();
 
@@ -35,6 +40,7 @@ function ChatDesktopHeader() {
                   <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-black">AI Legal Assistant</p>
               </div>
           </div>
+          {quotaStatus ? <div className="flex min-w-0 justify-end">{quotaStatus}</div> : null}
       </header>
 
   )

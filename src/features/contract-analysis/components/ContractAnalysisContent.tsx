@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { ThemeToggle } from "@/shared/components/ThemeToggle";
 import { uploadMessageFiles } from "@/features/chat/services";
+import { getFeatureQuota, isQuotaExhausted, useDailyQuota } from "@/features/chat/hooks/useDailyQuota";
+import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
 import type { ContractAnalysisInputFile, ContractAnalysisResponse } from "../types";
 import { useContractAnalyses } from "../hooks/useContractAnalyses";
 import { useCreateContractAnalysis } from "../hooks/useCreateContractAnalysis";
@@ -32,6 +34,13 @@ export default function ContractAnalysisContent() {
     const [localSelectedResult, setLocalSelectedResult] = useState<ContractAnalysisResponse | null>(null);
     const [requestError, setRequestError] = useState<string | undefined>();
     const [isUploading, setIsUploading] = useState(false);
+    const {
+        quota: dailyQuota,
+        isLoading: isQuotaLoading,
+        isError: isQuotaError,
+    } = useDailyQuota();
+    const docAnalysisQuota = getFeatureQuota(dailyQuota, "doc_analysis");
+    const docAnalysisQuotaExhausted = isQuotaExhausted(docAnalysisQuota);
 
     const {
         analyses,
@@ -103,7 +112,7 @@ export default function ContractAnalysisContent() {
     }, []);
 
     const handleAnalyze = useCallback(async () => {
-        if (selectedFiles.length === 0 || isBusy) return;
+        if (selectedFiles.length === 0 || isBusy || docAnalysisQuotaExhausted) return;
 
         setRequestError(undefined);
 
@@ -133,7 +142,7 @@ export default function ContractAnalysisContent() {
                     : t("contractAnalysis.error.description");
             setRequestError(message);
         }
-    }, [analyzeContractAsync, isBusy, navigate, selectedFiles, t]);
+    }, [analyzeContractAsync, docAnalysisQuotaExhausted, isBusy, navigate, selectedFiles, t]);
 
     const handleSelectHistory = useCallback((analysis: ContractAnalysisResponse) => {
         setRequestError(undefined);
@@ -176,6 +185,11 @@ export default function ContractAnalysisContent() {
                                     <Clipboard data-icon="inline-start" />
                                     {t("contractAnalysis.header.badge")}
                                 </Badge>
+                                <DailyQuotaBadge
+                                    quota={docAnalysisQuota}
+                                    isLoading={isQuotaLoading}
+                                    isError={isQuotaError}
+                                />
                             </div>
                             <div className="flex max-w-3xl flex-col gap-3">
                                 <h1 className="break-words text-2xl font-black leading-tight sm:text-3xl md:text-5xl">
@@ -225,6 +239,9 @@ export default function ContractAnalysisContent() {
                             isUploading={isUploading}
                             isAnalyzing={isPending}
                             requestError={requestError}
+                            quota={docAnalysisQuota}
+                            isQuotaLoading={isQuotaLoading}
+                            isQuotaError={isQuotaError}
                             onSelectFiles={handleSelectFiles}
                             onRemoveFile={handleRemoveFile}
                             onClearFiles={handleClearFiles}
