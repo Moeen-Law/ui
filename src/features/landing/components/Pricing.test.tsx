@@ -40,6 +40,7 @@ const plans = [
         durationDays: 30,
         id: "free",
         isDefault: false,
+        isBestPlan: false,
         maxDocumentAnalysisPerDay: 1,
         maxDocumentGenerationPerDay: 0,
         maxTextRequestsPerDay: 5,
@@ -53,6 +54,7 @@ const plans = [
         durationDays: 30,
         id: "pro",
         isDefault: true,
+        isBestPlan: true,
         maxDocumentAnalysisPerDay: 20,
         maxDocumentGenerationPerDay: 10,
         maxTextRequestsPerDay: 100,
@@ -120,7 +122,7 @@ describe("Pricing", () => {
         expect(screen.getByText("No plans available")).toBeInTheDocument();
     });
 
-    it("renders API plans with price, limits, and current plan badge", () => {
+    it("renders API plans with price, limits, and the recommended best-plan badge for guests", () => {
         usePlansMock.mockReturnValue({
             plans,
             isLoading: false,
@@ -133,14 +135,40 @@ describe("Pricing", () => {
         expect(screen.getByText("Free")).toBeInTheDocument();
         expect(screen.getByText("Professional")).toBeInTheDocument();
         expect(screen.getByText("For growing legal workflows.")).toBeInTheDocument();
-        expect(screen.getAllByText("Current Plan")).toHaveLength(2);
+        expect(screen.getByText("Recommended")).toBeInTheDocument();
+        expect(screen.queryByText("Current Plan")).not.toBeInTheDocument();
         expect(screen.getByText("299")).toBeInTheDocument();
         expect(screen.getByText("100 text requests per day")).toBeInTheDocument();
         expect(screen.getByText("20 document analyses per day")).toBeInTheDocument();
         expect(screen.getByText("10 document generations per day")).toBeInTheDocument();
     });
 
-    it("disables the current plan button", () => {
+    it("does not disable a default plan for guests", async () => {
+        const user = userEvent.setup();
+        usePlansMock.mockReturnValue({
+            plans,
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        renderWithProviders(
+            <>
+                <Pricing />
+                <LocationProbe />
+            </>
+        );
+
+        const startButtons = screen.getAllByRole("button", { name: /start plan/i });
+        expect(startButtons).toHaveLength(2);
+
+        await user.click(startButtons[1]);
+
+        expect(screen.getByTestId("location")).toHaveTextContent("/login?redirect=%2F%23pricing");
+    });
+
+    it("disables the current plan button for authenticated users", () => {
+        useAuthStore.getState().setAccessToken("token-1");
         usePlansMock.mockReturnValue({
             plans,
             isLoading: false,
@@ -151,6 +179,8 @@ describe("Pricing", () => {
         renderWithProviders(<Pricing />);
 
         expect(screen.getByRole("button", { name: /current plan/i })).toBeDisabled();
+        expect(screen.getAllByText("Current Plan")).toHaveLength(1);
+        expect(screen.getByText("Recommended")).toBeInTheDocument();
     });
 
     it("sends guests to login with a pricing redirect", async () => {

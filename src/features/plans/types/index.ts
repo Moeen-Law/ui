@@ -7,6 +7,7 @@ export interface PlanResponse {
     durationDays: number;
     id: string;
     isDefault: boolean;
+    isBestPlan: boolean;
     maxDocumentAnalysisPerDay: number;
     maxDocumentGenerationPerDay: number;
     maxTextRequestsPerDay: number;
