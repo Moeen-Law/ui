@@ -20,15 +20,17 @@ import { PlanFeature } from "./PlanFeature";
 import { useStartPlanPayment } from "@/features/plans/hooks/useStartPlanPayment";
 import { Loader2 } from "lucide-react";
 
+interface PricingPlanCardProps {
+    plan: PlanResponse;
+    isCurrentPlan: boolean;
+}
 
-export function PricingPlanCard({ plan }: { plan: PlanResponse }) {
+export function PricingPlanCard({ plan, isCurrentPlan }: PricingPlanCardProps) {
     const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { accessToken } = useAuthStore();
     const { startPlanPayment, isPending } = useStartPlanPayment();
     const locale = getLocale(i18n.resolvedLanguage ?? i18n.language);
-    const isLoggedIn = Boolean(accessToken);
-    const isCurrentPlan = isLoggedIn && plan.isDefault;
     const isBestPlan = plan.isBestPlan;
     const durationLabel =
         plan.durationDays === 30

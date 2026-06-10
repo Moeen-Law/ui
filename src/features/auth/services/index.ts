@@ -10,4 +10,4 @@ export const userSessions = () => request<userSessionRes[]>(api.get(`${authServi
 
 export const sessionLogout = (id: string) => request<{message: string}>(api.delete(`${authService}/auth/sessions/${id}`));
 
-export const logoutAll = () => request<{message: string}>(api.delete(`${authService}/auth/sessions`)); 
+export const logoutAll = () => request<{message: string}>(api.delete(`${authService}/auth/sessions`));  

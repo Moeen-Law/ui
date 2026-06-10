@@ -1,3 +1,6 @@
+import useAuthStore from "@/features/auth/store/auth";
+import { useMe } from "@/features/auth/hooks/useMe";
+import type { SubscriptionInfo } from "@/features/auth/types";
 import { usePlans } from "@/features/plans/hooks/usePlans";
 import { PricingShell } from "./pricing/PricingShell";
 import { PricingSkeleton } from "./pricing/PricingSkeleton";
@@ -5,8 +8,23 @@ import { PricingError } from "./pricing/PricingError";
 import { PricingEmpty } from "./pricing/PricingEmpty";
 import { PricingPlanCard } from "./pricing/PricingPlanCard";
 
+const isCurrentSubscription = (subscription: SubscriptionInfo) =>
+    Boolean(subscription.planId) && subscription.status?.toLowerCase() === "active";
+
+const getCurrentPlanIds = (subscriptions: SubscriptionInfo[] = []) =>
+    new Set(
+        subscriptions
+            .filter(isCurrentSubscription)
+            .map((subscription) => subscription.planId)
+    );
+
 export function Pricing() {
     const { plans, isLoading, isError, refetch } = usePlans();
+    const accessToken = useAuthStore((state) => state.accessToken);
+    const { profile } = useMe({ enabled: Boolean(accessToken) });
+    const currentPlanIds = accessToken
+        ? getCurrentPlanIds(profile?.subscriptionInfo)
+        : new Set<string>();
 
     if (isLoading) {
         return (
@@ -36,11 +54,13 @@ export function Pricing() {
         <PricingShell>
             <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-8 lg:gap-12 md:grid-cols-2 lg:grid-cols-3 relative z-10">
                 {plans.map((plan) => (
-                    <PricingPlanCard key={plan.id} plan={plan} />
+                    <PricingPlanCard
+                        key={plan.id}
+                        plan={plan}
+                        isCurrentPlan={currentPlanIds.has(plan.id)}
+                    />
                 ))}
             </div>
         </PricingShell>
     );
 } 
-
-

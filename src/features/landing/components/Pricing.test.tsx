@@ -11,6 +11,10 @@ const { usePlansMock } = vi.hoisted(() => ({
     usePlansMock: vi.fn(),
 }));
 
+const { useMeMock } = vi.hoisted(() => ({
+    useMeMock: vi.fn(),
+}));
+
 const { startPlanPaymentMock, useStartPlanPaymentMock } = vi.hoisted(() => ({
     startPlanPaymentMock: vi.fn(),
     useStartPlanPaymentMock: vi.fn(() => ({
@@ -27,6 +31,10 @@ vi.mock("@/features/plans/hooks/useStartPlanPayment", () => ({
     useStartPlanPayment: () => useStartPlanPaymentMock(),
 }));
 
+vi.mock("@/features/auth/hooks/useMe", () => ({
+    useMe: (options?: { enabled?: boolean }) => useMeMock(options),
+}));
+
 function LocationProbe() {
     const location = useLocation();
 
@@ -39,7 +47,7 @@ const plans = [
         description: "For light legal assistance.",
         durationDays: 30,
         id: "free",
-        isDefault: false,
+        isDefault: true,
         isBestPlan: false,
         maxDocumentAnalysisPerDay: 1,
         maxDocumentGenerationPerDay: 0,
@@ -53,7 +61,7 @@ const plans = [
         description: "For growing legal workflows.",
         durationDays: 30,
         id: "pro",
-        isDefault: true,
+        isDefault: false,
         isBestPlan: true,
         maxDocumentAnalysisPerDay: 20,
         maxDocumentGenerationPerDay: 10,
@@ -64,10 +72,28 @@ const plans = [
     },
 ];
 
+const profile = {
+    active: true,
+    createdAt: new Date("2026-01-01"),
+    deleted: false,
+    email: "user@example.com",
+    id: "user-1",
+    name: "User",
+    roles: ["USER"],
+    subscriptionInfo: [],
+    updatedAt: new Date("2026-01-01"),
+};
+
 describe("Pricing", () => {
     beforeEach(async () => {
         await i18n.changeLanguage("en");
         usePlansMock.mockReset();
+        useMeMock.mockReset();
+        useMeMock.mockReturnValue({
+            profile,
+            isPending: false,
+            isError: false,
+        });
         startPlanPaymentMock.mockReset();
         useStartPlanPaymentMock.mockReturnValue({
             startPlanPayment: startPlanPaymentMock,
@@ -141,6 +167,7 @@ describe("Pricing", () => {
         expect(screen.getByText("100 text requests per day")).toBeInTheDocument();
         expect(screen.getByText("20 document analyses per day")).toBeInTheDocument();
         expect(screen.getByText("10 document generations per day")).toBeInTheDocument();
+        expect(useMeMock).toHaveBeenCalledWith({ enabled: false });
     });
 
     it("does not disable a default plan for guests", async () => {
@@ -165,10 +192,33 @@ describe("Pricing", () => {
         await user.click(startButtons[1]);
 
         expect(screen.getByTestId("location")).toHaveTextContent("/login?redirect=%2F%23pricing");
+        expect(useMeMock).toHaveBeenCalledWith({ enabled: false });
     });
 
-    it("disables the current plan button for authenticated users", () => {
+    it("disables the active subscription plan for authenticated users instead of the default plan", async () => {
         useAuthStore.getState().setAccessToken("token-1");
+        useMeMock.mockReturnValue({
+            profile: {
+                ...profile,
+                subscriptionInfo: [
+                    {
+                        autoRenew: true,
+                        createdAt: new Date("2026-01-01"),
+                        endDate: new Date("2026-02-01"),
+                        id: "subscription-1",
+                        planId: "pro",
+                        planName: "Professional",
+                        price: 299,
+                        startDate: new Date("2026-01-01"),
+                        status: "ACTIVE",
+                        updatedAt: new Date("2026-01-01"),
+                        userId: "user-1",
+                    },
+                ],
+            },
+            isPending: false,
+            isError: false,
+        });
         usePlansMock.mockReturnValue({
             plans,
             isLoading: false,
@@ -181,6 +231,8 @@ describe("Pricing", () => {
         expect(screen.getByRole("button", { name: /current plan/i })).toBeDisabled();
         expect(screen.getAllByText("Current Plan")).toHaveLength(1);
         expect(screen.getByText("Recommended")).toBeInTheDocument();
+        expect(screen.getByRole("button", { name: /start plan/i })).toBeEnabled();
+        expect(useMeMock).toHaveBeenCalledWith({ enabled: true });
     });
 
     it("sends guests to login with a pricing redirect", async () => {
@@ -207,6 +259,28 @@ describe("Pricing", () => {
     it("starts payment for authenticated users selecting another plan", async () => {
         const user = userEvent.setup();
         useAuthStore.getState().setAccessToken("token-1");
+        useMeMock.mockReturnValue({
+            profile: {
+                ...profile,
+                subscriptionInfo: [
+                    {
+                        autoRenew: true,
+                        createdAt: new Date("2026-01-01"),
+                        endDate: new Date("2026-02-01"),
+                        id: "subscription-1",
+                        planId: "pro",
+                        planName: "Professional",
+                        price: 299,
+                        startDate: new Date("2026-01-01"),
+                        status: "ACTIVE",
+                        updatedAt: new Date("2026-01-01"),
+                        userId: "user-1",
+                    },
+                ],
+            },
+            isPending: false,
+            isError: false,
+        });
         usePlansMock.mockReturnValue({
             plans,
             isLoading: false,
@@ -225,5 +299,42 @@ describe("Pricing", () => {
 
         expect(startPlanPaymentMock).toHaveBeenCalledWith("free");
         expect(screen.getByTestId("location")).toHaveTextContent("/");
+    });
+
+    it("ignores inactive subscription entries when determining the current plan", async () => {
+        useAuthStore.getState().setAccessToken("token-1");
+        useMeMock.mockReturnValue({
+            profile: {
+                ...profile,
+                subscriptionInfo: [
+                    {
+                        autoRenew: false,
+                        createdAt: new Date("2026-01-01"),
+                        endDate: new Date("2026-02-01"),
+                        id: "subscription-1",
+                        planId: "pro",
+                        planName: "Professional",
+                        price: 299,
+                        startDate: new Date("2026-01-01"),
+                        status: "PENDING",
+                        updatedAt: new Date("2026-01-01"),
+                        userId: "user-1",
+                    },
+                ],
+            },
+            isPending: false,
+            isError: false,
+        });
+        usePlansMock.mockReturnValue({
+            plans,
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        renderWithProviders(<Pricing />);
+
+        expect(screen.queryByRole("button", { name: /current plan/i })).not.toBeInTheDocument();
+        expect(screen.getAllByRole("button", { name: /start plan/i })).toHaveLength(2);
     });
 });

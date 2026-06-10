@@ -7,7 +7,8 @@ import type {
     FetchMessagesParams,
     fetchAndUpdateTitleChatResponse,
     MessageResponse,
-    RequestFileUploadResponse
+    RequestFileUploadResponse,
+    DailyQuotaRes
 } from "../types";
 import { chatService } from "../helpers";
 
@@ -49,6 +50,8 @@ export const fetchMessages = (
 };
 
 export const stopStream = (chatId: string) => request<Promise<void>>(api.post(`${chatService}/messages/chat/stream/${chatId}/stop`)); 
+
+export const getDailyQuota = () => request<DailyQuotaRes>(api.get("/quota/daily"))
 
 export const requestMessageFileUploadUrl = (file: File) =>
     request<RequestFileUploadResponse>(api.post(`${chatService}/messages/files/upload-url`, {

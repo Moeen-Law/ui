@@ -1,13 +1,17 @@
-import { useSuspenseQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { fetchMe } from "../services"
 
 
+interface UseMeOptions {
+    enabled?: boolean;
+}
 
-export const useMe = () => {
+export const useMe = ({ enabled = true }: UseMeOptions = {}) => {
 
-    const {data: profile , isPending , isError} = useSuspenseQuery({
+    const {data: profile , isPending , isError} = useQuery({
         queryKey: ["me"],
         queryFn: fetchMe,
+        enabled,
         staleTime: 5 * 60 * 1000,
     })
 

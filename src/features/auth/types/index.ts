@@ -47,14 +47,33 @@ export interface ForgotPasswordResponse {
 }
 
 
+// ProfileResponse
 export interface ProfileResponse {
+    active: boolean;
     createdAt: Date;
+    deleted: boolean;
     email: string;
     id: string;
     name: string;
-    role: string;
+    roles: string[];
+    subscriptionInfo: SubscriptionInfo[];
     updatedAt: Date;
 }
+
+export interface SubscriptionInfo {
+    autoRenew: boolean;
+    createdAt: Date;
+    endDate: Date;
+    id: string;
+    planId: string;
+    planName: string;
+    price: number;
+    startDate: Date;
+    status: string;
+    updatedAt: Date;
+    userId: string;
+}
+
 
 
 

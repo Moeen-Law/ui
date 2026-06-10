@@ -161,7 +161,7 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
             <div className="relative z-10 mt-auto">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <UserCard name={profile?.name} />
+                        <UserCard name={profile?.name ?? ""} />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-44" align="start" side="top">
                         <DropdownMenuGroup>
