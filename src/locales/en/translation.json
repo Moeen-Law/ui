@@ -243,6 +243,22 @@
     "openChat": "Open Chat",
     "backToPricing": "Back to Pricing"
   },
+  "upgrade": {
+    "header": {
+      "backToChat": "Back to chat",
+      "badge": "Subscription",
+      "title": "Upgrade your Moeen plan",
+      "description": "Choose the plan that matches your legal workflow and unlock higher daily limits for chat, document analysis, and document generation."
+    },
+    "stats": {
+      "currentPlan": "Current plan",
+      "availablePlans": "Available plans",
+      "noCurrentPlan": "No active plan"
+    },
+    "error": {
+      "boundary": "An error occurred while loading the upgrade page. Please try again."
+    }
+  },
   "about": {
     "title": "Why Moeen?",
     "subtitle": "Moeen is the first smart legal assistant specialized in Egyptian law. We use the latest AI technologies to provide accurate and fast legal consultations, saving you time, effort, and cost.",
@@ -337,6 +353,7 @@
       "dark": "Dark",
       "light": "Light",
       "settings": "Settings",
+      "upgrade": "Upgrade",
       "logout": "Logout",
       "startNewChatInfo": "Start a new chat now\nand it will appear here",
       "howCanIHelp": "How can I help you?",

@@ -15,6 +15,7 @@ const ResetPassword = lazy(() => import('./features/auth/pages/ResetPassword'));
 const VerifyEmail = lazy(() => import('./features/auth/pages/VerifyEmail'));
 const OAuthAuthorize = lazy(() => import('./features/auth/pages/OAuthAuthorize'));
 const PaymentResult = lazy(() => import('./features/plans/pages/PaymentResult'));
+const Upgrade = lazy(() => import('./features/plans/pages/Upgrade'));
 const NotFound = lazy(() => import('./shared/pages/NotFound'));
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
@@ -70,6 +71,17 @@ export function App() {
                         element={
                             <Suspense fallback={<div className="min-h-screen bg-background" />}>
                                 <PaymentResult />
+                            </Suspense>
+                        }
+                    />
+
+                    <Route
+                        path="/upgrade"
+                        element={
+                            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+                                <ProtectedRoute>
+                                    <Upgrade />
+                                </ProtectedRoute>
                             </Suspense>
                         }
                     />

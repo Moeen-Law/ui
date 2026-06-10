@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, SettingsIcon, ShieldCheck, SunIcon, Wrench, X } from "lucide-react";
+import { ChevronLeft, LogOutIcon, MonitorIcon, MoonIcon, PaletteIcon, Plus, ShieldCheck, Sparkles, SunIcon, Wrench, X } from "lucide-react";
 import { useChats } from "../hooks/useChats";
 import { AnimatePresence } from "framer-motion";
 import NotFoundChats from "./NotFoundChats";
@@ -197,9 +197,14 @@ export default function SidebarContent({ onClose }: SidebarContentProps) {
                                 {t("auth.sessions.menuLabel")}
                             </DropdownMenuItem>
 
-                            <DropdownMenuItem onClick={() => navigate("/settings")}>
-                                <SettingsIcon className="size-4 shrink-0" />
-                                {t("chat.ui.settings")}
+                            <DropdownMenuItem
+                                onClick={() => {
+                                    onClose?.();
+                                    navigate("/upgrade");
+                                }}
+                            >
+                                <Sparkles className="size-4 shrink-0" />
+                                {t("chat.ui.upgrade")}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
 
