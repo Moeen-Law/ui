@@ -1,5 +1,6 @@
 
 
+// get all plans 
 export interface PlanResponse {
     createdAt: Date; 
     description: string;
@@ -17,4 +18,33 @@ export interface PlanResponse {
 export type PlansResponse = PlanResponse[]; 
 
 
+// create subscription
+export interface CreateSubscriptionResponse {
+    autoRenew: boolean;
+    createdAt: Date;
+    endDate: null;
+    id: string;
+    planId: string;
+    planName: string;
+    price: number;
+    startDate: null;
+    status: string;
+    updatedAt: Date;
+    userId: string;
+}
 
+
+// payment action
+export interface PaymentActionResponse {
+    id: string;
+    userId: string;
+    subscriptionId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    paymobOrderId: string;
+    iframeUrl: string;
+    attemptCount: number;
+    createdAt: Date;
+    updatedAt: null;
+}

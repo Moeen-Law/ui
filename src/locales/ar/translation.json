@@ -214,10 +214,13 @@
     "currency": "جنيه",
     "monthly": "/شهرياً",
     "recommended": "موصى بها",
+    "currentPlan": "الخطة الحالية",
     "durationMonthly": "/شهرياً",
     "durationDays": "/{{count}} يوم",
     "subscribeNow": "اشترك الآن",
     "startPlan": "ابدأ الخطة",
+    "startingPayment": "جاري بدء الدفع...",
+    "paymentStartError": "تعذر بدء الدفع. يرجى المحاولة مرة أخرى.",
     "retry": "حاول مرة أخرى",
     "errorTitle": "تعذر تحميل الخطط",
     "errorDescription": "لم نتمكن من تحميل أحدث خطط الاشتراك. يرجى المحاولة مرة أخرى.",
@@ -228,6 +231,17 @@
       "documentAnalysis": "{{count}} تحليل مستند يومياً",
       "documentGeneration": "{{count}} إنشاء مستند يومياً"
     }
+  },
+  "paymentResult": {
+    "badge": "حالة الدفع",
+    "successTitle": "تم الدفع بنجاح",
+    "successDescription": "تم إكمال دفع الاشتراك بنجاح. يمكنك متابعة استخدام معين بخطتك المحدثة.",
+    "failedTitle": "فشل الدفع",
+    "failedDescription": "لم نتمكن من إكمال عملية الدفع. يمكنك العودة إلى الأسعار والمحاولة مرة أخرى.",
+    "paymentNotFound": "لم يتم العثور على سجل الدفع. يرجى العودة إلى الأسعار وبدء عملية دفع جديدة.",
+    "paymentId": "رقم الدفع",
+    "openChat": "افتح الدردشة",
+    "backToPricing": "العودة إلى الأسعار"
   },
   "about": {
     "title": "لماذا مُعين؟",

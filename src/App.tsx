@@ -14,6 +14,7 @@ const ForgotPassword = lazy(() => import('./features/auth/pages/ForgotPassword')
 const ResetPassword = lazy(() => import('./features/auth/pages/ResetPassword'));
 const VerifyEmail = lazy(() => import('./features/auth/pages/VerifyEmail'));
 const OAuthAuthorize = lazy(() => import('./features/auth/pages/OAuthAuthorize'));
+const PaymentResult = lazy(() => import('./features/plans/pages/PaymentResult'));
 const NotFound = lazy(() => import('./shared/pages/NotFound'));
 const Chat = lazy(() => import('./features/chat/pages/Chat')); 
 const LegalTerminologies = lazy(() => import('./features/legal-terminologies/pages/LegalTerminologies'));
@@ -64,6 +65,14 @@ export function App() {
                     <Route path="/reset-password" element={guestOnly(<ResetPassword />)} />
                     <Route path="/verify-email" element={guestOnly(<VerifyEmail />)} />
                     <Route path="/login/oauth/authorize" element={guestOnly(<OAuthAuthorize />)} />
+                    <Route
+                        path="/payment-result"
+                        element={
+                            <Suspense fallback={<div className="min-h-screen bg-background" />}>
+                                <PaymentResult />
+                            </Suspense>
+                        }
+                    />
 
 
                     <Route

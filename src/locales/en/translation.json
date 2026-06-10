@@ -214,10 +214,13 @@
     "currency": "EGP",
     "monthly": "/mo",
     "recommended": "Recommended",
+    "currentPlan": "Current Plan",
     "durationMonthly": "/mo",
     "durationDays": "/{{count}} days",
     "subscribeNow": "Subscribe Now",
     "startPlan": "Start Plan",
+    "startingPayment": "Starting payment...",
+    "paymentStartError": "Could not start payment. Please try again.",
     "retry": "Try Again",
     "errorTitle": "Plans could not be loaded",
     "errorDescription": "We could not load the latest subscription plans. Please try again.",
@@ -228,6 +231,17 @@
       "documentAnalysis": "{{count}} document analyses per day",
       "documentGeneration": "{{count}} document generations per day"
     }
+  },
+  "paymentResult": {
+    "badge": "Payment status",
+    "successTitle": "Payment completed",
+    "successDescription": "Your subscription payment was completed successfully. You can continue using Moeen with your updated plan.",
+    "failedTitle": "Payment failed",
+    "failedDescription": "We could not complete this payment. You can return to pricing and try again.",
+    "paymentNotFound": "The payment record could not be found. Please return to pricing and start a new payment.",
+    "paymentId": "Payment ID",
+    "openChat": "Open Chat",
+    "backToPricing": "Back to Pricing"
   },
   "about": {
     "title": "Why Moeen?",

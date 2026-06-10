@@ -11,8 +11,20 @@ const { usePlansMock } = vi.hoisted(() => ({
     usePlansMock: vi.fn(),
 }));
 
+const { startPlanPaymentMock, useStartPlanPaymentMock } = vi.hoisted(() => ({
+    startPlanPaymentMock: vi.fn(),
+    useStartPlanPaymentMock: vi.fn(() => ({
+        startPlanPayment: startPlanPaymentMock,
+        isPending: false,
+    })),
+}));
+
 vi.mock("@/features/plans/hooks/usePlans", () => ({
     usePlans: () => usePlansMock(),
+}));
+
+vi.mock("@/features/plans/hooks/useStartPlanPayment", () => ({
+    useStartPlanPayment: () => useStartPlanPaymentMock(),
 }));
 
 function LocationProbe() {
@@ -54,6 +66,11 @@ describe("Pricing", () => {
     beforeEach(async () => {
         await i18n.changeLanguage("en");
         usePlansMock.mockReset();
+        startPlanPaymentMock.mockReset();
+        useStartPlanPaymentMock.mockReturnValue({
+            startPlanPayment: startPlanPaymentMock,
+            isPending: false,
+        });
         useAuthStore.getState().removeAccessToken();
     });
 
@@ -103,7 +120,7 @@ describe("Pricing", () => {
         expect(screen.getByText("No plans available")).toBeInTheDocument();
     });
 
-    it("renders API plans with price, limits, and default badge", () => {
+    it("renders API plans with price, limits, and current plan badge", () => {
         usePlansMock.mockReturnValue({
             plans,
             isLoading: false,
@@ -116,11 +133,24 @@ describe("Pricing", () => {
         expect(screen.getByText("Free")).toBeInTheDocument();
         expect(screen.getByText("Professional")).toBeInTheDocument();
         expect(screen.getByText("For growing legal workflows.")).toBeInTheDocument();
-        expect(screen.getByText("Recommended")).toBeInTheDocument();
+        expect(screen.getAllByText("Current Plan")).toHaveLength(2);
         expect(screen.getByText("299")).toBeInTheDocument();
         expect(screen.getByText("100 text requests per day")).toBeInTheDocument();
         expect(screen.getByText("20 document analyses per day")).toBeInTheDocument();
         expect(screen.getByText("10 document generations per day")).toBeInTheDocument();
+    });
+
+    it("disables the current plan button", () => {
+        usePlansMock.mockReturnValue({
+            plans,
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        renderWithProviders(<Pricing />);
+
+        expect(screen.getByRole("button", { name: /current plan/i })).toBeDisabled();
     });
 
     it("sends guests to login with a pricing redirect", async () => {
@@ -144,7 +174,7 @@ describe("Pricing", () => {
         expect(screen.getByTestId("location")).toHaveTextContent("/login?redirect=%2F%23pricing");
     });
 
-    it("sends authenticated users to chat", async () => {
+    it("starts payment for authenticated users selecting another plan", async () => {
         const user = userEvent.setup();
         useAuthStore.getState().setAccessToken("token-1");
         usePlansMock.mockReturnValue({
@@ -161,8 +191,9 @@ describe("Pricing", () => {
             </>
         );
 
-        await user.click(screen.getByRole("button", { name: /subscribe now/i }));
+        await user.click(screen.getByRole("button", { name: /start plan/i }));
 
-        expect(screen.getByTestId("location")).toHaveTextContent("/chat");
+        expect(startPlanPaymentMock).toHaveBeenCalledWith("free");
+        expect(screen.getByTestId("location")).toHaveTextContent("/");
     });
 });
