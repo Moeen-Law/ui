@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next"
+import { Cell, Label, Pie, PieChart } from "recharts"
 import {
   Card,
   CardContent,
@@ -6,8 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart"
 import type { FailureChartDatum } from "../helpers"
-import { formatNumber, formatPercent } from "../helpers"
+import { formatNumber } from "../helpers"
 
 interface FailureBreakdownChartProps {
   data: FailureChartDatum[]
@@ -19,7 +26,21 @@ export default function FailureBreakdownChart({
   locale,
 }: FailureBreakdownChartProps) {
   const { t } = useTranslation()
-  const maxCount = data.reduce((max, item) => Math.max(max, item.count), 0)
+  const totalFailures = data.reduce((total, item) => total + item.count, 0)
+  const chartConfig = data.reduce<ChartConfig>(
+    (config, item) => ({
+      ...config,
+      [item.reason]: {
+        label: item.reason,
+        color: item.fill,
+      },
+    }),
+    {
+      count: {
+        label: t("admin.payments.charts.failures.title"),
+      },
+    }
+  )
 
   return (
     <Card className="h-full min-h-[430px] rounded-2xl border border-border/80 bg-card/80 py-7 shadow-none">
@@ -31,41 +52,82 @@ export default function FailureBreakdownChart({
           {t("admin.payments.charts.failures.description")}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4 px-6 pt-4">
+      <CardContent className="px-6 pt-4">
         {data.length > 0 ? (
-          data.map((item, index) => {
-            const width = maxCount > 0 ? Math.max((item.count / maxCount) * 100, 4) : 0
-
-            return (
-              <div
-                key={`${item.reason}-${index}`}
-                className="rounded-xl border border-border/70 bg-background/45 p-4"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-bold text-foreground" title={item.reason}>
-                      {item.reason}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {formatPercent(item.percentage, locale)}
-                    </p>
-                  </div>
-                  <p className="shrink-0 text-lg font-black text-foreground">
-                    {formatNumber(item.count, locale)}
-                  </p>
-                </div>
-                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full"
-                    style={{
-                      backgroundColor: item.fill,
-                      width: `${width}%`,
-                    }}
+          <ChartContainer
+            config={chartConfig}
+            className="mx-auto h-[320px] w-full"
+            initialDimension={{ width: 420, height: 320 }}
+          >
+            <PieChart accessibilityLayer>
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    hideLabel
+                    nameKey="reason"
+                    formatter={(value, name, item) => (
+                      <div className="flex min-w-36 items-center justify-between gap-4">
+                        <span className="text-muted-foreground">
+                          {String(name)}
+                        </span>
+                        <span className="font-mono font-medium text-foreground">
+                          {formatNumber(Number(value), locale)}
+                          {typeof item.payload?.percentage === "number"
+                            ? ` (${formatNumber(item.payload.percentage, locale)}%)`
+                            : ""}
+                        </span>
+                      </div>
+                    )}
                   />
-                </div>
-              </div>
-            )
-          })
+                }
+              />
+              <Pie
+                data={data}
+                dataKey="count"
+                nameKey="reason"
+                innerRadius={76}
+                outerRadius={112}
+                paddingAngle={data.length > 1 ? 3 : 0}
+                strokeWidth={3}
+              >
+                {data.map((item, index) => (
+                  <Cell key={`${item.reason}-${index}`} fill={item.fill} />
+                ))}
+                <Label
+                  content={({ viewBox }) => {
+                    if (!viewBox || !("cx" in viewBox) || !("cy" in viewBox)) {
+                      return null
+                    }
+
+                    return (
+                      <text
+                        x={viewBox.cx}
+                        y={viewBox.cy}
+                        textAnchor="middle"
+                        dominantBaseline="middle"
+                      >
+                        <tspan
+                          x={viewBox.cx}
+                          y={viewBox.cy}
+                          className="fill-foreground text-3xl font-black"
+                        >
+                          {formatNumber(totalFailures, locale)}
+                        </tspan>
+                        <tspan
+                          x={viewBox.cx}
+                          y={(viewBox.cy ?? 0) + 24}
+                          className="fill-muted-foreground text-xs font-bold"
+                        >
+                          {t("admin.payments.charts.activity.failed")}
+                        </tspan>
+                      </text>
+                    )
+                  }}
+                />
+              </Pie>
+            </PieChart>
+          </ChartContainer>
         ) : (
           <div className="flex h-[320px] items-center justify-center rounded-xl border border-dashed border-border text-sm font-medium text-muted-foreground">
             {t("admin.payments.empty.failures")}
