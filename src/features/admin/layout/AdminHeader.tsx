@@ -16,7 +16,7 @@ const adminTitleKeys: Record<string, string> = {
   "/admin/users": "admin.users.title",
   "/admin/chats": "admin.chats.title",
   "/admin/contracts": "admin.nav.contracts",
-  "/admin/subscriptions": "admin.nav.subscriptions",
+  "/admin/subscriptions": "admin.payments.title",
   "/admin/ai-feeding": "admin.nav.aiFeeding",
   "/admin/settings": "admin.nav.settings",
 }

@@ -628,6 +628,88 @@
         "description": "The dashboard could not retrieve the chat statistics. Try refreshing the data.",
         "retry": "Try again"
       }
+    },
+    "payments": {
+      "title": "Payments and Finance",
+      "subtitle": "Monitor revenue, payment health, failed transactions, and pending payment risks.",
+      "actions": {
+        "refresh": "Refresh"
+      },
+      "identity": {
+        "copy": "Copy full user ID",
+        "copied": "User ID copied",
+        "copyFailed": "Unable to copy user ID"
+      },
+      "metrics": {
+        "totalRevenue": "Total Revenue",
+        "totalPayments": "Total Payments",
+        "successRate": "Success Rate",
+        "averageTransactionValue": "Avg. Transaction",
+        "failedPayments": "Failed Payments",
+        "pendingPayments": "Pending Payments",
+        "averageAttempts": "Avg. Attempts",
+        "stuckPending": "Stuck Pending",
+        "completed": "{{count}} completed",
+        "failed": "{{count}} failed",
+        "pending": "{{count}} pending",
+        "multipleAttempts": "{{count}} with multiple attempts",
+        "reportGenerated": "Report generated {{date}}",
+        "noReportDate": "not available"
+      },
+      "filters": {
+        "granularity": "Payment chart granularity",
+        "granularities": {
+          "DAILY": "Daily",
+          "WEEKLY": "Weekly",
+          "MONTHLY": "Monthly"
+        }
+      },
+      "charts": {
+        "activity": {
+          "title": "Revenue and Payments Over Time",
+          "description": "Revenue volume with successful and failed payment counts.",
+          "updating": "Updating payments",
+          "loading": "Loading payment activity...",
+          "errorTitle": "Payment activity failed",
+          "errorDescription": "The selected payment activity range could not be loaded. Other finance data is still available.",
+          "revenue": "Revenue",
+          "payments": "Payments",
+          "successful": "Successful",
+          "failed": "Failed"
+        },
+        "failures": {
+          "title": "Failure Breakdown",
+          "description": "Failed payments grouped by reported reason."
+        }
+      },
+      "panels": {
+        "topUsers": {
+          "title": "Top Paying Users",
+          "description": "Users with the highest completed payment volume.",
+          "payments": "{{count}} payments"
+        },
+        "stuck": {
+          "title": "Stuck Payments",
+          "description": "Pending payments that need operational review.",
+          "payment": "Payment",
+          "user": "User",
+          "amount": "Amount",
+          "created": "Created",
+          "duration": "Waiting"
+        }
+      },
+      "empty": {
+        "page": "No payment analytics have been reported yet.",
+        "chart": "No payment activity available.",
+        "failures": "No failed payments reported.",
+        "topUsers": "No top paying users available.",
+        "stuck": "No stuck payments available."
+      },
+      "error": {
+        "title": "Unable to load payment analytics",
+        "description": "The dashboard could not retrieve the payment statistics. Try refreshing the data.",
+        "retry": "Try again"
+      }
     }
   },
   "legalTerminologies": {

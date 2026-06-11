@@ -29,19 +29,19 @@ export default function AdminLayout() {
   }, [mobileSidebarOpen])
 
   return (
-    <div className="admin-dashboard min-h-screen bg-background text-foreground" dir={dir}>
-      <div className="flex min-h-screen">
-        <div className="hidden md:block">
+    <div className="admin-dashboard h-dvh overflow-hidden bg-background text-foreground" dir={dir}>
+      <div className="flex h-full min-h-0">
+        <div className="hidden h-full min-h-0 md:block">
           <AdminSidebar collapsed={collapsed} />
         </div>
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           <AdminHeader
             collapsed={collapsed}
             onToggleSidebar={toggleSidebar}
             onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
           />
-          <main className="min-w-0 flex-1 overflow-x-hidden p-5 md:p-10">
+          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden p-5 md:p-10">
             <Outlet />
           </main>
         </div>

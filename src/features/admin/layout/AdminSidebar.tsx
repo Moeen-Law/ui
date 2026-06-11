@@ -42,7 +42,7 @@ export default function AdminSidebar({
   return (
     <aside
       className={cn(
-        "flex h-full shrink-0 flex-col border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-300",
+        "flex h-full min-h-0 shrink-0 flex-col overflow-hidden border-e border-sidebar-border bg-sidebar text-sidebar-foreground transition-[width] duration-300",
         mobile ? "w-[300px]" : collapsed ? "w-[4.5rem]" : "w-72"
       )}
     >
@@ -57,7 +57,7 @@ export default function AdminSidebar({
 
       <Separator />
 
-      <nav className="flex flex-1 flex-col gap-3 px-4 py-8">
+      <nav className="admin-table-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-8">
         {navItems.map((item) => {
           const Icon = item.icon
 

@@ -41,7 +41,7 @@ export default function DailyQuotaBadge({ quota, isLoading, isError, className }
             onClick={handleClick}
             disabled={isLoading || unavailable}
             className={cn(
-                "inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-black shadow-lg transition disabled:cursor-default",
+                "inline-flex max-w-full items-center cursor-pointer gap-2 rounded-full border px-3 py-1.5 text-xs font-black shadow-lg transition disabled:cursor-default",
                 unavailable || isLoading
                     ? "border-border bg-muted/70 text-muted-foreground shadow-black/5"
                     : exhausted
