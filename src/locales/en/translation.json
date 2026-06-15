@@ -471,60 +471,162 @@
     },
     "users": {
       "title": "User Management",
-      "searchPlaceholder": "Search by name, email, or phone...",
+      "subtitle": "Manage platform users, access state, roles, and subscription context.",
+      "searchPlaceholder": "Search users...",
       "empty": "No users match the current filters.",
+      "emptyPage": "No user data is available yet.",
+      "emptyChart": "No user stats available.",
+      "loading": {
+        "table": "Loading users...",
+        "updating": "Updating users..."
+      },
+      "identity": {
+        "unknown": "Unknown user",
+        "copy": "Copy user ID",
+        "copied": "User ID copied",
+        "copyFailed": "Unable to copy user ID"
+      },
+      "metrics": {
+        "total": "Total Users",
+        "totalDescription": "All users reported by the admin service",
+        "active": "Active Users",
+        "activeDescription": "Users currently allowed to access Moeen",
+        "banned": "Banned Users",
+        "bannedDescription": "Users with access disabled",
+        "deleted": "Deleted Users",
+        "deletedDescription": "Users marked as deleted",
+        "last24Hours": "Registered 24h",
+        "last48Hours": "Registered 48h",
+        "lastWeek": "Registered Week",
+        "lastMonth": "Registered Month"
+      },
       "columns": {
         "user": "User",
+        "roles": "Roles",
         "plan": "Subscription Plan",
-        "usage": "Usage (messages)",
         "joinedAt": "Join Date",
         "status": "Status",
+        "deleted": "Deleted",
         "actions": "Actions"
       },
       "filters": {
+        "searchField": "Search field",
+        "searchFields": {
+          "name": "Name",
+          "email": "Email",
+          "id": "ID"
+        },
         "all": "All statuses",
         "active": "Active users",
-        "banned": "Banned users"
+        "banned": "Banned users",
+        "status": "Status",
+        "deleted": "Deleted state",
+        "deletedAll": "All records",
+        "notDeleted": "Not deleted",
+        "deletedOnly": "Deleted only",
+        "emailVerified": "Email verification",
+        "emailAll": "All emails",
+        "verified": "Verified",
+        "unverified": "Unverified",
+        "pageSize": "Rows per page",
+        "clearSearch": "Clear search",
+        "reset": "Reset",
+        "hint": "Filters are applied through the users API."
       },
       "status": {
         "active": "Active",
         "banned": "Banned"
+      },
+      "deleted": {
+        "yes": "Deleted",
+        "no": "Not deleted"
+      },
+      "roles": {
+        "USER": "User",
+        "ADMIN": "Admin",
+        "none": "No roles"
       },
       "plans": {
         "professional": "Professional",
         "free": "Free",
         "enterprise": "Enterprise"
       },
-      "usage": {
-        "unlimited": "Unlimited"
+      "charts": {
+        "registrations": {
+          "title": "Registration Windows",
+          "description": "New users across the reporting windows returned by the admin service.",
+          "users": "Users",
+          "windows": {
+            "last24Hours": "24h",
+            "last48Hours": "48h",
+            "lastWeek": "Week",
+            "lastMonth": "Month",
+            "last3Months": "3 months",
+            "lastYear": "Year"
+          }
+        },
+        "status": {
+          "title": "User Status Breakdown",
+          "description": "Active, banned, and deleted users.",
+          "users": "Users"
+        }
+      },
+      "table": {
+        "title": "Users"
       },
       "actions": {
-        "ban": "Ban user",
-        "unban": "Unban user",
-        "delete": "Delete user"
+        "refresh": "Refresh",
+        "openMenu": "Open user actions",
+        "activate": "Activate user",
+        "deactivate": "Deactivate user",
+        "delete": "Delete user",
+        "roles": "Role management",
+        "promote": "Promote user",
+        "demote": "Demote user",
+        "promoteRole": "Add {{role}}",
+        "demoteRole": "Remove {{role}}"
       },
       "dialog": {
-        "ban": {
-          "title": "Ban this user?",
-          "description": "{{name}} will lose access until an admin unbans the account."
-        },
-        "unban": {
-          "title": "Unban this user?",
+        "cancel": "Cancel",
+        "working": "Working...",
+        "activate": {
+          "title": "Activate this user?",
           "description": "{{name}} will regain access to the platform."
+        },
+        "deactivate": {
+          "title": "Deactivate this user?",
+          "description": "{{name}} will lose access until an admin activates the account again."
         },
         "delete": {
           "title": "Delete this user?",
-          "description": "{{name}} will be removed from this admin list. This mock action cannot be undone."
+          "description": "{{name}} will be deleted from the platform. This action cannot be undone."
+        },
+        "promote": {
+          "title": "Add role?",
+          "description": "{{name}} will receive the {{role}} role."
+        },
+        "demote": {
+          "title": "Remove role?",
+          "description": "{{name}} will lose the {{role}} role."
         }
       },
       "pagination": {
         "previous": "Previous",
-        "next": "Next"
+        "next": "Next",
+        "summary": "Page {{page}} of {{totalPages}} · {{totalElements}} users"
       },
       "toast": {
-        "ban": "{{name}} has been banned.",
-        "unban": "{{name}} has been unbanned.",
-        "delete": "{{name}} has been deleted."
+        "activate": "{{name}} has been activated.",
+        "deactivate": "{{name}} has been deactivated.",
+        "delete": "{{name}} has been deleted.",
+        "promote": "{{name}} role updated.",
+        "demote": "{{name}} role updated.",
+        "error": "User action failed. Please try again."
+      },
+      "error": {
+        "title": "Unable to load users",
+        "description": "The dashboard could not retrieve the users data. Try refreshing the page.",
+        "retry": "Try again"
       }
     },
     "chats": {

@@ -25,6 +25,7 @@ const DocumentGeneration = lazy(() => import('./features/document-generation/pag
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
 const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminPlaceholder = lazy(() => import('./features/admin/pages/AdminPlaceholder'));
+const AdminUsersPage = lazy(() => import('./features/admin/users/pages/AdminUsersPage'));
 const AdminChatsPage = lazy(() => import('./features/admin/chats/pages/AdminChatsPage'));
 const AdminPaymentsPage = lazy(() => import('./features/admin/payments/pages/AdminPaymentsPage'));
 import { Toaster } from "@/components/ui/sonner"
@@ -179,7 +180,7 @@ export function App() {
                         }
                     >
                         <Route index element={<AdminOverview />} />
-                        <Route path="users" element={<AdminPlaceholder titleKey="admin.nav.contracts" />} />
+                        <Route path="users" element={<AdminUsersPage />} />
                         <Route path="chats" element={<AdminChatsPage />} /> 
                         <Route path="contracts" element={<AdminPlaceholder titleKey="admin.nav.contracts" />} />
                         <Route path="subscriptions" element={<AdminPaymentsPage />} />
