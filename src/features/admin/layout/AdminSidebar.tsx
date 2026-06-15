@@ -1,7 +1,6 @@
 import {
   Banknote,
   Bot,
-  FileText,
   Home,
   LogOut,
   UsersRound,
@@ -20,7 +19,6 @@ const navItems: AdminNavItem[] = [
   { label: "admin.nav.home", href: "/admin", icon: Home },
   { label: "admin.nav.users", href: "/admin/users", icon: UsersRound },
   { label: "admin.nav.chats", href: "/admin/chats", icon: Bot },
-  { label: "admin.nav.contracts", href: "/admin/contracts", icon: FileText },
   { label: "admin.nav.subscriptions", href: "/admin/subscriptions", icon: Banknote },
 ]
 
