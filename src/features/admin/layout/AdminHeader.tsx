@@ -1,5 +1,5 @@
-import { Bell, Menu } from "lucide-react"
-import { useLocation } from "react-router-dom"
+import { Bell, Home, Menu } from "lucide-react"
+import { Link, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { Button } from "@/components/ui/button"
 import { LanguageToggle } from "@/shared/components/LanguageToggle"
@@ -60,19 +60,20 @@ export default function AdminHeader({
       </div>
 
       <div className="flex items-center gap-5">
-        <LanguageToggle />
-        <ThemeToggle />
-
         <Button
-          type="button"
+          asChild
           variant="ghost"
           size="icon"
-          className="relative text-muted-foreground"
-          aria-label={t("admin.actions.notifications")}
+          className="text-muted-foreground"
+          aria-label={t("admin.actions.goHome")}
+          title={t("admin.actions.goHome")}
         >
-          <Bell data-icon="inline-start" />
-          <span className="absolute right-2 top-2 size-1.5 rounded-full bg-red-500" />
+          <Link to="/">
+            <Home data-icon="inline-start" />
+          </Link>
         </Button>
+        <LanguageToggle />
+        <ThemeToggle />
       </div>
     </header>
   )

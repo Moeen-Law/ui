@@ -10,8 +10,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { authenticatedToolItems } from "@/shared/constants/tools";
+import { adminToolItem, authenticatedToolItems } from "@/shared/constants/tools";
 import { preloadRoute, preloadToolRoutes } from "@/shared/utils/preloadRoutes";
+import { useMe } from "@/features/auth/hooks/useMe";
+import { hasAdminRole } from "@/features/auth/helpers/roles";
+import useAuthStore from "@/features/auth/store/auth";
 
 interface ToolsDialogProps {
     trigger: ReactNode;
@@ -21,6 +24,11 @@ interface ToolsDialogProps {
 export default function ToolsDialog({ trigger, onToolSelect }: ToolsDialogProps) {
     const { t } = useTranslation();
     const navigate = useNavigate();
+    const { accessToken } = useAuthStore();
+    const { profile } = useMe({ enabled: Boolean(accessToken) });
+    const toolItems = hasAdminRole(profile)
+        ? [...authenticatedToolItems, adminToolItem]
+        : authenticatedToolItems;
 
     const handleToolSelect = (href: string) => {
         onToolSelect?.();
@@ -31,6 +39,9 @@ export default function ToolsDialog({ trigger, onToolSelect }: ToolsDialogProps)
         <Dialog onOpenChange={(open) => {
             if (open) {
                 preloadToolRoutes();
+                if (hasAdminRole(profile)) {
+                    preloadRoute(adminToolItem.href);
+                }
             }
         }}>
             <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -49,7 +60,7 @@ export default function ToolsDialog({ trigger, onToolSelect }: ToolsDialogProps)
 
                 <div className="max-h-[min(68dvh,32rem)] overflow-y-auto p-4 sm:p-5">
                     <div className="grid gap-3 sm:grid-cols-2">
-                        {authenticatedToolItems.map((item) => {
+                        {toolItems.map((item) => {
                             const Icon = item.icon;
 
                             return (

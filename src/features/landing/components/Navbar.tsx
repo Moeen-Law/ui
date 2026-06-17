@@ -8,8 +8,10 @@ import MobileMenu from "./MobileMenu";
 import { LanguageToggle } from "@/shared/components/LanguageToggle";
 import { useTranslation } from "react-i18next";
 import { MoeenLogo } from "@/shared/components/MoeenLogo";
-import { authenticatedToolItems } from "@/shared/constants/tools";
+import { adminToolItem, authenticatedToolItems } from "@/shared/constants/tools";
 import { preloadRoute, preloadToolRoutes } from "@/shared/utils/preloadRoutes";
+import { useMe } from "@/features/auth/hooks/useMe";
+import { hasAdminRole } from "@/features/auth/helpers/roles";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -28,6 +30,18 @@ export function Navbar() {
     const { handleLogout: handleLogoutHook, loading } = useLogout();
     const { handleStart } = useHandleStart();
     const isAuthenticated = Boolean(accessToken);
+    const { profile } = useMe({ enabled: isAuthenticated });
+    const isAdmin = hasAdminRole(profile);
+    const toolItems = isAdmin
+        ? [...authenticatedToolItems, adminToolItem]
+        : authenticatedToolItems;
+
+    const preloadAuthenticatedTools = () => {
+        preloadToolRoutes();
+        if (isAdmin) {
+            preloadRoute(adminToolItem.href);
+        }
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -92,8 +106,8 @@ export function Navbar() {
                             <NavigationMenu
                                 viewport={false}
                                 className="z-20 font-sans"
-                                onMouseEnter={preloadToolRoutes}
-                                onFocus={preloadToolRoutes}
+                                onMouseEnter={preloadAuthenticatedTools}
+                                onFocus={preloadAuthenticatedTools}
                             >
                                 <NavigationMenuList>
                                     <NavigationMenuItem>
@@ -102,7 +116,7 @@ export function Navbar() {
                                         </NavigationMenuTrigger>
                                         <NavigationMenuContent className="z-50 min-w-80 p-2">
                                             <div className="grid gap-1">
-                                                {authenticatedToolItems.map((item) => {
+                                                {toolItems.map((item) => {
                                                     const Icon = item.icon;
 
                                                     return (

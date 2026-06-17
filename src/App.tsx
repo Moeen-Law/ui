@@ -23,7 +23,6 @@ const GovernmentProcesses = lazy(() => import('./features/government-processes/p
 const ContractAnalysis = lazy(() => import('./features/contract-analysis/pages/ContractAnalysis'));
 const DocumentGeneration = lazy(() => import('./features/document-generation/pages/DocumentGeneration'));
 const AdminLayout = lazy(() => import('./features/admin/layout/AdminLayout'));
-const AdminOverview = lazy(() => import('./features/admin/overview/pages/AdminOverview'));
 const AdminUsersPage = lazy(() => import('./features/admin/users/pages/AdminUsersPage'));
 const AdminChatsPage = lazy(() => import('./features/admin/chats/pages/AdminChatsPage'));
 const AdminPaymentsPage = lazy(() => import('./features/admin/payments/pages/AdminPaymentsPage'));
@@ -31,6 +30,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import ErrorBoundary from "./shared/components/ErrorBoundary";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AdminRoute from "./routes/AdminRoute";
 import GuestOnlyRoute from "./routes/GuestOnlyRoute";
 import AuthRouteFallback from "./features/auth/components/AuthRouteFallback";
 
@@ -171,15 +171,14 @@ export function App() {
                         element={
                             <Suspense fallback={<AdminSkeleton />}>
                                 <ErrorBoundary message="حدث خطأ ما أثناء تحميل لوحة التحكم. يرجى المحاولة مرة أخرى.">
-                                    <ProtectedRoute>
+                                    <AdminRoute>
                                         <AdminLayout />
-                                    </ProtectedRoute>
+                                    </AdminRoute>
                                 </ErrorBoundary>
                             </Suspense>
                         }
                     >
-                        <Route index element={<AdminOverview />} />
-                        <Route path="users" element={<AdminUsersPage />} />
+                        <Route index element={<AdminUsersPage />} />
                         <Route path="chats" element={<AdminChatsPage />} /> 
                         <Route path="subscriptions" element={<AdminPaymentsPage />} />
                     </Route>

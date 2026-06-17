@@ -1,7 +1,6 @@
 import {
   Banknote,
   Bot,
-  Home,
   LogOut,
   UsersRound,
 } from "lucide-react"
@@ -16,8 +15,7 @@ import { MoeenLogo } from "@/shared/components/MoeenLogo"
 import AdminUserCard from "./AdminUserCard"
 
 const navItems: AdminNavItem[] = [
-  { label: "admin.nav.home", href: "/admin", icon: Home },
-  { label: "admin.nav.users", href: "/admin/users", icon: UsersRound },
+  { label: "admin.nav.users", href: "/admin", icon: UsersRound },
   { label: "admin.nav.chats", href: "/admin/chats", icon: Bot },
   { label: "admin.nav.subscriptions", href: "/admin/subscriptions", icon: Banknote },
 ]

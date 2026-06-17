@@ -1,4 +1,4 @@
-import { BookOpenText, Building2, FilePlus2, FileText, MessageCircle, type LucideIcon } from "lucide-react";
+import { BookOpenText, Building2, FilePlus2, FileText, MessageCircle, ShieldCheck, type LucideIcon } from "lucide-react";
 
 export interface AuthenticatedToolItem {
     href: string;
@@ -39,3 +39,10 @@ export const authenticatedToolItems: AuthenticatedToolItem[] = [
         descriptionKey: "nav.documentGenerationDescription",
     },
 ];
+
+export const adminToolItem: AuthenticatedToolItem = {
+    href: "/admin",
+    icon: ShieldCheck,
+    titleKey: "nav.admin",
+    descriptionKey: "nav.adminDescription",
+};

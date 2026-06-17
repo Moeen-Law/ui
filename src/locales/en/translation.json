@@ -129,6 +129,8 @@
     "tools": "Tools",
     "openTools": "Open tools",
     "toolsDescription": "Choose a legal tool to continue your work in Moeen.",
+    "admin": "Admin Dashboard",
+    "adminDescription": "Manage users, chats, and subscriptions from the admin workspace.",
     "openChat": "Open Chat",
     "chat": "Chat",
     "chatDescription": "Ask legal questions and continue your saved conversations.",
@@ -420,6 +422,7 @@
       "toggleSidebar": "Toggle sidebar",
       "openSidebar": "Open sidebar",
       "closeSidebar": "Close sidebar",
+      "goHome": "Go to home page",
       "notifications": "Notifications"
     },
     "nav": {
