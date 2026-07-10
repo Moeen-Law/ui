@@ -21,6 +21,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -280,3 +284,4 @@
     }
   }
 }
+

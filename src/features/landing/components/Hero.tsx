@@ -95,7 +95,7 @@ export function Hero() {
     const { handleStart } = useHandleStart();
 
     return (
-        <section className="min-h-screen flex items-center pt-20 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.1),transparent_50%)]">
+        <section id="hero-section" className="min-h-screen flex items-center pt-20 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.1),transparent_50%)]">
             {/* Background patterns */}
             <div className="absolute inset-0 pointer-events-none before:absolute before:inset-0 before:bg-[linear-gradient(90deg,transparent_0%,rgba(59,130,246,0.05)_50%,transparent_100%),radial-gradient(circle_at_20%_50%,rgba(251,191,36,0.05),transparent_40%)]" />
 
@@ -135,9 +135,9 @@ export function Hero() {
                                 </svg>
                             </button>
 
-                            <button className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-sans transition-all flex items-center justify-center">
+                            <a href="#about" className="bg-transparent cursor-pointer hover:bg-blue-500/10 hover:border-blue-500 text-foreground border-2 border-border py-4 px-8 rounded-xl font-bold text-lg font-sans transition-all flex items-center justify-center">
                                 {t("hero.discoverMore")}
-                            </button>
+                            </a>
                         </div>
                     </div>
 
