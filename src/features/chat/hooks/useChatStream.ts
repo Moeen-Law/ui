@@ -1,18 +1,52 @@
-import { useCallback, useRef, useState, useEffect } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 import useAuthStore from "@/features/auth/store/auth";
+import i18n from "@/lib/i18n";
+import { refreshAccessToken } from "@/shared/api";
 import type { ChatMessageFile, FilesStreamEvent, LawSource, StreamMessage, StreamStatus } from "../types";
 import { chatService } from "../helpers";
-import { stopStream as stopStreamService } from "../services";
-import { toast } from "sonner";
-import { refreshAccessToken } from "@/shared/api";
-import { useQueryClient } from "@tanstack/react-query";
-import i18n from "@/lib/i18n";
-import { useChatMessages } from "./useChatMessages";
 import { mergeStreamMessages } from "../helpers/messages";
+import {
+    extractTextFromStreamData,
+    getStreamGraphemesPerUpdate,
+    takeStreamPrefix,
+} from "../helpers/stream";
+import { stopStream as stopStreamService } from "../services";
+import { useChatMessages } from "./useChatMessages";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-const STREAM_FLUSH_INTERVAL_MS = 40;
+const STREAM_COMMIT_INTERVAL_MS = 32;
+
+class TokenExpiredError extends Error {
+    constructor() {
+        super("TOKEN_EXPIRED_RETRY");
+        this.name = "TokenExpiredError";
+    }
+}
+
+class StreamConnectionError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "StreamConnectionError";
+    }
+}
+
+interface ActiveStreamSession {
+    id: string;
+    chatId: string;
+    userMessageId: string;
+    aiMessageId: string;
+    controller: AbortController;
+    queue: string;
+    visibleContent: string;
+    frameId: number | null;
+    lastCommitAt: number;
+    transportComplete: boolean;
+    transportOpen: boolean;
+    finalized: boolean;
+}
 
 interface UseChatStreamOptions {
     chatId: string | undefined;
@@ -38,24 +72,8 @@ interface UseChatStreamReturn {
     stopStreaming: () => void;
 }
 
-/**
- * Custom hook that manages a Server-Sent Events (SSE) connection
- * to stream AI chat responses chunk-by-chunk, similar to ChatGPT.
- *
- * History is loaded via useChatMessages (React Query).
- * This hook only manages the active streaming state and optimistic updates.
- *
- * Flow:
- * 1. useChatMessages loads history from the backend (cached by React Query).
- * 2. User sends a message → optimistically adds it to local state.
- * 3. Opens an SSE connection via GET /chat/stream?chatId=...&content=...
- * 4. Appends incoming text chunks to the AI message in real-time.
- * 5. On stream close, invalidates the React Query cache so real IDs replace optimistic ones.
- */
 export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamReturn => {
     const queryClient = useQueryClient();
-
-    // ─── History from React Query ───────────────────────────────────────
     const {
         data: historyMessages,
         isLoading: isHistoryLoading,
@@ -64,72 +82,145 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         isFetchingNextPage: isFetchingOlderMessages,
     } = useChatMessages(chatId);
 
-    // ─── Local streaming state ──────────────────────────────────────────
     const [messages, setMessages] = useState<StreamMessage[]>([]);
     const [sources, setSources] = useState<LawSource[]>([]);
     const [status, setStatus] = useState<StreamStatus>("idle");
     const [error, setError] = useState<string | null>(null);
 
-    // Keep a ref of status so we can read it synchronously in effects
-    // without adding it to dependency arrays.
     const statusRef = useRef<StreamStatus>("idle");
     statusRef.current = status;
 
-    // AbortController ref so we can cancel mid-stream
-    const abortControllerRef = useRef<AbortController | null>(null);
-    // Tracks which chatId is currently streaming so we can notify the backend from any context
-    const activeStreamChatIdRef = useRef<string | null>(null);
-    const streamBufferRef = useRef("");
-    const activeAiMessageIdRef = useRef<string | null>(null);
-    const flushTimerRef = useRef<number | null>(null);
+    const activeSessionRef = useRef<ActiveStreamSession | null>(null);
+    const frameCallbackRef = useRef<FrameRequestCallback>(() => undefined);
     const syncedHistoryChatIdRef = useRef<string | undefined>(undefined);
 
-    const clearFlushTimer = useCallback(() => {
-        if (flushTimerRef.current === null) return;
-        window.clearTimeout(flushTimerRef.current);
-        flushTimerRef.current = null;
+    const isActiveSession = useCallback(
+        (session: ActiveStreamSession) => activeSessionRef.current?.id === session.id && !session.finalized,
+        []
+    );
+
+    const cancelPresentationFrame = useCallback((session: ActiveStreamSession) => {
+        if (session.frameId === null) return;
+        window.cancelAnimationFrame(session.frameId);
+        session.frameId = null;
     }, []);
 
-    const flushStreamBuffer = useCallback(() => {
-        const aiMessageId = activeAiMessageIdRef.current;
-        const nextContent = streamBufferRef.current;
+    const schedulePresentation = useCallback((session: ActiveStreamSession) => {
+        if (session.frameId !== null || session.finalized || !session.queue) return;
+        session.frameId = window.requestAnimationFrame((timestamp) => frameCallbackRef.current(timestamp));
+    }, []);
 
-        clearFlushTimer();
+    const finalizeSuccess = useCallback((session: ActiveStreamSession, revealRemaining = false) => {
+        if (!isActiveSession(session)) return;
 
-        if (!aiMessageId || !nextContent) return;
+        cancelPresentationFrame(session);
+        if (revealRemaining && session.queue) {
+            session.visibleContent += session.queue;
+            session.queue = "";
+        }
 
-        setMessages((prev) =>
-            prev.map((msg) =>
-                msg.id === aiMessageId
-                    ? { ...msg, content: nextContent }
-                    : msg
+        const finalContent = session.visibleContent;
+        session.finalized = true;
+        session.transportOpen = false;
+
+        setMessages((previous) =>
+            previous.map((message) =>
+                message.id === session.aiMessageId
+                    ? { ...message, content: finalContent, isStreaming: false, isOptimistic: true }
+                    : message
             )
         );
-    }, [clearFlushTimer]);
+        setStatus("done");
+        activeSessionRef.current = null;
+        queryClient.invalidateQueries({ queryKey: ["messages", session.chatId] });
+    }, [cancelPresentationFrame, isActiveSession, queryClient]);
 
-    const scheduleStreamFlush = useCallback(() => {
-        if (flushTimerRef.current !== null) return;
+    const finalizeError = useCallback((session: ActiveStreamSession, errorMessage: string) => {
+        if (!isActiveSession(session)) return;
 
-        flushTimerRef.current = window.setTimeout(() => {
-            flushStreamBuffer();
-        }, STREAM_FLUSH_INTERVAL_MS);
-    }, [flushStreamBuffer]);
+        cancelPresentationFrame(session);
+        const partialContent = session.visibleContent + session.queue;
+        const messageContent = partialContent || errorMessage;
 
-    const resetStreamBuffer = useCallback((aiMessageId: string | null = null, initialContent = "") => {
-        clearFlushTimer();
-        activeAiMessageIdRef.current = aiMessageId;
-        streamBufferRef.current = initialContent;
-    }, [clearFlushTimer]);
+        session.queue = "";
+        session.visibleContent = partialContent;
+        session.finalized = true;
+        session.transportOpen = false;
+        session.controller.abort();
 
-    // ─── Sync history into local state ────────
+        setError(errorMessage);
+        setStatus("error");
+        setMessages((previous) =>
+            previous.map((message) =>
+                message.id === session.aiMessageId
+                    ? {
+                        ...message,
+                        content: messageContent,
+                        isStreaming: false,
+                        isError: true,
+                    }
+                    : message
+            )
+        );
+        activeSessionRef.current = null;
+        toast.error(errorMessage);
+    }, [cancelPresentationFrame, isActiveSession]);
+
+    const discardSession = useCallback((session: ActiveStreamSession) => {
+        if (activeSessionRef.current?.id !== session.id) return;
+        cancelPresentationFrame(session);
+        session.finalized = true;
+        session.transportOpen = false;
+        session.controller.abort();
+        activeSessionRef.current = null;
+    }, [cancelPresentationFrame]);
+
+    frameCallbackRef.current = (timestamp) => {
+        const session = activeSessionRef.current;
+        if (!session || session.finalized) return;
+
+        session.frameId = null;
+        if (!session.queue) {
+            if (session.transportComplete) finalizeSuccess(session);
+            return;
+        }
+
+        if (timestamp - session.lastCommitAt < STREAM_COMMIT_INTERVAL_MS) {
+            schedulePresentation(session);
+            return;
+        }
+
+        const { visible, remaining } = takeStreamPrefix(
+            session.queue,
+            getStreamGraphemesPerUpdate(session.queue.length)
+        );
+        session.queue = remaining;
+        session.visibleContent += visible;
+        session.lastCommitAt = timestamp;
+
+        const visibleSnapshot = session.visibleContent;
+        setMessages((previous) =>
+            previous.map((message) =>
+                message.id === session.aiMessageId
+                    ? { ...message, content: visibleSnapshot }
+                    : message
+            )
+        );
+
+        if (session.queue) {
+            schedulePresentation(session);
+        } else if (session.transportComplete) {
+            finalizeSuccess(session);
+        }
+    };
+
     useEffect(() => {
         if (!chatId || !historyMessages) return;
 
-        // If we switch chats, we SHOULD sync the new history immediately.
-        // We only want to block hydration if we are actively streaming the EXACT chat we are currently viewing.
+        const activeSession = activeSessionRef.current;
         const isStreamingCurrentChat =
             (statusRef.current === "streaming" || statusRef.current === "creating") &&
-            activeStreamChatIdRef.current === chatId;
+            activeSession?.chatId === chatId;
 
         if (isStreamingCurrentChat) return;
 
@@ -139,20 +230,17 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             return;
         }
 
-        setMessages((prev) => mergeStreamMessages(prev, historyMessages));
+        setMessages((previous) => mergeStreamMessages(previous, historyMessages));
     }, [chatId, historyMessages]);
 
-    // Reset local state when chatId is cleared (new-chat page)
     useEffect(() => {
         if (!chatId) {
             syncedHistoryChatIdRef.current = undefined;
-            resetStreamBuffer();
             setMessages([]);
             setStatus("idle");
         }
-    }, [chatId, resetStreamBuffer]);
+    }, [chatId]);
 
-    // ─── Shared helper: notify backend to stop the active stream ─────────
     const notifyBackendStop = useCallback(async (chatIdToStop: string) => {
         try {
             await stopStreamService(chatIdToStop);
@@ -163,7 +251,6 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
         }
     }, []);
 
-    // ─── keepalive variant — used during beforeunload only ───────────────
     const notifyBackendStopKeepalive = useCallback((chatIdToStop: string) => {
         const token = useAuthStore.getState().accessToken;
         const url = `${BASE_URL}${chatService}/messages/chat/stream/${chatIdToStop}/stop`;
@@ -175,83 +262,102 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 "Content-Type": "application/json",
             },
         }).catch(() => {
-            // Cannot reliably show a toast during beforeunload — silently ignore.
+            // The page may already be unloading, so no UI feedback is reliable here.
         });
     }, []);
 
     const stopStreaming = useCallback(() => {
-        if (!abortControllerRef.current) return;
-        const stoppingChatId = activeStreamChatIdRef.current;
-        const stoppedContent = streamBufferRef.current;
-        abortControllerRef.current.abort();
-        abortControllerRef.current = null;
-        activeStreamChatIdRef.current = null;
-        flushStreamBuffer();
-        resetStreamBuffer();
+        const session = activeSessionRef.current;
+        if (!session || session.finalized) return;
+
+        if (session.transportComplete) {
+            finalizeSuccess(session, true);
+            return;
+        }
+
+        const stoppedContent = session.visibleContent + session.queue;
+        const wasTransportOpen = session.transportOpen;
+        const stoppingChatId = session.chatId;
+
+        cancelPresentationFrame(session);
+        session.queue = "";
+        session.visibleContent = stoppedContent;
+        session.finalized = true;
+        session.transportOpen = false;
+        session.controller.abort();
+
         setStatus("done");
-        setMessages((prev) =>
-            prev.map((msg) =>
-                msg.isStreaming
+        setMessages((previous) =>
+            previous.map((message) =>
+                message.id === session.aiMessageId
                     ? {
-                        ...msg,
-                        content: stoppedContent || msg.content || i18n.t("toast.streamStopped"),
+                        ...message,
+                        content: stoppedContent || message.content || i18n.t("toast.streamStopped"),
                         isStreaming: false,
                         isStopped: true,
                     }
-                    : msg
+                    : message
             )
         );
+        activeSessionRef.current = null;
 
-        if (stoppingChatId) {
-            notifyBackendStop(stoppingChatId);
+        if (wasTransportOpen) {
+            void notifyBackendStop(stoppingChatId);
         }
-    }, [flushStreamBuffer, notifyBackendStop, resetStreamBuffer]);
+    }, [cancelPresentationFrame, finalizeSuccess, notifyBackendStop]);
 
-    // ─── Component unmount — stop any active stream ─────────────────────
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden) return;
+            const session = activeSessionRef.current;
+            if (!session || session.finalized) return;
+            if (session.queue) schedulePresentation(session);
+            else if (session.transportComplete) finalizeSuccess(session);
+        };
+
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+        return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+    }, [finalizeSuccess, schedulePresentation]);
+
     useEffect(() => {
         return () => {
-            if (abortControllerRef.current && activeStreamChatIdRef.current) {
-                const chatIdToStop = activeStreamChatIdRef.current;
-                abortControllerRef.current.abort();
-                abortControllerRef.current = null;
-                activeStreamChatIdRef.current = null;
-                resetStreamBuffer();
-                notifyBackendStop(chatIdToStop);
-            }
+            const session = activeSessionRef.current;
+            if (!session || session.finalized) return;
+            const shouldNotifyBackend = session.transportOpen;
+            const sessionChatId = session.chatId;
+            discardSession(session);
+            if (shouldNotifyBackend) void notifyBackendStop(sessionChatId);
         };
-    }, [notifyBackendStop, resetStreamBuffer]);
+    }, [discardSession, notifyBackendStop]);
 
-    // ─── Tab refresh / close — keepalive fetch ──────────────────────────
     useEffect(() => {
         const handleBeforeUnload = () => {
-            if (abortControllerRef.current && activeStreamChatIdRef.current) {
-                notifyBackendStopKeepalive(activeStreamChatIdRef.current);
-                abortControllerRef.current.abort();
-                abortControllerRef.current = null;
-                activeStreamChatIdRef.current = null;
-                resetStreamBuffer();
-            }
+            const session = activeSessionRef.current;
+            if (!session || session.finalized) return;
+            if (session.transportOpen) notifyBackendStopKeepalive(session.chatId);
+            discardSession(session);
         };
+
         window.addEventListener("beforeunload", handleBeforeUnload);
         return () => window.removeEventListener("beforeunload", handleBeforeUnload);
-    }, [notifyBackendStopKeepalive, resetStreamBuffer]);
+    }, [discardSession, notifyBackendStopKeepalive]);
 
-    // ─── Stop stream when switching chats ────────────────────────────────
-    const prevChatIdRef = useRef<string | undefined>(chatId);
+    const previousChatIdRef = useRef<string | undefined>(chatId);
     useEffect(() => {
-        if (chatId !== prevChatIdRef.current) {
-            if (abortControllerRef.current && activeStreamChatIdRef.current) {
-                const chatIdToStop = activeStreamChatIdRef.current;
-                abortControllerRef.current.abort();
-                abortControllerRef.current = null;
-                activeStreamChatIdRef.current = null;
-                resetStreamBuffer();
-                notifyBackendStop(chatIdToStop);
-            }
-            setStatus("idle");
-            prevChatIdRef.current = chatId;
+        if (chatId === previousChatIdRef.current) return;
+
+        const session = activeSessionRef.current;
+        if (session && !session.finalized && session.chatId !== chatId) {
+            const shouldNotifyBackend = session.transportOpen;
+            const sessionChatId = session.chatId;
+            discardSession(session);
+            if (shouldNotifyBackend) void notifyBackendStop(sessionChatId);
         }
-    }, [chatId, notifyBackendStop, resetStreamBuffer]);
+
+        const continuesInNavigatedChat = !!session && !session.finalized && session.chatId === chatId;
+        if (!continuesInNavigatedChat) setStatus("idle");
+        previousChatIdRef.current = chatId;
+    }, [chatId, discardSession, notifyBackendStop]);
 
     const sendMessage = useCallback(
         async (
@@ -262,13 +368,11 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
             retryCount = 1
         ) => {
             const currentChatId = overrideChatId || chatId;
-            if (!currentChatId || !content.trim()) return;
+            if (!currentChatId || !content.trim() || activeSessionRef.current) return;
 
-            // Reset error state & sources on new message
             setError(null);
             setSources([]);
 
-            // 1. Optimistically add the user's message
             const userMessage: StreamMessage = {
                 id: crypto.randomUUID(),
                 content: content.trim(),
@@ -276,38 +380,42 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                 files: optimisticFiles,
                 isOptimistic: true,
             };
-
-            // 2. Create a placeholder for the AI response
-            const aiMessageId = crypto.randomUUID();
             const aiMessage: StreamMessage = {
-                id: aiMessageId,
+                id: crypto.randomUUID(),
                 content: "",
                 sender: "ai",
                 isStreaming: true,
                 isOptimistic: true,
             };
 
-            setMessages((prev) => [...prev, userMessage, aiMessage]);
-            resetStreamBuffer(aiMessageId);
+            setMessages((previous) => [...previous, userMessage, aiMessage]);
             setStatus("streaming");
 
-            // 3. Build the SSE URL
             const params = new URLSearchParams({
                 chatId: currentChatId,
                 content: content.trim(),
             });
-            if (fileIds && fileIds.length > 0) {
-                params.set("fileIds", fileIds.join(","));
-            }
+            if (fileIds?.length) params.set("fileIds", fileIds.join(","));
 
-            const url = `${BASE_URL}${chatService}/messages/chat/stream?${params.toString()}`;
-
-            // 4. Set up AbortController
-            const ctrl = new AbortController();
-            abortControllerRef.current = ctrl;
-            activeStreamChatIdRef.current = currentChatId;
+            const controller = new AbortController();
+            const session: ActiveStreamSession = {
+                id: crypto.randomUUID(),
+                chatId: currentChatId,
+                userMessageId: userMessage.id,
+                aiMessageId: aiMessage.id,
+                controller,
+                queue: "",
+                visibleContent: "",
+                frameId: null,
+                lastCommitAt: 0,
+                transportComplete: false,
+                transportOpen: true,
+                finalized: false,
+            };
+            activeSessionRef.current = session;
 
             const token = useAuthStore.getState().accessToken;
+            const url = `${BASE_URL}${chatService}/messages/chat/stream?${params.toString()}`;
 
             try {
                 await fetchEventSource(url, {
@@ -316,13 +424,12 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                         Authorization: `Bearer ${token}`,
                         Accept: "text/event-stream",
                     },
-                    signal: ctrl.signal,
+                    signal: controller.signal,
                     openWhenHidden: true,
 
                     async onopen(response) {
-                        if (response.status === 401 && retryCount > 0) {
-                            throw new Error("TOKEN_EXPIRED_RETRY");
-                        }
+                        if (!isActiveSession(session)) return;
+                        if (response.status === 401 && retryCount > 0) throw new TokenExpiredError();
 
                         if (
                             response.ok &&
@@ -331,180 +438,141 @@ export const useChatStream = ({ chatId }: UseChatStreamOptions): UseChatStreamRe
                             return;
                         }
 
-                        // Server returned an error on open
-                        let errorPayload: string;
+                        const responseText = await response.text();
+                        let errorPayload = responseText || i18n.t("toast.connectionError");
                         try {
-                            const json = await response.json();
-                            errorPayload = json?.message || JSON.stringify(json);
+                            const parsed = JSON.parse(responseText) as { message?: unknown };
+                            if (typeof parsed.message === "string") errorPayload = parsed.message;
                         } catch {
-                            errorPayload = await response.text();
+                            // The response is already useful as plain text.
                         }
-
-                        setError(errorPayload);
-                        setStatus("error");
-                        resetStreamBuffer();
-                        toast.error(errorPayload);
-                        console.error("[SSE] Connection failed on open:", errorPayload);
-
-                        // Mark AI message as failed
-                        setMessages((prev) =>
-                            prev.map((msg) =>
-                                msg.id === aiMessageId
-                                    ? { ...msg, content: errorPayload, isStreaming: false, isError: true }
-                                    : msg
-                            )
-                        );
-
-                        throw new Error(`SSE connection failed: ${response.status}`);
+                        throw new StreamConnectionError(errorPayload);
                     },
 
-                    onmessage(ev) {
-                        const eventType = ev.event || "message";
-                        const data = ev.data;
-                        console.log("[SSE] Received message event:", eventType, data); 
+                    onmessage(event) {
+                        if (!isActiveSession(session)) return;
+                        const eventType = event.event || "message";
+
                         if (eventType === "message") {
-                            streamBufferRef.current += data;
-                            scheduleStreamFlush();
-                        } else if (eventType === "sources") {
+                            const text = extractTextFromStreamData(event.data);
+                            if (text === null || text === "") return;
+                            session.queue += text;
+                            schedulePresentation(session);
+                            return;
+                        }
+
+                        if (eventType === "sources") {
                             try {
-                                const parsedSources: LawSource[] = JSON.parse(data);
-                                setSources(parsedSources);
+                                setSources(JSON.parse(event.data) as LawSource[]);
                             } catch {
-                                console.error("Failed to parse sources event:", data);
+                                if (import.meta.env.DEV) console.debug("[SSE] Invalid sources event", event.data);
                             }
-                        } else if (eventType === "files") {
+                            return;
+                        }
+
+                        if (eventType === "files") {
                             try {
-                                const parsedFilesEvent: FilesStreamEvent = JSON.parse(data);
-                                setMessages((prev) =>
-                                    prev.map((msg) => {
-                                        if (parsedFilesEvent.messageId && msg.id === parsedFilesEvent.messageId) {
-                                            return { ...msg, files: parsedFilesEvent.files };
+                                const filesEvent = JSON.parse(event.data) as FilesStreamEvent;
+                                setMessages((previous) =>
+                                    previous.map((message) => {
+                                        if (filesEvent.messageId && message.id === filesEvent.messageId) {
+                                            return { ...message, files: filesEvent.files };
                                         }
-
-                                        if (!parsedFilesEvent.messageId && msg.id === userMessage.id) {
-                                            return { ...msg, files: parsedFilesEvent.files };
+                                        if (!filesEvent.messageId && message.id === session.userMessageId) {
+                                            return { ...message, files: filesEvent.files };
                                         }
-
-                                        return msg;
+                                        return message;
                                     })
                                 );
                             } catch {
-                                console.error("Failed to parse files event:", data);
+                                if (import.meta.env.DEV) console.debug("[SSE] Invalid files event", event.data);
                             }
-                        } else if (eventType === "error") {
-                            console.error("[SSE] Received error event from server:", data);
-                            setError(data);
-                            setStatus("error");
-                            flushStreamBuffer();
-                            resetStreamBuffer();
-                            toast.error(data);
-                            setMessages((prev) =>
-                                prev.map((msg) =>
-                                    msg.id === aiMessageId
-                                        ? { ...msg, content: data, isStreaming: false, isError: true }
-                                        : msg
-                                )
-                            );
+                            return;
+                        }
+
+                        if (eventType === "error") {
+                            throw new StreamConnectionError(event.data || i18n.t("toast.connectionError"));
                         }
                     },
 
-                    onerror(err) {
-                        if (ctrl.signal.aborted) return;
+                    onerror(streamError) {
+                        if (streamError instanceof TokenExpiredError) throw streamError;
+                        if (!isActiveSession(session)) throw streamError;
 
-                        if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
-                            throw err;
-                        }
-
-                        console.error("[SSE] Stream error encountered:", err);
-                        const errorMessage = typeof err === "string"
-                            ? err
-                            : err?.message || i18n.t("toast.connectionError");
-
-                        setError(errorMessage);
-                        setStatus("error");
-                        flushStreamBuffer();
-                        const bufferedContent = streamBufferRef.current;
-                        resetStreamBuffer();
-                        toast.error(errorMessage);
-
-                        setMessages((prev) =>
-                            prev.map((msg) =>
-                                msg.id === aiMessageId
-                                    ? {
-                                        ...msg,
-                                        content: bufferedContent || msg.content || errorMessage,
-                                        isStreaming: false,
-                                        isError: true
-                                    }
-                                    : msg
-                            )
-                        );
-
-                        throw err;
+                        const errorMessage = streamError instanceof Error
+                            ? streamError.message
+                            : typeof streamError === "string"
+                                ? streamError
+                                : i18n.t("toast.connectionError");
+                        finalizeError(session, errorMessage);
+                        throw streamError;
                     },
 
                     onclose() {
-                        // Stream ended normally — mark as done
-                        setStatus("done");
-                        flushStreamBuffer();
-                        resetStreamBuffer();
-                        setMessages((prev) =>
-                            prev.map((msg) =>
-                                msg.id === aiMessageId
-                                    ? { ...msg, isStreaming: false, isOptimistic: true }
-                                    : msg
-                            )
-                        );
+                        if (!isActiveSession(session)) return;
+                        session.transportOpen = false;
+                        session.transportComplete = true;
 
-                        // Invalidate cache so React Query fetches the real server-side
-                        // message IDs, replacing optimistic UUIDs without mid-stream flicker.
-                        queryClient.invalidateQueries({ queryKey: ["messages", currentChatId] });
+                        if (document.hidden) {
+                            finalizeSuccess(session, true);
+                        } else if (session.queue) {
+                            schedulePresentation(session);
+                        } else {
+                            finalizeSuccess(session);
+                        }
                     },
                 });
-            } catch (err) {
-                if (err instanceof DOMException && err.name === "AbortError") {
-                    return;
-                }
-
-                if (err instanceof Error && err.message === "TOKEN_EXPIRED_RETRY") {
-                    console.warn("[SSE] Token expired. Attempting shared token refresh...");
+            } catch (streamError) {
+                if (streamError instanceof TokenExpiredError) {
+                    discardSession(session);
                     try {
                         await refreshAccessToken();
-                        // Clean up duplicate optimistic messages before retrying
-                        resetStreamBuffer();
-                        setMessages((prev) => prev.filter(msg => msg.id !== userMessage.id && msg.id !== aiMessageId));
+                        setMessages((previous) =>
+                            previous.filter(
+                                (message) => message.id !== userMessage.id && message.id !== aiMessage.id
+                            )
+                        );
                         await sendMessage(content, overrideChatId, fileIds, optimisticFiles, retryCount - 1);
                         return;
                     } catch {
-                        setError(i18n.t("toast.sessionExpired"));
+                        const sessionExpiredMessage = i18n.t("toast.sessionExpired");
+                        setError(sessionExpiredMessage);
                         setStatus("error");
-                        resetStreamBuffer();
-                        setMessages((prev) =>
-                            prev.map((msg) =>
-                                msg.id === aiMessageId
-                                    ? { ...msg, content: i18n.t("toast.sessionExpired"), isStreaming: false, isError: true }
-                                    : msg
+                        setMessages((previous) =>
+                            previous.map((message) =>
+                                message.id === aiMessage.id
+                                    ? {
+                                        ...message,
+                                        content: sessionExpiredMessage,
+                                        isStreaming: false,
+                                        isError: true,
+                                    }
+                                    : message
                             )
                         );
                         return;
                     }
                 }
 
-                // If status wasn't already set to error by the handlers above
-                if (statusRef.current !== "error") {
-                    setError(
-                        err instanceof Error ? err.message : i18n.t("toast.unexpectedError")
-                    );
-                    setStatus("error");
+                if (streamError instanceof DOMException && streamError.name === "AbortError") return;
+                if (isActiveSession(session)) {
+                    const errorMessage = streamError instanceof Error
+                        ? streamError.message
+                        : i18n.t("toast.unexpectedError");
+                    finalizeError(session, errorMessage);
                 }
             } finally {
-                if (abortControllerRef.current === ctrl) {
-                    abortControllerRef.current = null;
-                    activeStreamChatIdRef.current = null;
-                }
+                session.transportOpen = false;
             }
         },
-        [chatId, flushStreamBuffer, queryClient, resetStreamBuffer, scheduleStreamFlush]
+        [
+            chatId,
+            discardSession,
+            finalizeError,
+            finalizeSuccess,
+            isActiveSession,
+            schedulePresentation,
+        ]
     );
 
     return {

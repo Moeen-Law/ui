@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { StreamMessage } from "../types";
 import ChatMessages from "./ChatMessages";
@@ -175,5 +175,32 @@ describe("ChatMessages pagination trigger", () => {
         MockIntersectionObserver.instances[0].trigger(true);
 
         expect(fetchOlderMessages).not.toHaveBeenCalled();
+    });
+
+    it("renders active content as plain text with an inline hidden cursor", () => {
+        render(
+            <ChatMessages
+                chatId="chat-1"
+                messages={[{ id: "ai-stream", sender: "ai", content: "# Partial", isStreaming: true }]}
+                isStreaming
+            />
+        );
+
+        const content = screen.getByTestId("streaming-message-content");
+        expect(content).toHaveTextContent("# Partial");
+        expect(screen.queryByRole("heading", { name: "Partial" })).not.toBeInTheDocument();
+        expect(content.querySelector("[aria-hidden='true']")).toBeInTheDocument();
+    });
+
+    it("renders completed content as Markdown", () => {
+        render(
+            <ChatMessages
+                chatId="chat-1"
+                messages={[{ id: "ai-done", sender: "ai", content: "# Complete", isStreaming: false }]}
+            />
+        );
+
+        expect(screen.getByRole("heading", { name: "Complete" })).toBeInTheDocument();
+        expect(screen.queryByTestId("streaming-message-content")).not.toBeInTheDocument();
     });
 });

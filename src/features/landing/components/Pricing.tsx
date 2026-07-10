@@ -43,7 +43,7 @@ export function Pricing() {
     return (
         <PricingShell>
             <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-8 lg:gap-12 md:grid-cols-2 lg:grid-cols-3 relative z-10">
-                {plans.map((plan) => (
+                {plans?.map((plan) => (
                     <PricingPlanCard
                         key={plan.id}
                         plan={plan}

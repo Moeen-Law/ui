@@ -91,11 +91,21 @@ const MessageRow = memo(function MessageRow({ msg }: MessageRowProps) {
                 {msg.sender === "ai" ? (
                     <>
                         {msg.content ? (
-                            <MarkdownRenderer content={msg.content} isStreaming={msg.isStreaming} contentDir="rtl" />
+                            msg.isStreaming ? (
+                                <div
+                                    dir="rtl"
+                                    className="whitespace-pre-wrap text-start leading-relaxed"
+                                    data-testid="streaming-message-content"
+                                >
+                                    {msg.content}
+                                    <StreamingCursor />
+                                </div>
+                            ) : (
+                                <MarkdownRenderer content={msg.content} isStreaming={false} contentDir="rtl" />
+                            )
                         ) : msg.isStreaming ? (
                             <TypingIndicator />
                         ) : null}
-                        {msg.content && msg.isStreaming && <StreamingCursor />}
                     </>
                 ) : (
                     <>
