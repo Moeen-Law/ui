@@ -3,7 +3,7 @@ import ChatDesktopHeader from "../components/ChatDesktopHeader";
 import ChatHeader from "../components/ChatHeader";
 import ChatInput from "../components/ChatInput";
 import ChatMessages from "../components/ChatMessages";
-import DailyQuotaBadge from "../components/DailyQuotaBadge";
+import DailyQuotaBadge from "@/shared/components/DailyQuotaBadge";
 import QuotaNotice from "../components/QuotaNotice";
 import Sidebar from "../components/Sidebar";
 import { useChatComposer } from "../hooks/useChatComposer";

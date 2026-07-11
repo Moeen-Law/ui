@@ -1,8 +1,10 @@
 import { useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { Calendar, FilePlus2, FileText, ScrollText } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { getFeatureQuota, isQuotaExhausted, useDailyQuota } from "@/features/chat/hooks/useDailyQuota";
+import DailyQuotaBadge from "@/shared/components/DailyQuotaBadge";
+import { TaskHistoryCard, TaskHistoryDrawer, TaskHistoryList, TaskWorkspaceHeader, TaskWorkspaceShell } from "@/shared/components/task-workspace";
 import {
     useDocumentTemplate,
     useDocumentTemplates,
@@ -13,13 +15,13 @@ import {
     hasInvalidDateFieldValue,
     isFieldValueEmpty,
     normalizeFieldValue,
+    getDateLabel,
+    getDocumentTemplateName,
 } from "../helpers";
 import type { GeneratedDocument } from "../types";
 import DocumentGenerationEmptyState from "./DocumentGenerationEmptyState";
 import DocumentGenerationForm from "./DocumentGenerationForm";
-import DocumentGenerationHeader from "./DocumentGenerationHeader";
 import DocumentGenerationLoadingState from "./DocumentGenerationLoadingState";
-import DocumentHistoryPanel from "./DocumentHistoryPanel";
 import DocumentTemplateGrid from "./DocumentTemplateGrid";
 import GeneratedDocumentCard from "./GeneratedDocumentCard";
 
@@ -99,7 +101,6 @@ export default function DocumentGenerationContent() {
         (field) => hasInvalidDateFieldValue(field, fieldValues[field.id] ?? "")
     );
     const canSubmit = Boolean(selectedTemplate) && !isPending && !docGenQuotaExhausted;
-    const BackIcon = i18n.dir() === "rtl" ? ArrowRight : ArrowLeft;
 
     const handleSelectTemplate = (templateId: string) => {
         setSelectedTemplateId(templateId);
@@ -156,37 +157,17 @@ export default function DocumentGenerationContent() {
         }
     };
 
+    const historyLabels = { empty: t("documentGeneration.history.empty"), error: t("documentGeneration.history.error"), retry: t("documentGeneration.error.retry"), loadMore: t("documentGeneration.history.loadMore") };
+    const renderHistory = (onItemSelected?: () => void, listClassName?: string) => <TaskHistoryList items={documents} getItemId={(item) => item.id} selectedId={selectedDocument?.id} renderItem={(item) => <div className="flex min-w-0 items-start gap-3"><div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500"><FileText className="size-4" /></div><div className="min-w-0"><div className="truncate text-sm font-black">{getDocumentTemplateName(item, templatesForHistory)}</div><div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground"><Calendar className="size-3 shrink-0" />{getDateLabel(item.createdAt, i18n.language)}</div></div></div>} onSelect={setSelectedDocument} onItemSelected={onItemSelected} isLoading={isLoadingHistory} isError={isHistoryError} hasNextPage={!!hasNextPage} isFetchingNextPage={isFetchingNextPage} onLoadMore={() => fetchNextPage()} onRetry={() => void refetchHistory()} labels={historyLabels} listClassName={listClassName} />;
+    const historyTitle = t("documentGeneration.history.title");
+    const historyDescription = t("documentGeneration.history.description");
+
     return (
-        <div className="min-h-dvh w-full overflow-x-clip bg-background text-foreground">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.10),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
-
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 py-4 sm:px-4 md:gap-6 md:px-8 md:py-8">
-                <DocumentGenerationHeader
-                    stats={stats}
-                    BackIcon={BackIcon}
-                    quota={docGenQuota}
-                    isQuotaLoading={isQuotaLoading}
-                    isQuotaError={isQuotaError}
-                />
-
-                <main className="grid min-w-0 grid-cols-1 gap-5 md:gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-                    <section className="flex min-w-0 flex-col gap-5">
-                        <div className="lg:hidden">
-                            <DocumentHistoryPanel
-                                isMobile
-                                documents={documents}
-                                templates={templatesForHistory}
-                                selectedId={selectedDocument?.id}
-                                isLoading={isLoadingHistory}
-                                isError={isHistoryError}
-                                hasNextPage={!!hasNextPage}
-                                isFetchingNextPage={isFetchingNextPage}
-                                onLoadMore={() => fetchNextPage()}
-                                onRetry={() => void refetchHistory()}
-                                onSelect={setSelectedDocument}
-                            />
-                        </div>
-
+        <TaskWorkspaceShell
+            header={<TaskWorkspaceHeader icon={FilePlus2} badgeIcon={ScrollText} badgeLabel={t("documentGeneration.header.badge")} title={t("documentGeneration.header.title")} description={t("documentGeneration.header.description")} backLabel={t("documentGeneration.header.backToChat")} stats={stats} statsColumns={3} supplementaryBadge={<DailyQuotaBadge quota={docGenQuota} isLoading={isQuotaLoading} isError={isQuotaError} />} />}
+            mobileHistory={<TaskHistoryDrawer title={historyTitle} description={historyDescription} count={documents.length} renderContent={(close) => renderHistory(close, "min-h-0 flex-1 overscroll-contain")} />}
+            desktopHistory={<TaskHistoryCard title={historyTitle} description={historyDescription}>{renderHistory(undefined, "max-h-[560px]")}</TaskHistoryCard>}
+        >
                         <DocumentTemplateGrid
                             templates={templates}
                             selectedTemplateId={selectedTemplateId}
@@ -225,24 +206,6 @@ export default function DocumentGenerationContent() {
                         ) : (
                             <DocumentGenerationEmptyState />
                         )}
-                    </section>
-
-                    <aside className="hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start">
-                        <DocumentHistoryPanel
-                            documents={documents}
-                            templates={templatesForHistory}
-                            selectedId={selectedDocument?.id}
-                            isLoading={isLoadingHistory}
-                            isError={isHistoryError}
-                            hasNextPage={!!hasNextPage}
-                            isFetchingNextPage={isFetchingNextPage}
-                            onLoadMore={() => fetchNextPage()}
-                            onRetry={() => void refetchHistory()}
-                            onSelect={setSelectedDocument}
-                        />
-                    </aside>
-                </main>
-            </div>
-        </div>
+        </TaskWorkspaceShell>
     );
 }

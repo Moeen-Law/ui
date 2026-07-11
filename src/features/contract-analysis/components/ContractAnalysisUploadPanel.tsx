@@ -2,7 +2,7 @@ import { useRef, type ChangeEvent } from "react";
 import { CheckCircle2, FileText, Loader2, Upload, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
-import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import DailyQuotaBadge from "@/shared/components/DailyQuotaBadge";
 import QuotaNotice from "@/features/chat/components/QuotaNotice";
 import type { Quota } from "@/features/chat/types";
 import { isQuotaExhausted, isQuotaLow } from "@/features/chat/hooks/useDailyQuota";

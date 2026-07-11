@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { FilePlus2, Loader2, RefreshCw, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import DailyQuotaBadge from "@/shared/components/DailyQuotaBadge";
 import QuotaNotice from "@/features/chat/components/QuotaNotice";
 import type { Quota } from "@/features/chat/types";
 import { isQuotaExhausted, isQuotaLow } from "@/features/chat/hooks/useDailyQuota";

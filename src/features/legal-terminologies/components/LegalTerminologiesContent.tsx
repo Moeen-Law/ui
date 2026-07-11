@@ -1,71 +1,46 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, BookOpenText, Home, Scale } from "lucide-react";
-import { Link } from "react-router-dom";
+import { BookOpenText, Scale } from "lucide-react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { LanguageToggle } from "@/shared/components/LanguageToggle";
-import { ThemeToggle } from "@/shared/components/ThemeToggle";
+import { useTranslation } from "react-i18next";
+import {
+    TaskErrorState,
+    TaskExampleEmptyState,
+    TaskHistoryCard,
+    TaskHistoryDrawer,
+    TaskHistoryList,
+    TaskPromptPanel,
+    TaskWorkspaceHeader,
+    TaskWorkspaceShell,
+} from "@/shared/components/task-workspace";
 import { useCreateLegalTerminology, useLegalTerminologies } from "../hooks";
 import type { TerminologiesDatum, TerminologyResponse } from "../types";
-import { historyToResponse } from "../helpers";
-import TerminologySearchPanel from "./TerminologySearchPanel";
-import TerminologyHistoryDrawer from "./TerminologyHistoryDrawer";
-import TerminologyHistoryStickyPanel from "./TerminologyHistoryStickyPanel";
+import { formatTerminologyDate, historyToResponse } from "../helpers";
 import TerminologyResultCard from "./TerminologyResultCard";
-import TerminologyEmptyState from "./TerminologyEmptyState";
 import TerminologyLoadingState from "./TerminologyLoadingState";
-import TerminologyErrorState from "./TerminologyErrorState";
-import { useTranslation } from "react-i18next";
 
 export default function LegalTerminologiesContent() {
     const { t } = useTranslation();
     const [term, setTerm] = useState("");
     const [selectedResult, setSelectedResult] = useState<TerminologyResponse | null>(null);
-    const [requestError, setRequestError] = useState<string | undefined>();
-
-    const {
-        terminologies,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage,
-    } = useLegalTerminologies();
-    const {
-        createTerminologyAsync,
-        isPending,
-    } = useCreateLegalTerminology();
-
+    const [requestError, setRequestError] = useState<string>();
+    const { terminologies, fetchNextPage, hasNextPage, isFetchingNextPage } = useLegalTerminologies();
+    const { createTerminologyAsync, isPending } = useCreateLegalTerminology();
     const selectedId = selectedResult?.id;
-    const trimmedTerm = term.trim();
-    const recentCount = terminologies.length;
 
-    const stats = useMemo(
-        () => [
-            {
-                label: t("legalTerminologies.stats.history"),
-                value: recentCount,
-            },
-            {
-                label: t("legalTerminologies.stats.sources"),
-                value: selectedResult?.result.sources?.length ?? 0,
-            },
-        ],
-        [recentCount, selectedResult?.result.sources?.length, t]
-    );
+    const stats = useMemo(() => [
+        { label: t("legalTerminologies.stats.history"), value: terminologies.length },
+        { label: t("legalTerminologies.stats.sources"), value: selectedResult?.result.sources?.length ?? 0 },
+    ], [selectedResult?.result.sources?.length, t, terminologies.length]);
 
     const handleSubmit = async () => {
-        if (trimmedTerm.length < 2 || isPending) return;
-
+        const value = term.trim();
+        if (value.length < 2 || isPending) return;
         setRequestError(undefined);
         try {
-            const response = await createTerminologyAsync(trimmedTerm);
-            setSelectedResult(response);
+            setSelectedResult(await createTerminologyAsync(value));
             setTerm("");
         } catch (error) {
-            const message =
-                error instanceof Error
-                    ? error.message
-                    : t("legalTerminologies.error.description");
+            const message = error instanceof Error ? error.message : t("legalTerminologies.error.description");
             setRequestError(message);
             toast.error(message);
         }
@@ -75,112 +50,48 @@ export default function LegalTerminologiesContent() {
         setRequestError(undefined);
         setSelectedResult(historyToResponse(item));
     };
+    const labels = {
+        empty: t("legalTerminologies.history.empty"),
+        error: t("legalTerminologies.error.history"),
+        retry: t("legalTerminologies.error.retry"),
+        loadMore: t("legalTerminologies.history.loadMore"),
+    };
+    const renderHistory = (onItemSelected?: () => void, listClassName?: string) => (
+        <TaskHistoryList
+            items={terminologies}
+            getItemId={(item) => item.id}
+            selectedId={selectedId}
+            renderItem={(item) => <><span className="line-clamp-2 min-w-0 break-words text-sm font-bold leading-6">{item.result?.term || item.input.terminology}</span><span className="text-xs text-muted-foreground">{formatTerminologyDate(item.createdAt)}</span></>}
+            onSelect={handleSelectHistory}
+            onItemSelected={onItemSelected}
+            hasNextPage={!!hasNextPage}
+            isFetchingNextPage={isFetchingNextPage}
+            onLoadMore={() => fetchNextPage()}
+            labels={labels}
+            listClassName={listClassName}
+        />
+    );
+    const historyTitle = t("legalTerminologies.history.title");
+    const historyDescription = t("legalTerminologies.history.description");
+    const examples = t("legalTerminologies.empty.examples", { returnObjects: true }) as string[];
 
     return (
-        <div className="min-h-dvh w-full overflow-x-clip bg-background text-foreground">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
-
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 py-4 sm:px-4 md:gap-6 md:px-8 md:py-8">
-                <header className="flex min-w-0 flex-col gap-4 overflow-hidden rounded-2xl border border-blue-500/20 bg-card/85 p-4 shadow-2xl shadow-blue-500/10 backdrop-blur md:gap-5 md:p-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <Button variant="ghost" size="sm" className="hover:bg-blue-500/10 hover:text-blue-500" asChild>
-                            <Link to="/chat">
-                                <ArrowRight data-icon="inline-start" />
-                                {t("legalTerminologies.header.backToChat")}
-                            </Link>
-                        </Button>
-
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="hover:bg-blue-500/10 hover:text-blue-500" asChild>
-                                <Link to="/" aria-label={t("chat.ui.home")}>
-                                    <Home data-icon="inline-start" />
-                                </Link>
-                            </Button>
-                            <LanguageToggle />
-                            <ThemeToggle />
-                        </div>
-                    </div>
-
-                    <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-                        <div className="flex min-w-0 flex-col gap-4">
-                            <div className="flex items-center gap-3">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-400/10 text-amber-400 shadow-inner shadow-amber-400/10 md:size-12">
-                                    <Scale />
-                                </div>
-                                <Badge variant="outline" className="border-blue-500/20 bg-blue-500/10 text-blue-500">
-                                    <BookOpenText data-icon="inline-start" />
-                                    {t("legalTerminologies.header.badge")}
-                                </Badge>
-                            </div>
-                            <div className="flex max-w-3xl flex-col gap-3">
-                                <h1 className="break-words text-2xl font-black leading-tight sm:text-3xl md:text-5xl">
-                                    {t("legalTerminologies.header.title")}
-                                </h1>
-                                <p className="break-words text-sm leading-7 text-muted-foreground sm:text-base md:text-lg md:leading-8">
-                                    {t("legalTerminologies.header.description")}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                            {stats.map((stat) => (
-                                <div
-                                    key={stat.label}
-                                    className="rounded-xl border border-blue-500/15 bg-blue-500/5 p-4 shadow-lg shadow-blue-500/5"
-                                >
-                                    <div className="text-2xl font-black text-blue-500">{stat.value}</div>
-                                    <div className="mt-1 text-xs leading-5 text-muted-foreground">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </header>
-
-                <main className="grid min-w-0 grid-cols-1 gap-5 md:gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-                    <section className="flex min-w-0 flex-col gap-5">
-                        <div className="lg:hidden">
-                            <TerminologyHistoryDrawer
-                                items={terminologies}
-                                selectedId={selectedId}
-                                hasNextPage={!!hasNextPage}
-                                isFetchingNextPage={isFetchingNextPage}
-                                onLoadMore={() => fetchNextPage()}
-                                onSelect={handleSelectHistory}
-                            />
-                        </div>
-
-                        <TerminologySearchPanel
-                            value={term}
-                            isPending={isPending}
-                            onChange={setTerm}
-                            onSubmit={handleSubmit}
-                        />
-
-                        {isPending ? (
-                            <TerminologyLoadingState />
-                        ) : requestError ? (
-                            <TerminologyErrorState message={requestError} onRetry={handleSubmit} />
-                        ) : selectedResult ? (
-                            <TerminologyResultCard terminology={selectedResult} />
-                        ) : (
-                            <TerminologyEmptyState onSelectExample={setTerm} />
-                        )}
-                    </section>
-
-                    <aside className="hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start">
-                        <TerminologyHistoryStickyPanel
-                            items={terminologies}
-                            selectedId={selectedId}
-                            hasNextPage={!!hasNextPage}
-                            isFetchingNextPage={isFetchingNextPage}
-                            onLoadMore={() => fetchNextPage()}
-                            onSelect={handleSelectHistory}
-                        />
-                    </aside>
-                </main>
-            </div>
-        </div>
+        <TaskWorkspaceShell
+            backgroundClassName="bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.12),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]"
+            header={<TaskWorkspaceHeader icon={Scale} badgeIcon={BookOpenText} badgeLabel={t("legalTerminologies.header.badge")} title={t("legalTerminologies.header.title")} description={t("legalTerminologies.header.description")} backLabel={t("legalTerminologies.header.backToChat")} stats={stats} />}
+            mobileHistory={<TaskHistoryDrawer title={historyTitle} description={historyDescription} count={terminologies.length} renderContent={(close) => renderHistory(close, "min-h-0 flex-1 overscroll-contain")} />}
+            desktopHistory={<TaskHistoryCard title={historyTitle} description={historyDescription}>{renderHistory(undefined, "max-h-[520px]")}</TaskHistoryCard>}
+        >
+            <TaskPromptPanel id="legal-terminology-input" icon={BookOpenText} title={t("legalTerminologies.search.title")} description={t("legalTerminologies.search.description")} label={t("legalTerminologies.search.label")} placeholder={t("legalTerminologies.search.placeholder")} hint={t("legalTerminologies.search.hint")} disclaimer={t("legalTerminologies.search.disclaimer")} submitLabel={t("legalTerminologies.search.submit")} pendingLabel={t("legalTerminologies.search.loading")} value={term} isPending={isPending} onChange={setTerm} onSubmit={handleSubmit} />
+            {isPending ? (
+                <TerminologyLoadingState />
+            ) : requestError ? (
+                <TaskErrorState title={t("legalTerminologies.error.title")} description={requestError} retryLabel={t("legalTerminologies.error.retry")} onRetry={handleSubmit} />
+            ) : selectedResult ? (
+                <TerminologyResultCard terminology={selectedResult} />
+            ) : (
+                <TaskExampleEmptyState icon={Scale} exampleIcon={BookOpenText} title={t("legalTerminologies.empty.title")} description={t("legalTerminologies.empty.description")} examples={examples} onSelectExample={setTerm} />
+            )}
+        </TaskWorkspaceShell>
     );
 }

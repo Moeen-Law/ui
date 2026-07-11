@@ -1,24 +1,19 @@
 import { useCallback, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Clipboard, FileText, Home } from "lucide-react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Clipboard, FileText } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { LanguageToggle } from "@/shared/components/LanguageToggle";
-import { ThemeToggle } from "@/shared/components/ThemeToggle";
+import { TaskErrorState, TaskHistoryCard, TaskHistoryDrawer, TaskHistoryList, TaskWorkspaceHeader, TaskWorkspaceShell } from "@/shared/components/task-workspace";
 import { uploadMessageFiles } from "@/features/chat/services";
 import { getFeatureQuota, isQuotaExhausted, useDailyQuota } from "@/features/chat/hooks/useDailyQuota";
-import DailyQuotaBadge from "@/features/chat/components/DailyQuotaBadge";
+import DailyQuotaBadge from "@/shared/components/DailyQuotaBadge";
 import type { ContractAnalysisInputFile, ContractAnalysisResponse } from "../types";
 import { useContractAnalyses } from "../hooks/useContractAnalyses";
 import { useCreateContractAnalysis } from "../hooks/useCreateContractAnalysis";
 import { useOptionalContractAnalysis } from "../hooks/useOptionalContractAnalysis";
-import ContractAnalysisErrorState from "./ContractAnalysisErrorState";
-import ContractAnalysisHistoryDrawer from "./ContractAnalysisHistoryDrawer";
-import ContractAnalysisHistoryStickyPanel from "./ContractAnalysisHistoryStickyPanel";
 import ContractAnalysisLoadingState from "./ContractAnalysisLoadingState";
 import ContractAnalysisResultCard from "./ContractAnalysisResultCard";
 import ContractAnalysisUploadPanel from "./ContractAnalysisUploadPanel";
+import { formatContractAnalysisDate } from "../helpers";
 
 const createInputFile = (file: File): ContractAnalysisInputFile => ({
     id: `${file.name}-${file.size}-${file.lastModified}-${crypto.randomUUID()}`,
@@ -27,7 +22,7 @@ const createInputFile = (file: File): ContractAnalysisInputFile => ({
 });
 
 export default function ContractAnalysisContent() {
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { analysisId } = useParams<{ analysisId?: string }>();
     const [selectedFiles, setSelectedFiles] = useState<ContractAnalysisInputFile[]>([]);
@@ -65,7 +60,6 @@ export default function ContractAnalysisContent() {
     const sourceCount = selectedResult?.result.sources?.length ?? 0;
     const selectedFileCount = selectedFiles.length;
     const isBusy = isUploading || isPending;
-    const BackIcon = i18n.dir() === "rtl" ? ArrowRight : ArrowLeft;
     const shouldShowResultLoading = isLoadingDetail || (isPending && !isUploading);
     const detailErrorMessage = detailError instanceof Error ? detailError.message : undefined;
 
@@ -150,89 +144,17 @@ export default function ContractAnalysisContent() {
         navigate(`/contract-analysis/${analysis.id}`);
     }, [navigate]);
 
+    const historyLabels = { empty: t("contractAnalysis.history.empty"), error: t("contractAnalysis.error.history"), retry: t("contractAnalysis.error.retry"), loadMore: t("contractAnalysis.history.loadMore") };
+    const renderHistory = (onItemSelected?: () => void, listClassName?: string) => <TaskHistoryList items={analyses} getItemId={(item) => item.id} selectedId={selectedId} renderItem={(item) => <><span className="line-clamp-2 min-w-0 break-words text-sm font-bold leading-6">{t("contractAnalysis.history.itemTitle", { count: item.input.files_ids?.length ?? 0 })}</span><span className="flex items-center gap-1 text-xs text-muted-foreground"><FileText className="size-3.5" />{formatContractAnalysisDate(item.createdAt)}</span></>} onSelect={handleSelectHistory} onItemSelected={onItemSelected} isLoading={isLoadingHistory} isError={isHistoryError} hasNextPage={!!hasNextPage} isFetchingNextPage={isFetchingNextPage} onLoadMore={() => fetchNextPage()} onRetry={() => void refetchHistory()} labels={historyLabels} listClassName={listClassName} />;
+    const historyTitle = t("contractAnalysis.history.title");
+    const historyDescription = t("contractAnalysis.history.description");
+
     return (
-        <div className="min-h-dvh w-full overflow-x-clip bg-background text-foreground">
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.10),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
-
-            <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 py-4 sm:px-4 md:gap-6 md:px-8 md:py-8">
-                <header className="flex min-w-0 flex-col gap-4 overflow-hidden rounded-2xl border border-blue-500/20 bg-card/85 p-4 shadow-2xl shadow-blue-500/10 backdrop-blur md:gap-5 md:p-6">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
-                        <Button variant="ghost" size="sm" className="cursor-pointer hover:bg-blue-500/10 hover:text-blue-500" asChild>
-                            <Link to="/chat">
-                                <BackIcon data-icon="inline-start" />
-                                {t("contractAnalysis.header.backToChat")}
-                            </Link>
-                        </Button>
-
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="icon" className="cursor-pointer hover:bg-blue-500/10 hover:text-blue-500" asChild>
-                                <Link to="/" aria-label={t("chat.ui.home")}>
-                                    <Home data-icon="inline-start" />
-                                </Link>
-                            </Button>
-                            <LanguageToggle />
-                            <ThemeToggle />
-                        </div>
-                    </div>
-
-                    <div className="grid min-w-0 gap-5 lg:grid-cols-[minmax(0,1fr)_420px] lg:items-end">
-                        <div className="flex min-w-0 flex-col gap-4">
-                            <div className="flex flex-wrap items-center gap-3">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-400/10 text-amber-400 shadow-inner shadow-amber-400/10 md:size-12">
-                                    <FileText />
-                                </div>
-                                <Badge variant="outline" className="border-blue-500/20 bg-blue-500/10 text-blue-500">
-                                    <Clipboard data-icon="inline-start" />
-                                    {t("contractAnalysis.header.badge")}
-                                </Badge>
-                                <DailyQuotaBadge
-                                    quota={docAnalysisQuota}
-                                    isLoading={isQuotaLoading}
-                                    isError={isQuotaError}
-                                />
-                            </div>
-                            <div className="flex max-w-3xl flex-col gap-3">
-                                <h1 className="break-words text-2xl font-black leading-tight sm:text-3xl md:text-5xl">
-                                    {t("contractAnalysis.header.title")}
-                                </h1>
-                                <p className="break-words text-sm leading-7 text-muted-foreground sm:text-base md:text-lg md:leading-8">
-                                    {t("contractAnalysis.header.description")}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-3 gap-3">
-                            {stats.map((stat) => (
-                                <div
-                                    key={stat.label}
-                                    className="rounded-xl border border-blue-500/15 bg-blue-500/5 p-4 shadow-lg shadow-blue-500/5"
-                                >
-                                    <div className="text-2xl font-black text-blue-500">{stat.value}</div>
-                                    <div className="mt-1 text-xs leading-5 text-muted-foreground">
-                                        {stat.label}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </header>
-
-                <main className="grid min-w-0 grid-cols-1 gap-5 md:gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-                    <section className="flex min-w-0 flex-col gap-5">
-                        <div className="lg:hidden">
-                            <ContractAnalysisHistoryDrawer
-                                items={analyses}
-                                selectedId={selectedId}
-                                hasNextPage={!!hasNextPage}
-                                isLoading={isLoadingHistory}
-                                isFetchingNextPage={isFetchingNextPage}
-                                isError={isHistoryError}
-                                onLoadMore={() => fetchNextPage()}
-                                onRetry={() => void refetchHistory()}
-                                onSelect={handleSelectHistory}
-                            />
-                        </div>
-
+        <TaskWorkspaceShell
+            header={<TaskWorkspaceHeader icon={FileText} badgeIcon={Clipboard} badgeLabel={t("contractAnalysis.header.badge")} title={t("contractAnalysis.header.title")} description={t("contractAnalysis.header.description")} backLabel={t("contractAnalysis.header.backToChat")} stats={stats} statsColumns={3} statsWidth="420px" supplementaryBadge={<DailyQuotaBadge quota={docAnalysisQuota} isLoading={isQuotaLoading} isError={isQuotaError} />} />}
+            mobileHistory={<TaskHistoryDrawer title={historyTitle} description={historyDescription} count={analyses.length} renderContent={(close) => renderHistory(close, "min-h-0 flex-1 overscroll-contain")} />}
+            desktopHistory={<TaskHistoryCard title={historyTitle} description={historyDescription}>{renderHistory(undefined, "max-h-[520px]")}</TaskHistoryCard>}
+        >
                         <ContractAnalysisUploadPanel
                             selectedFiles={selectedFiles}
                             isBusy={isBusy}
@@ -251,15 +173,19 @@ export default function ContractAnalysisContent() {
                         {shouldShowResultLoading ? (
                             <ContractAnalysisLoadingState />
                         ) : isDetailError ? (
-                            <ContractAnalysisErrorState
-                                message={detailErrorMessage}
+                            <TaskErrorState
+                                title={t("contractAnalysis.error.title")}
+                                description={detailErrorMessage || t("contractAnalysis.error.description")}
+                                retryLabel={t("contractAnalysis.error.retry")}
                                 onRetry={() => void refetchDetail()}
                             />
                         ) : selectedResult ? (
                             <ContractAnalysisResultCard analysis={selectedResult} />
                         ) : requestError ? (
-                            <ContractAnalysisErrorState
-                                message={requestError}
+                            <TaskErrorState
+                                title={t("contractAnalysis.error.title")}
+                                description={requestError}
+                                retryLabel={t("contractAnalysis.error.retry")}
                                 onRetry={selectedFiles.length > 0 ? handleAnalyze : undefined}
                             />
                         ) : (
@@ -273,23 +199,6 @@ export default function ContractAnalysisContent() {
                                 </p>
                             </div>
                         )}
-                    </section>
-
-                    <aside className="hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start">
-                        <ContractAnalysisHistoryStickyPanel
-                            items={analyses}
-                            selectedId={selectedId}
-                            hasNextPage={!!hasNextPage}
-                            isLoading={isLoadingHistory}
-                            isFetchingNextPage={isFetchingNextPage}
-                            isError={isHistoryError}
-                            onLoadMore={() => fetchNextPage()}
-                            onRetry={() => void refetchHistory()}
-                            onSelect={handleSelectHistory}
-                        />
-                    </aside>
-                </main>
-            </div>
-        </div>
+        </TaskWorkspaceShell>
     );
 }
