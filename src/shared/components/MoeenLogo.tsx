@@ -31,7 +31,7 @@ export function MoeenLogo({
   const { t } = useTranslation()
 
   return (
-    <a href="#hero-section" className={cn("flex items-center gap-3.5", className)}>
+    <a href="/#hero-section" className={cn("flex items-center gap-3.5", className)}>
       <svg
         className={cn(
           "shrink-0 text-amber-400 drop-shadow-[0_2px_8px_rgba(251,191,36,0.4)] transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105",

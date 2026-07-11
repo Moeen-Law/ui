@@ -30,7 +30,7 @@ export default function TerminologyHistoryStickyPanel({
     const { t } = useTranslation();
 
     return (
-        <Card className="border-blue-500/15 shadow-xl shadow-blue-500/5 lg:sticky lg:top-8">
+        <Card className="border-blue-500/15 shadow-xl shadow-blue-500/5">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-black">
                     <History className="text-blue-500" />

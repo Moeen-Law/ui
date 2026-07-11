@@ -157,7 +157,7 @@ export default function DocumentGenerationContent() {
     };
 
     return (
-        <div className="min-h-dvh w-full overflow-x-hidden bg-background text-foreground">
+        <div className="min-h-dvh w-full overflow-x-clip bg-background text-foreground">
             <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.10),transparent_48%),radial-gradient(circle_at_18%_18%,rgba(251,191,36,0.08),transparent_32%)]" />
 
             <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col gap-5 px-3 py-4 sm:px-4 md:gap-6 md:px-8 md:py-8">
@@ -227,7 +227,7 @@ export default function DocumentGenerationContent() {
                         )}
                     </section>
 
-                    <aside className="hidden min-w-0 lg:block">
+                    <aside className="hidden min-w-0 lg:sticky lg:top-8 lg:block lg:self-start">
                         <DocumentHistoryPanel
                             documents={documents}
                             templates={templatesForHistory}
